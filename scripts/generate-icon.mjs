@@ -22,23 +22,28 @@ const bgB = data[(8 * src.bitmap.width + 8) * 4 + 2];
 const hex = `#${[bgR, bgG, bgB].map((c) => c.toString(16).padStart(2, '0')).join('')}`;
 const bgColor = ((bgR << 24) | (bgG << 16) | (bgB << 8) | 0xff) >>> 0;
 
-// 1) ไอคอนหลัก — รูปเต็มเฟรม 1024
-const icon = src.clone();
-icon.cover({ w: 1024, h: 1024 });
+/** วางหน้าป้า (ย่อตามสัดส่วน) กึ่งกลางบนพื้นเหลือง เพื่อให้เห็นหน้าครบ ไม่ล้นกรอบ */
+function placeOnYellow(size, ratio) {
+  const canvas = new Jimp({ width: size, height: size, color: bgColor });
+  const face = src.clone();
+  face.cover({ w: size, h: size }); // ปรับเป็นจตุรัส 1024 ก่อน
+  face.scale(ratio); // แล้วย่อลงให้มีขอบเหลืองรอบ ๆ
+  const off = Math.round((size - face.bitmap.width) / 2);
+  canvas.composite(face, off, off);
+  return canvas;
+}
+
+// 1) ไอคอนหลัก — ย่อหน้าป้าให้เห็นครบ มีขอบเหลืองรอบ ไม่ล้นกรอบ
+const icon = placeOnYellow(1024, 0.82);
 await icon.write('assets/icon.png');
 
-// 2) favicon
+// 2) favicon — ย่อจากไอคอนหลัก
 const fav = icon.clone();
 fav.resize({ w: 256, h: 256 });
 await fav.write('assets/favicon.png');
 
-// 3) ชั้นหน้า adaptive — ย่อหน้าป้าลงให้พ้น safe zone บนพื้นเหลืองเดียวกัน (กันมาส์กตัดมวยผม)
-const fg = new Jimp({ width: 1024, height: 1024, color: bgColor });
-const face = src.clone();
-face.cover({ w: 1024, h: 1024 });
-face.scale(0.84);
-const off = Math.round((1024 - face.bitmap.width) / 2);
-fg.composite(face, off, off);
+// 3) ชั้นหน้า adaptive — ย่อมากกว่าเดิมให้พ้น safe zone (กันมาส์กวงกลม/มนตัดหัวป้า)
+const fg = placeOnYellow(1024, 0.68);
 await fg.write('assets/android-icon-foreground.png');
 
 // 4) ชั้นหลัง adaptive — เหลืองล้วน

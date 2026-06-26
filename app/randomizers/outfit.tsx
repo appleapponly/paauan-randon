@@ -51,6 +51,7 @@ export default function OutfitScreen() {
           <PaaUanBubble
             text="วันนี้จะแต่งตัวยังไงดี? เลือกเพศแล้วให้ป้าจัดลุคให้เลย!"
             mood="happy"
+            pose="fashion"
           />
         )}
 
@@ -75,7 +76,7 @@ export default function OutfitScreen() {
         {/* การ์ดลุคที่สุ่มได้ */}
         {look !== null && (
           <Animated.View key={round} entering={BounceIn.duration(600)}>
-            <CaptureCard ref={cardRef} comment={comment} mood={mood} pose="happy">
+            <CaptureCard ref={cardRef} comment={comment} mood={mood} pose="fashion">
               <Text style={styles.lookTitle}>
                 ลุค{gender === 'female' ? 'สาว' : 'หนุ่ม'}วันนี้
               </Text>

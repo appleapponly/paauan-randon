@@ -13,6 +13,7 @@ export const colors = {
   // สีเสริมไว้แยกแต่ละหมวดในหน้าหลัก
   blue: '#3D7DCA',
   purple: '#8E5BB5',
+  wine: '#A10559', // ม่วงแดง — หมวดดูดวง
   // สถานะ
   shadow: '#1A1A1A', // สีเงา offset
   muted: '#9A8C76', // ตัวอักษรจาง

@@ -23,6 +23,8 @@ export const paaUanPoses = {
   satisfied: require('../../assets/images/paa-uan-satisfied.png'), // 😌 ยิ้มลูบพุง อิ่มเอม
   dice: require('../../assets/images/paa-uan-dice.png'), // 🎲 ถือลูกเต๋า เซียนเต๋า
   dizzy: require('../../assets/images/paa-uan-dizzy.png'), // 😵‍💫 เวียนหัว ดาวหมุน
+  fortune: require('../../assets/images/paa-uan-fortune.png'), // 🔮 หมอดู ลูกแก้ว
+  fashion: require('../../assets/images/paa-uan-fashion.png'), // 😎 แฟชั่น แว่นดำ เครื่องเพชร
 } as const;
 
 export type PaaUanPose = keyof typeof paaUanPoses;

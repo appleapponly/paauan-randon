@@ -2,7 +2,6 @@
  * 🏠 หน้าหลัก — โฉมใหม่ตามดีไซน์ "ป้าอ้วนสุ่มให้!"
  * - Hero ชมพู: ชื่อแอป + บับเบิลทักทาย + รูปป้าชี้นิ้วล้นกรอบมุมขวาล่าง
  * - แต่ละหมวด: ป้ายพิลล์สีประจำหมวด + ตารางการ์ด 2 คอลัมน์ (อิโมจิใหญ่)
- * - แถบล่างคงที่: 🏠 ⭐ 🕘 ⚙️ (ตอนนี้ตกแต่งไว้ก่อน)
  */
 import { useMemo } from 'react';
 import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
@@ -19,6 +18,7 @@ import { textOn } from '@/theme/styles';
 // อิโมจิประจำหมวด (โชว์บนป้ายพิลล์)
 const CATEGORY_TAG: Record<string, string> = {
   decide: '🤔',
+  fortune: '🔮',
   fun: '🎉',
   group: '👯',
   basic: '🧰',
@@ -77,14 +77,6 @@ export default function HomeScreen() {
           <Text style={styles.footer}>ป้าอ้วนรอสุ่มให้อยู่นะจ๊ะ 👵</Text>
         </View>
       </ScrollView>
-
-      {/* ===== แถบล่างคงที่ ===== */}
-      <View style={styles.bottomNav}>
-        <Text style={styles.navIconActive}>🏠</Text>
-        <Text style={styles.navIcon}>⭐</Text>
-        <Text style={styles.navIcon}>🕘</Text>
-        <Text style={styles.navIcon}>⚙️</Text>
-      </View>
     </View>
   );
 }
@@ -132,33 +124,34 @@ const styles = StyleSheet.create({
     fontFamily: fonts.semibold,
     fontSize: fontSize.sm,
     color: colors.ink,
-    lineHeight: 22,
+    lineHeight: 26, // เผื่อสระ/วรรณยุกต์บน (เช่น "นี่") ไม่ถูกตัด
   },
+  // หางบับเบิลชี้ไป "ทางขวา" หาตัวป้า (มุมขวาล่าง) เหมือนป้าพูด
   bubbleTailBorder: {
     position: 'absolute',
-    left: 28,
-    bottom: -14,
+    right: -14,
+    top: 18,
     width: 0,
     height: 0,
-    borderLeftWidth: 9,
-    borderRightWidth: 9,
-    borderTopWidth: 14,
-    borderLeftColor: 'transparent',
-    borderRightColor: 'transparent',
-    borderTopColor: colors.ink,
+    borderTopWidth: 9,
+    borderBottomWidth: 9,
+    borderLeftWidth: 14,
+    borderTopColor: 'transparent',
+    borderBottomColor: 'transparent',
+    borderLeftColor: colors.ink,
   },
   bubbleTailFill: {
     position: 'absolute',
-    left: 30,
-    bottom: -9,
+    right: -9,
+    top: 18,
     width: 0,
     height: 0,
-    borderLeftWidth: 7,
-    borderRightWidth: 7,
-    borderTopWidth: 11,
-    borderLeftColor: 'transparent',
-    borderRightColor: 'transparent',
-    borderTopColor: colors.white,
+    borderTopWidth: 9,
+    borderBottomWidth: 9,
+    borderLeftWidth: 14,
+    borderTopColor: 'transparent',
+    borderBottomColor: 'transparent',
+    borderLeftColor: colors.white,
   },
   heroMascot: {
     position: 'absolute',
@@ -208,17 +201,4 @@ const styles = StyleSheet.create({
     marginTop: 6,
     marginBottom: 8,
   },
-
-  // ----- Bottom nav -----
-  bottomNav: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    height: 60,
-    backgroundColor: colors.white,
-    borderTopWidth: 3,
-    borderTopColor: colors.ink,
-  },
-  navIconActive: { fontSize: 26 },
-  navIcon: { fontSize: 26, opacity: 0.4 },
 });

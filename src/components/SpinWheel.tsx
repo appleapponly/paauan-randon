@@ -134,13 +134,15 @@ export const SpinWheel = forwardRef<SpinWheelHandle, Props>(
                       stroke={colors.ink}
                       strokeWidth={2}
                     />
-                    {/* ตัวอักษรเอียงตามมุมชิ้น — วาด 2 ชั้น: ขอบขาวด้านหลัง + ตัวดำทับ ให้อ่านชัดบนทุกสี */}
+                    {/* ตัวอักษรเอียงตามมุมชิ้น — วาด 2 ชั้น: ขอบดำหนาด้านหลัง + ตัวขาวทับ
+                        ใช้ตัวขาวเพราะอ่านชัดบนทุกสีช่อง และไม่เกิด "ขีดขาว" ใต้ตัวอักษรอย่าง ท */}
                     <SvgText
                       x={labelPos.x}
                       y={labelPos.y}
-                      stroke={colors.white}
-                      strokeWidth={3.4}
-                      fill={colors.white}
+                      stroke={colors.ink}
+                      strokeWidth={3}
+                      strokeLinejoin="round"
+                      fill={colors.ink}
                       fontSize={fontSize}
                       fontFamily={fonts.bold}
                       textAnchor="start"
@@ -152,7 +154,7 @@ export const SpinWheel = forwardRef<SpinWheelHandle, Props>(
                     <SvgText
                       x={labelPos.x}
                       y={labelPos.y}
-                      fill={colors.ink}
+                      fill={colors.white}
                       fontSize={fontSize}
                       fontFamily={fonts.bold}
                       textAnchor="start"

@@ -1,6 +1,6 @@
 /**
- * 🔮 ดวงประจำวัน — สุ่มข้อคิด/คำแนะนำดี ๆ ในการใช้ชีวิตประจำวัน
- * กดปุ่ม → ป้าเปิดดวง → โชว์ข้อคิด 1 ข้อ + คอมเมนต์ป้า → แชร์ได้
+ * 💡 ข้อคิดประจำวัน — สุ่มข้อคิด/คำแนะนำดี ๆ ในการใช้ชีวิตประจำวัน
+ * กดปุ่ม → ป้าหมอดูให้ข้อคิด 1 ข้อ + คอมเมนต์ป้า → แชร์ได้
  */
 import { useRef, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
@@ -36,14 +36,14 @@ export default function DailyFortuneScreen() {
       <ScrollView contentContainerStyle={styles.content}>
         {fortune === null ? (
           <PaaUanBubble
-            text="อยากรู้ดวงวันนี้มั้ยลูก? กดให้ป้าเปิดดวงให้เลยจ้า"
+            text="อยากได้ข้อคิดดี ๆ วันนี้มั้ยลูก? กดให้ป้าหมอดูบอกเลยจ้า"
             mood="happy"
-            pose="satisfied"
+            pose="fortune"
           />
         ) : (
           <Animated.View key={round} entering={BounceIn.duration(600)}>
-            <CaptureCard ref={cardRef} comment={comment} mood={mood} pose="satisfied">
-              <Text style={styles.emoji}>🔮</Text>
+            <CaptureCard ref={cardRef} comment={comment} mood={mood} pose="fortune">
+              <Text style={styles.emoji}>💡</Text>
               <Text style={styles.label}>ข้อคิดวันนี้</Text>
               <Text style={styles.fortune}>{fortune}</Text>
             </CaptureCard>
@@ -53,9 +53,9 @@ export default function DailyFortuneScreen() {
         <View style={{ height: 20 }} />
 
         <BigButton
-          label={fortune === null ? 'เปิดดวงวันนี้!' : 'เปิดดวงอีกครั้ง'}
+          label={fortune === null ? 'ขอข้อคิดวันนี้!' : 'ขอข้อคิดใหม่'}
           onPress={draw}
-          color={colors.purple}
+          color={colors.wine}
         />
 
         {fortune !== null && <ShareButton targetRef={cardRef} />}
@@ -72,8 +72,8 @@ const styles = StyleSheet.create({
   fortune: {
     fontFamily: fonts.bold,
     fontSize: fontSize.xl,
-    color: colors.purple,
+    color: colors.wine,
     textAlign: 'center',
-    lineHeight: 32,
+    lineHeight: 40, // เผื่อสระบน/ล่างภาษาไทยไม่ถูกตัดทั้งบนและล่าง
   },
 });

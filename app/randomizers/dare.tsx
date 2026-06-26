@@ -65,6 +65,6 @@ const styles = StyleSheet.create({
     fontSize: fontSize.xl,
     color: colors.ink,
     textAlign: 'center',
-    lineHeight: 36,
+    lineHeight: 44, // เผื่อสระสูง/วรรณยุกต์ บรรทัดบนไม่ถูกตัด
   },
 });

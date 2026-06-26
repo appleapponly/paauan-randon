@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
     fontFamily: fonts.medium,
     fontSize: fontSize.sm,
     color: colors.ink,
-    lineHeight: 22,
+    lineHeight: 25, // เผื่อสระบน/ล่างภาษาไทยไม่ถูกตัด
   },
   watermark: {
     fontFamily: fonts.regular,

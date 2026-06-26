@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFoodStore } from '@/store/useFoodStore';
-import { SUGGESTED_FOOD_MENU } from '@/data/foodMenu';
+import { PRESET_FOOD_MENU } from '@/data/foodMenu';
 import {
   spinningLines,
   pickLine,
@@ -36,10 +36,16 @@ import { cartoonBox } from '@/theme/styles';
 // อิริยาบทป้าที่เหมาะกับ "การ์ดแชร์อาหาร" — เลือกหลายแบบให้ไม่ซ้ำซาก (เลี่ยงหน้าปฏิเสธ)
 const FOOD_CARD_POSES: PaaUanPose[] = ['cookHappy', 'satisfied', 'cookJump', 'happy'];
 
+// เซ็ตเมนู "เตรียมไว้" — ใช้เช็คว่าเมนูเป็นของระบบ (เอาออก→กลับไปแนะนำ) หรือผู้ใช้พิมพ์เอง (ลบถาวร)
+const PRESET_SET = new Set(PRESET_FOOD_MENU);
+
 export default function FoodWheelScreen() {
   const menu = useFoodStore((s) => s.menu);
   const addItem = useFoodStore((s) => s.addItem);
   const removeItem = useFoodStore((s) => s.removeItem);
+
+  // เมนูแนะนำที่ยังไม่อยู่ในวงล้อ (พอเอาเข้าวงล้อจะหายจากตรงนี้ พอเอาออกจะกลับมา)
+  const available = PRESET_FOOD_MENU.filter((i) => !menu.includes(i));
 
   const wheelRef = useRef<SpinWheelHandle>(null);
   const [spinning, setSpinning] = useState(false);
@@ -145,41 +151,45 @@ export default function FoodWheelScreen() {
           </View>
 
           <View style={styles.chips}>
-            {menu.map((item) => (
-              <View key={item} style={styles.chip}>
-                <Text style={styles.chipText}>{item}</Text>
-                <Pressable onPress={() => removeItem(item)} hitSlop={8}>
-                  <Text style={styles.chipX}>✕</Text>
-                </Pressable>
-              </View>
-            ))}
+            {menu.map((item) => {
+              const preset = PRESET_SET.has(item);
+              return (
+                <View key={item} style={styles.chip}>
+                  <Text style={styles.chipText}>{item}</Text>
+                  <Pressable onPress={() => removeItem(item)} hitSlop={8}>
+                    {/* เมนูระบบ → ✕ (เอาออกแล้วกลับไปอยู่เมนูแนะนำ) · เมนูพิมพ์เอง → "ลบ" (หายถาวร) */}
+                    {preset ? (
+                      <Text style={styles.chipX}>✕</Text>
+                    ) : (
+                      <Text style={styles.chipDelete}>ลบ</Text>
+                    )}
+                  </Pressable>
+                </View>
+              );
+            })}
           </View>
         </View>
 
-        {/* คลังเมนูแนะนำ — แตะเพื่อสลับเข้า/ออกวงล้อ */}
+        {/* คลังเมนูแนะนำ — เมนูที่ยังไม่อยู่ในวงล้อ แตะเพื่อย้ายเข้าวงล้อ */}
         <View style={styles.manageBox}>
-          <Text style={styles.manageTitle}>เมนูแนะนำ — แตะเพื่อเพิ่มเข้าวงล้อ</Text>
+          <Text style={styles.manageTitle}>เมนูแนะนำ — แตะเพื่อย้ายเข้าวงล้อ</Text>
           <Text style={styles.suggestHint}>
-            เมนูที่อยู่ในวงล้อแล้วจะมีเครื่องหมาย ✓ แตะอีกครั้งเพื่อเอาออก
+            แตะเมนูด้านล่างเพื่อย้ายเข้าวงล้อ · เมนูที่เอาออกจากวงล้อจะกลับมาอยู่ตรงนี้
           </Text>
           <View style={styles.chips}>
-            {SUGGESTED_FOOD_MENU.map((item) => {
-              const inWheel = menu.includes(item);
-              return (
+            {available.length === 0 ? (
+              <Text style={styles.suggestHint}>เมนูแนะนำอยู่ในวงล้อหมดแล้วจ้า 🎉</Text>
+            ) : (
+              available.map((item) => (
                 <Pressable
                   key={item}
-                  onPress={() => (inWheel ? removeItem(item) : addItem(item))}
-                  style={[styles.suggestChip, inWheel && styles.suggestChipOn]}
+                  onPress={() => addItem(item)}
+                  style={styles.suggestChip}
                 >
-                  <Text
-                    style={[styles.suggestChipText, inWheel && styles.suggestChipTextOn]}
-                  >
-                    {inWheel ? '✓ ' : '＋ '}
-                    {item}
-                  </Text>
+                  <Text style={styles.suggestChipText}>＋ {item}</Text>
                 </Pressable>
-              );
-            })}
+              ))
+            )}
           </View>
         </View>
       </ScrollView>
@@ -224,7 +234,9 @@ const styles = StyleSheet.create({
     borderColor: colors.ink,
     borderRadius: 12,
     paddingHorizontal: 14,
-    height: 48,
+    paddingVertical: 10,
+    minHeight: 52,
+    textAlignVertical: 'center', // Android: จัดคำกึ่งกลางแนวตั้ง ไม่ให้สระบนถูกตัด
     fontFamily: fonts.regular,
     fontSize: fontSize.md,
     color: colors.ink,
@@ -271,11 +283,21 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: colors.pink,
   },
+  chipDelete: {
+    fontFamily: fonts.bold,
+    fontSize: fontSize.xs,
+    color: colors.white,
+    backgroundColor: colors.pink,
+    borderRadius: 8,
+    paddingHorizontal: 7,
+    paddingVertical: 1,
+    overflow: 'hidden',
+  },
   suggestHint: {
     fontFamily: fonts.regular,
     fontSize: fontSize.sm,
     color: colors.muted,
-    lineHeight: 20,
+    lineHeight: 21,
     marginTop: -6,
   },
   suggestChip: {
@@ -286,15 +308,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 6,
   },
-  suggestChipOn: {
-    backgroundColor: colors.jade,
-  },
   suggestChipText: {
     fontFamily: fonts.medium,
     fontSize: fontSize.sm,
     color: colors.ink,
-  },
-  suggestChipTextOn: {
-    color: colors.white,
   },
 });

@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
     fontFamily: fonts.medium,
     fontSize: fontSize.md,
     color: colors.ink,
-    lineHeight: 24,
+    lineHeight: 28, // เผื่อสระบน/ล่าง + วรรณยุกต์ภาษาไทยไม่ถูกตัด
   },
   tailBorder: {
     position: 'absolute',
