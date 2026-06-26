@@ -39,3 +39,8 @@ yarn-error.*
 # generated native folders
 /ios
 /android
+.expo-export-check/
+
+# ไฟล์ดีไซน์/zip ขนาดใหญ่ ไม่ต้องเข้า repo (ไม่เกี่ยวกับการ build)
+*.zip
+/ป้าอ้วนสุ่มให้ UI/

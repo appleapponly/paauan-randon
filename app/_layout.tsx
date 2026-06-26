@@ -1,0 +1,72 @@
+/**
+ * 🌳 Root Layout — กรอบนอกสุดของทั้งแอป (Expo Router)
+ * หน้าที่:
+ *  1) โหลดฟอนต์ Mali ก่อน แล้วค่อยโชว์แอป (กันตัวอักษรกระพริบ)
+ *  2) ตั้งหน้าตา header ของทุกหน้าให้เป็นธีมเดียวกัน
+ *  3) ห่อด้วย GestureHandlerRootView (จำเป็นสำหรับ reanimated/gesture)
+ */
+import 'react-native-gesture-handler';
+import { useEffect } from 'react';
+import { Stack } from 'expo-router';
+import * as SplashScreen from 'expo-splash-screen';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { StatusBar } from 'expo-status-bar';
+import {
+  useFonts,
+  Mali_400Regular,
+  Mali_500Medium,
+  Mali_600SemiBold,
+  Mali_700Bold,
+} from '@expo-google-fonts/mali';
+import { colors } from '@/theme/colors';
+import { fonts } from '@/theme/typography';
+
+// กันไม่ให้ splash หายไปก่อนฟอนต์โหลดเสร็จ
+SplashScreen.preventAutoHideAsync();
+
+export default function RootLayout() {
+  const [fontsLoaded] = useFonts({
+    Mali_400Regular,
+    Mali_500Medium,
+    Mali_600SemiBold,
+    Mali_700Bold,
+  });
+
+  useEffect(() => {
+    if (fontsLoaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
+
+  if (!fontsLoaded) return null; // ยังโหลดฟอนต์ไม่เสร็จ — โชว์ splash ต่อ
+
+  return (
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <StatusBar style="dark" />
+      <Stack
+        screenOptions={{
+          headerStyle: { backgroundColor: colors.pink },
+          headerTintColor: colors.white,
+          headerTitleStyle: { fontFamily: fonts.bold, fontSize: 20 },
+          headerShadowVisible: false,
+          contentStyle: { backgroundColor: colors.cream },
+        }}
+      >
+        {/* หน้าหลัก ซ่อน header เพราะมีหัวเรื่องของตัวเอง */}
+        <Stack.Screen name="index" options={{ headerShown: false }} />
+        <Stack.Screen name="randomizers/food-wheel" options={{ title: 'กินอะไรดี' }} />
+        <Stack.Screen name="randomizers/decision-dice" options={{ title: 'ลูกเต๋าตัดสินใจ' }} />
+        <Stack.Screen name="randomizers/yes-no" options={{ title: 'ใช่ / ไม่ใช่' }} />
+        <Stack.Screen name="randomizers/coin" options={{ title: 'หัว / ก้อย' }} />
+        <Stack.Screen name="randomizers/who-gets-it" options={{ title: 'ใครโดน' }} />
+        <Stack.Screen name="randomizers/charades" options={{ title: 'ใบ้คำ' }} />
+        <Stack.Screen name="randomizers/dare" options={{ title: 'สุ่มท้าทาย' }} />
+        <Stack.Screen name="randomizers/lucky-draw" options={{ title: 'จับฉลากรายชื่อ' }} />
+        <Stack.Screen name="randomizers/teams" options={{ title: 'แบ่งทีม' }} />
+        <Stack.Screen name="randomizers/queue" options={{ title: 'สุ่มลำดับคิว' }} />
+        <Stack.Screen name="randomizers/number" options={{ title: 'สุ่มตัวเลข' }} />
+        <Stack.Screen name="randomizers/color" options={{ title: 'สุ่มสี' }} />
+      </Stack>
+    </GestureHandlerRootView>
+  );
+}

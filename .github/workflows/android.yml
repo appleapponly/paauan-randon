@@ -1,0 +1,59 @@
+name: Build Android APK
+
+# ▶️ รันเมื่อ: กดปุ่ม Run เองในแท็บ Actions (workflow_dispatch) หรือ push เข้า master/main
+on:
+  workflow_dispatch:
+  push:
+    branches: [master, main]
+
+permissions:
+  contents: write # ให้สิทธิ์สร้าง Release + แนบไฟล์ APK
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout โค้ด
+        uses: actions/checkout@v4
+
+      - name: 🟢 ติดตั้ง Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: ☕ ติดตั้ง Java 17 (จำเป็นสำหรับ Gradle)
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: 📦 ติดตั้ง dependencies
+        run: npm install
+
+      - name: 🛠️ สร้างโปรเจกต์ Android (expo prebuild)
+        run: npx expo prebuild --platform android --no-install
+
+      - name: 🤖 Build APK (debug — ติดตั้งลงมือถือได้เลย)
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon
+
+      - name: 🏷️ เปลี่ยนชื่อไฟล์ APK
+        run: cp android/app/build/outputs/apk/debug/app-debug.apk paauan-randon.apk
+
+      # เก็บไว้เป็น artifact (โหลดได้ในหน้า run นี้)
+      - name: ⬆️ อัปโหลด APK เป็น artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: paauan-randon-apk
+          path: paauan-randon.apk
+
+      # สร้าง Release ให้ได้ลิงก์โหลดตรง ๆ (เปิดในมือถือแล้วโหลดติดตั้งได้)
+      - name: 🚀 สร้าง GitHub Release พร้อมแนบ APK
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: build-${{ github.run_number }}
+          name: ป้าอ้วนสุ่มให้ (build ${{ github.run_number }})
+          files: paauan-randon.apk
