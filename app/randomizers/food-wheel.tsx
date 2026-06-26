@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFoodStore } from '@/store/useFoodStore';
+import { SUGGESTED_FOOD_MENU } from '@/data/foodMenu';
 import {
   spinningLines,
   pickLine,
@@ -25,10 +26,15 @@ import { PaaUanBubble } from '@/components/PaaUanBubble';
 import { BigButton } from '@/components/BigButton';
 import { CaptureCard } from '@/components/CaptureCard';
 import { ShareButton } from '@/components/ShareButton';
-import Animated, { ZoomIn } from 'react-native-reanimated';
+import Animated, { BounceIn } from 'react-native-reanimated';
+import { type PaaUanPose } from '@/theme/assets';
+import { pickOne } from '@/utils/random';
 import { colors } from '@/theme/colors';
 import { fonts, fontSize } from '@/theme/typography';
 import { cartoonBox } from '@/theme/styles';
+
+// อิริยาบทป้าที่เหมาะกับ "การ์ดแชร์อาหาร" — เลือกหลายแบบให้ไม่ซ้ำซาก (เลี่ยงหน้าปฏิเสธ)
+const FOOD_CARD_POSES: PaaUanPose[] = ['cookHappy', 'satisfied', 'cookJump', 'happy'];
 
 export default function FoodWheelScreen() {
   const menu = useFoodStore((s) => s.menu);
@@ -42,6 +48,8 @@ export default function FoodWheelScreen() {
   const [mood, setMood] = useState<PaaUanMood>('happy');
   const [result, setResult] = useState<string | null>(null);
   const [round, setRound] = useState(0);
+  // อิริยาบทป้าบนการ์ดแชร์ LINE — สุ่มเอาหลายแบบ (เฉพาะหน้าตาดีใจ/อิ่มเอม ไม่เอาหน้าปฏิเสธ)
+  const [cardPose, setCardPose] = useState<PaaUanPose>('cookHappy');
   const cardRef = useRef<View>(null);
 
   function handleSpin() {
@@ -64,6 +72,7 @@ export default function FoodWheelScreen() {
     const line = pickFoodLine(item); // คอมเมนต์เจาะจงเมนูนั้น ถ้ามี
     setBubble(line.text);
     setMood(line.mood);
+    setCardPose(pickOne(FOOD_CARD_POSES));
     setResult(item);
     setRound((r) => r + 1);
   }
@@ -106,8 +115,8 @@ export default function FoodWheelScreen() {
 
         {/* การ์ดผลแบบแชร์ได้ */}
         {result && !spinning && (
-          <Animated.View key={round} entering={ZoomIn.springify().damping(13)}>
-            <CaptureCard ref={cardRef} comment={bubble} mood={mood}>
+          <Animated.View key={round} entering={BounceIn.duration(600)}>
+            <CaptureCard ref={cardRef} comment={bubble} mood={mood} pose={cardPose}>
               <Text style={styles.resultEmoji}>🍜</Text>
               <Text style={styles.resultName}>{result}</Text>
             </CaptureCard>
@@ -144,6 +153,33 @@ export default function FoodWheelScreen() {
                 </Pressable>
               </View>
             ))}
+          </View>
+        </View>
+
+        {/* คลังเมนูแนะนำ — แตะเพื่อสลับเข้า/ออกวงล้อ */}
+        <View style={styles.manageBox}>
+          <Text style={styles.manageTitle}>เมนูแนะนำ — แตะเพื่อเพิ่มเข้าวงล้อ</Text>
+          <Text style={styles.suggestHint}>
+            เมนูที่อยู่ในวงล้อแล้วจะมีเครื่องหมาย ✓ แตะอีกครั้งเพื่อเอาออก
+          </Text>
+          <View style={styles.chips}>
+            {SUGGESTED_FOOD_MENU.map((item) => {
+              const inWheel = menu.includes(item);
+              return (
+                <Pressable
+                  key={item}
+                  onPress={() => (inWheel ? removeItem(item) : addItem(item))}
+                  style={[styles.suggestChip, inWheel && styles.suggestChipOn]}
+                >
+                  <Text
+                    style={[styles.suggestChipText, inWheel && styles.suggestChipTextOn]}
+                  >
+                    {inWheel ? '✓ ' : '＋ '}
+                    {item}
+                  </Text>
+                </Pressable>
+              );
+            })}
           </View>
         </View>
       </ScrollView>
@@ -234,5 +270,31 @@ const styles = StyleSheet.create({
     fontFamily: fonts.bold,
     fontSize: 14,
     color: colors.pink,
+  },
+  suggestHint: {
+    fontFamily: fonts.regular,
+    fontSize: fontSize.sm,
+    color: colors.muted,
+    lineHeight: 20,
+    marginTop: -6,
+  },
+  suggestChip: {
+    backgroundColor: colors.white,
+    borderWidth: 2,
+    borderColor: colors.ink,
+    borderRadius: 999,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+  },
+  suggestChipOn: {
+    backgroundColor: colors.jade,
+  },
+  suggestChipText: {
+    fontFamily: fonts.medium,
+    fontSize: fontSize.sm,
+    color: colors.ink,
+  },
+  suggestChipTextOn: {
+    color: colors.white,
   },
 });

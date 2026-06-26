@@ -108,9 +108,12 @@ const styles = StyleSheet.create({
   appName: {
     fontFamily: fonts.bold,
     fontSize: 30,
-    lineHeight: 36,
+    lineHeight: 44, // เผื่อช่องให้สระบน/ล่างภาษาไทย + เงา ไม่ถูกตัดขอบ
     color: colors.white,
     marginTop: 6,
+    paddingTop: 4,
+    paddingBottom: 4,
+    includeFontPadding: true, // Android: กันตัดหัว-หางตัวอักษร
     textShadowColor: colors.ink,
     textShadowOffset: { width: 2, height: 2 },
     textShadowRadius: 0,

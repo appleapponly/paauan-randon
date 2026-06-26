@@ -4,7 +4,7 @@
 import { useRef, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Animated, { ZoomIn } from 'react-native-reanimated';
+import Animated, { BounceIn } from 'react-native-reanimated';
 import { DARE_CHALLENGES } from '@/data/dareChallenges';
 import { pickOne } from '@/utils/random';
 import { PaaUanBubble } from '@/components/PaaUanBubble';
@@ -38,7 +38,7 @@ export default function DareScreen() {
         {dare === null ? (
           <PaaUanBubble text="อยากสนุกใช่มั้ย? กดให้ป้าสั่งภารกิจเลย!" mood="sassy" />
         ) : (
-          <Animated.View key={round} entering={ZoomIn.springify().damping(13)}>
+          <Animated.View key={round} entering={BounceIn.duration(600)}>
             <CaptureCard ref={cardRef} comment={intro} mood="sassy">
               <Text style={styles.emoji}>🌶️</Text>
               <Text style={styles.dare}>{dare}</Text>

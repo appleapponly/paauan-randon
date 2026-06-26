@@ -7,7 +7,7 @@
  */
 import { forwardRef, ReactNode } from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
-import { paaUanPoses, paaUanByMood } from '@/theme/assets';
+import { paaUanPoses, paaUanByMood, type PaaUanPose } from '@/theme/assets';
 import { colors } from '@/theme/colors';
 import { fonts, fontSize } from '@/theme/typography';
 import { cartoonBox } from '@/theme/styles';
@@ -17,12 +17,14 @@ interface Props {
   /** คำพูดป้าที่จะโชว์ในบับเบิลของการ์ด */
   comment: string;
   mood?: PaaUanMood;
+  /** บังคับเลือกอิริยาบทรูปเอง (เช่น 'dice' หน้าลูกเต๋า) — ถ้าใส่จะข้าม mood */
+  pose?: PaaUanPose;
   children: ReactNode;
 }
 
 export const CaptureCard = forwardRef<View, Props>(
-  ({ comment, mood = 'happy', children }, ref) => {
-    const source = paaUanPoses[paaUanByMood[mood]];
+  ({ comment, mood = 'happy', pose, children }, ref) => {
+    const source = paaUanPoses[pose ?? paaUanByMood[mood]];
     return (
       // collapsable={false} จำเป็นบน Android เพื่อให้ view-shot แคปได้
       <View ref={ref} collapsable={false} style={styles.card}>

@@ -5,7 +5,7 @@
 import { useRef, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Animated, { ZoomIn } from 'react-native-reanimated';
+import Animated, { BounceIn } from 'react-native-reanimated';
 import { useNamesStore } from '@/store/useNamesStore';
 import { luckyLines, pickLine, PaaUanMood } from '@/data/paaUanLines';
 import { pickOne } from '@/utils/random';
@@ -44,7 +44,7 @@ export default function LuckyDrawScreen() {
         {winner === null ? (
           <PaaUanBubble text="ใส่รายชื่อให้ครบ เดี๋ยวป้าจับผู้โชคดีให้!" mood="happy" />
         ) : (
-          <Animated.View key={round} entering={ZoomIn.springify().damping(12)}>
+          <Animated.View key={round} entering={BounceIn.duration(600)}>
             <CaptureCard ref={cardRef} comment={comment} mood={mood}>
               <Text style={styles.emoji}>🎉</Text>
               <Text style={styles.label}>ผู้โชคดีคือ</Text>

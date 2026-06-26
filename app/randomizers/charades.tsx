@@ -6,7 +6,7 @@
 import { useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Animated, { ZoomIn } from 'react-native-reanimated';
+import Animated, { BounceIn } from 'react-native-reanimated';
 import { CHARADES_WORDS } from '@/data/charadesWords';
 import { charadesLines, pickLine, PaaUanMood } from '@/data/paaUanLines';
 import { pickOne } from '@/utils/random';
@@ -38,7 +38,7 @@ export default function CharadesScreen() {
         <PaaUanBubble text={bubble} mood={mood} />
 
         {word !== null && (
-          <Animated.View key={round} entering={ZoomIn.springify().damping(13)}>
+          <Animated.View key={round} entering={BounceIn.duration(600)}>
             <Pressable
               style={styles.wordCard}
               onPress={() => setRevealed((r) => !r)}

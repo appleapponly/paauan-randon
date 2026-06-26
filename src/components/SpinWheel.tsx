@@ -117,14 +117,15 @@ export const SpinWheel = forwardRef<SpinWheelHandle, Props>(
                 const start = i * sliceAngle;
                 const end = start + sliceAngle;
                 const mid = start + sliceAngle / 2;
-                // วางป้ายชื่อกลางชิ้น แล้ว "หมุนตามมุมของชิ้น" (radial)
+                // วางจุดเริ่มข้อความ "ชิดขอบวงล้อ" แล้วไล่ตัวอักษรเข้าหาศูนย์กลาง (textAnchor=start)
+                // → ชื่อยาว ๆ มีที่ยาวขึ้นเยอะ ไม่ถูกตัด เว้นแต่ยาวจริง ๆ
                 // มุมหมุน = mid + 90 → ชิ้นซ้าย (ตรงหัวลูกศร) ตั้งตรงอ่านได้ ชิ้นขวากลับหัว
-                const labelPos = polar(r, r, r * 0.6, mid);
+                const labelPos = polar(r, r, r * 0.9, mid);
                 const labelRot = mid + 90;
                 const fill = SLICE_COLORS[i % SLICE_COLORS.length];
-                // แนวรัศมีมีที่ยาวกว่า โชว์ชื่อได้ยาวขึ้น (ผลเต็ม ๆ ยังโชว์บนการ์ดใหญ่)
-                const label = item.length > 11 ? item.slice(0, 10) + '…' : item;
-                const fontSize = items.length > 16 ? 11 : items.length > 12 ? 12 : 14;
+                // ตัดคำเฉพาะตอนยาวมากจริง ๆ (ผลเต็ม ๆ ยังโชว์บนการ์ดใหญ่อยู่ดี)
+                const label = item.length > 16 ? item.slice(0, 15) + '…' : item;
+                const fontSize = items.length > 18 ? 11 : items.length > 12 ? 12.5 : 14;
                 return (
                   <G key={`${item}-${i}`}>
                     <Path
@@ -142,7 +143,7 @@ export const SpinWheel = forwardRef<SpinWheelHandle, Props>(
                       fill={colors.white}
                       fontSize={fontSize}
                       fontFamily={fonts.bold}
-                      textAnchor="middle"
+                      textAnchor="start"
                       alignmentBaseline="middle"
                       transform={`rotate(${labelRot}, ${labelPos.x}, ${labelPos.y})`}
                     >
@@ -154,7 +155,7 @@ export const SpinWheel = forwardRef<SpinWheelHandle, Props>(
                       fill={colors.ink}
                       fontSize={fontSize}
                       fontFamily={fonts.bold}
-                      textAnchor="middle"
+                      textAnchor="start"
                       alignmentBaseline="middle"
                       transform={`rotate(${labelRot}, ${labelPos.x}, ${labelPos.y})`}
                     >

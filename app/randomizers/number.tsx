@@ -4,7 +4,7 @@
 import { useRef, useState } from 'react';
 import { ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Animated, { ZoomIn } from 'react-native-reanimated';
+import Animated, { BounceIn } from 'react-native-reanimated';
 import { numberLines, pickLine, PaaUanMood } from '@/data/paaUanLines';
 import { randomInt } from '@/utils/random';
 import { PaaUanBubble } from '@/components/PaaUanBubble';
@@ -41,7 +41,7 @@ export default function NumberScreen() {
         {result === null ? (
           <PaaUanBubble text="ใส่ช่วงตัวเลข แล้วให้ป้าสุ่มให้จ้า" mood="happy" />
         ) : (
-          <Animated.View key={round} entering={ZoomIn.springify().damping(12)}>
+          <Animated.View key={round} entering={BounceIn.duration(600)}>
             <CaptureCard ref={cardRef} comment={comment} mood={mood}>
               <Text style={styles.number}>{result}</Text>
               <Text style={styles.range}>จากช่วง {min} – {max}</Text>

@@ -10,6 +10,7 @@ import { useRef, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, {
+  BounceIn,
   Easing,
   runOnJS,
   useAnimatedStyle,
@@ -77,7 +78,13 @@ export default function DecisionDiceScreen() {
     <SafeAreaView style={styles.safe} edges={['bottom']}>
       <ScrollView contentContainerStyle={styles.content}>
         {/* ป้าอ้วนพูดเปลี่ยนตามสถานการณ์ (ตอนได้ผลย้ายไปอยู่ในการ์ดแชร์) */}
-        {phase !== 'result' && <PaaUanBubble text={bubble} mood={mood} />}
+        {phase !== 'result' && (
+          <PaaUanBubble
+            text={bubble}
+            mood={mood}
+            pose={phase === 'rolling' ? 'dizzy' : 'dice'}
+          />
+        )}
 
         {/* เต๋า (ตัวหมุน) */}
         <View style={styles.stage}>
@@ -88,10 +95,12 @@ export default function DecisionDiceScreen() {
 
         {/* การ์ดผลแบบแชร์ได้ */}
         {result && (
-          <CaptureCard ref={cardRef} comment={bubble} mood={mood}>
-            <Text style={styles.cardEmoji}>{result.emoji}</Text>
-            <Text style={styles.verdict}>{result.verdict}</Text>
-          </CaptureCard>
+          <Animated.View entering={BounceIn.duration(600)}>
+            <CaptureCard ref={cardRef} comment={bubble} mood={mood} pose="dice">
+              <Text style={styles.cardEmoji}>{result.emoji}</Text>
+              <Text style={styles.verdict}>{result.verdict}</Text>
+            </CaptureCard>
+          </Animated.View>
         )}
 
         {/* ปุ่มทอย */}

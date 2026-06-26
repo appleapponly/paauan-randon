@@ -43,6 +43,8 @@ export const CATEGORIES: Category[] = [
       { id: 'whogetsit', title: 'ใครโดน', emoji: '😈', route: '/randomizers/who-gets-it', ready: true },
       { id: 'charades', title: 'ใบ้คำ', emoji: '🎭', route: '/randomizers/charades', ready: true },
       { id: 'dare', title: 'สุ่มท้าทาย', emoji: '🌶️', route: '/randomizers/dare', ready: true },
+      { id: 'fortune', title: 'ดวงประจำวัน', emoji: '🔮', route: '/randomizers/daily-fortune', ready: true },
+      { id: 'outfit', title: 'สุ่มแต่งตัว', emoji: '👗', route: '/randomizers/outfit', ready: true },
     ],
   },
   {

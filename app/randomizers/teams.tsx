@@ -4,7 +4,7 @@
 import { useRef, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Animated, { ZoomIn } from 'react-native-reanimated';
+import Animated, { BounceIn } from 'react-native-reanimated';
 import { useNamesStore } from '@/store/useNamesStore';
 import { groupLines, pickLine, PaaUanMood } from '@/data/paaUanLines';
 import { shuffle } from '@/utils/random';
@@ -48,7 +48,7 @@ export default function TeamsScreen() {
         {teams === null ? (
           <PaaUanBubble text="ใส่ชื่อ เลือกจำนวนทีม เดี๋ยวป้าแบ่งให้!" mood="happy" />
         ) : (
-          <Animated.View key={round} entering={ZoomIn.springify().damping(13)}>
+          <Animated.View key={round} entering={BounceIn.duration(600)}>
             <CaptureCard ref={cardRef} comment={comment} mood={mood}>
               <View style={styles.teamsWrap}>
                 {teams.map((team, i) => (

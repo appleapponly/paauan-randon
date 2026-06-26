@@ -5,7 +5,7 @@
 import { useRef, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Animated, { ZoomIn } from 'react-native-reanimated';
+import Animated, { BounceIn } from 'react-native-reanimated';
 import { useNamesStore } from '@/store/useNamesStore';
 import { victimLines, pickLine, PaaUanMood } from '@/data/paaUanLines';
 import { pickOne } from '@/utils/random';
@@ -44,8 +44,8 @@ export default function WhoGetsItScreen() {
         {victim === null ? (
           <PaaUanBubble text="ใครจะซวยรอบนี้น้า~ ใส่ชื่อมาให้ป้าจิ้ม!" mood="sassy" />
         ) : (
-          <Animated.View key={round} entering={ZoomIn.springify().damping(12)}>
-            <CaptureCard ref={cardRef} comment={comment} mood={mood}>
+          <Animated.View key={round} entering={BounceIn.duration(600)}>
+            <CaptureCard ref={cardRef} comment={comment} mood={mood} pose="shock">
               <Text style={styles.emoji}>😈</Text>
               <Text style={styles.label}>ผู้โชคร้ายคือ</Text>
               <Text style={styles.name}>{victim}</Text>

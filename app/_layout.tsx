@@ -61,6 +61,8 @@ export default function RootLayout() {
         <Stack.Screen name="randomizers/who-gets-it" options={{ title: 'ใครโดน' }} />
         <Stack.Screen name="randomizers/charades" options={{ title: 'ใบ้คำ' }} />
         <Stack.Screen name="randomizers/dare" options={{ title: 'สุ่มท้าทาย' }} />
+        <Stack.Screen name="randomizers/daily-fortune" options={{ title: 'ดวงประจำวัน' }} />
+        <Stack.Screen name="randomizers/outfit" options={{ title: 'สุ่มแต่งตัว' }} />
         <Stack.Screen name="randomizers/lucky-draw" options={{ title: 'จับฉลากรายชื่อ' }} />
         <Stack.Screen name="randomizers/teams" options={{ title: 'แบ่งทีม' }} />
         <Stack.Screen name="randomizers/queue" options={{ title: 'สุ่มลำดับคิว' }} />

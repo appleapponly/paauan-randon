@@ -5,7 +5,7 @@
 import { useRef, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Animated, { ZoomIn } from 'react-native-reanimated';
+import Animated, { BounceIn } from 'react-native-reanimated';
 import { yesLines, noLines, pickLine, PaaUanMood } from '@/data/paaUanLines';
 import { PaaUanBubble } from '@/components/PaaUanBubble';
 import { BigButton } from '@/components/BigButton';
@@ -36,8 +36,13 @@ export default function YesNoScreen() {
         {answer === null ? (
           <PaaUanBubble text="มีอะไรอยากถามป้า? กดปุ่มเลยจ้า" mood="happy" />
         ) : (
-          <Animated.View key={round} entering={ZoomIn.springify().damping(12)}>
-            <CaptureCard ref={cardRef} comment={comment} mood={mood}>
+          <Animated.View key={round} entering={BounceIn.duration(600)}>
+            <CaptureCard
+              ref={cardRef}
+              comment={comment}
+              mood={mood}
+              pose={answer === 'yes' ? 'happy' : 'reject'}
+            >
               <Text style={styles.emoji}>{answer === 'yes' ? '✅' : '❌'}</Text>
               <Text
                 style={[

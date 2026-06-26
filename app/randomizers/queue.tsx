@@ -4,7 +4,7 @@
 import { useRef, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Animated, { ZoomIn } from 'react-native-reanimated';
+import Animated, { BounceIn } from 'react-native-reanimated';
 import { useNamesStore } from '@/store/useNamesStore';
 import { groupLines, pickLine, PaaUanMood } from '@/data/paaUanLines';
 import { shuffle } from '@/utils/random';
@@ -42,7 +42,7 @@ export default function QueueScreen() {
         {order === null ? (
           <PaaUanBubble text="ใส่ชื่อ เดี๋ยวป้าจัดคิวให้ ใครก่อนใครหลัง!" mood="happy" />
         ) : (
-          <Animated.View key={round} entering={ZoomIn.springify().damping(13)}>
+          <Animated.View key={round} entering={BounceIn.duration(600)}>
             <CaptureCard ref={cardRef} comment={comment} mood={mood}>
               <View style={styles.list}>
                 {order.map((name, i) => (

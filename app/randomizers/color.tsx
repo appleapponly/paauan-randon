@@ -4,7 +4,7 @@
 import { useRef, useState } from 'react';
 import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Animated, { ZoomIn } from 'react-native-reanimated';
+import Animated, { BounceIn } from 'react-native-reanimated';
 import * as Clipboard from 'expo-clipboard';
 import { colorLines, pickLine, PaaUanMood } from '@/data/paaUanLines';
 import { randomInt } from '@/utils/random';
@@ -49,7 +49,7 @@ export default function ColorScreen() {
         {hex === null ? (
           <PaaUanBubble text="กดสุ่มสี เดี๋ยวป้าจัดสีสวย ๆ ให้" mood="happy" />
         ) : (
-          <Animated.View key={round} entering={ZoomIn.springify().damping(12)}>
+          <Animated.View key={round} entering={BounceIn.duration(600)}>
             <CaptureCard ref={cardRef} comment={comment} mood={mood}>
               <View style={[styles.swatch, { backgroundColor: hex }]} />
               <Text style={styles.hex}>{hex}</Text>

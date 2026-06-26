@@ -17,6 +17,12 @@ export const paaUanPoses = {
   no: require('../../assets/images/paa-uan-no.png'), // 👎 คว่ำนิ้ว หน้าบูด ไม่เอา
   cook: require('../../assets/images/paa-uan-cook.png'), // 🍳 ผัดกับข้าว หัวเราะ
   cookHappy: require('../../assets/images/paa-uan-cook-happy.png'), // 🍳👍 ผัดเสร็จ ยกนิ้ว
+  cookJump: require('../../assets/images/paa-uan-cook-jump.png'), // 🍳🎉 กระโดดถือกระทะ สุดมัน
+  reject: require('../../assets/images/paa-uan-reject.png'), // 🙅 กากบาทแขนไขว้ ไม่เอาเด็ดขาด
+  shock: require('../../assets/images/paa-uan-shock.png'), // 😱 ตกใจ อ้าปาก
+  satisfied: require('../../assets/images/paa-uan-satisfied.png'), // 😌 ยิ้มลูบพุง อิ่มเอม
+  dice: require('../../assets/images/paa-uan-dice.png'), // 🎲 ถือลูกเต๋า เซียนเต๋า
+  dizzy: require('../../assets/images/paa-uan-dizzy.png'), // 😵‍💫 เวียนหัว ดาวหมุน
 } as const;
 
 export type PaaUanPose = keyof typeof paaUanPoses;
