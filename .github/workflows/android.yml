@@ -34,14 +34,14 @@ jobs:
       - name: 🛠️ สร้างโปรเจกต์ Android (expo prebuild)
         run: npx expo prebuild --platform android --no-install
 
-      - name: 🤖 Build APK (debug — ติดตั้งลงมือถือได้เลย)
+      - name: 🤖 Build APK (release — ฝัง JS ในไฟล์ เปิดได้เลยไม่ต้องพึ่ง Metro)
         run: |
           cd android
           chmod +x gradlew
-          ./gradlew assembleDebug --no-daemon
+          ./gradlew assembleRelease --no-daemon
 
       - name: 🏷️ เปลี่ยนชื่อไฟล์ APK
-        run: cp android/app/build/outputs/apk/debug/app-debug.apk paauan-randon.apk
+        run: cp android/app/build/outputs/apk/release/app-release.apk paauan-randon.apk
 
       # เก็บไว้เป็น artifact (โหลดได้ในหน้า run นี้)
       - name: ⬆️ อัปโหลด APK เป็น artifact
