@@ -14,6 +14,7 @@ export const colors = {
   blue: '#3D7DCA',
   purple: '#8E5BB5',
   wine: '#A10559', // ม่วงแดง — หมวดดูดวง
+  butter: '#FDE9A0', // เหลืองอ่อน — พื้นการ์ดแชร์ (เข้ากับหัวกระดาษ pattern)
   // สถานะ
   shadow: '#1A1A1A', // สีเงา offset
   muted: '#9A8C76', // ตัวอักษรจาง

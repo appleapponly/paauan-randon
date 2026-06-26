@@ -122,7 +122,14 @@ export default function FoodWheelScreen() {
         {/* การ์ดผลแบบแชร์ได้ */}
         {result && !spinning && (
           <Animated.View key={round} entering={BounceIn.duration(600)}>
-            <CaptureCard ref={cardRef} comment={bubble} mood={mood} pose={cardPose}>
+            <CaptureCard
+              ref={cardRef}
+              comment={bubble}
+              mood={mood}
+              pose={cardPose}
+              tagline="🍜 สุ่มเมนูวันนี้ ป้าจัดให้!"
+              watermark="แอปสุ่มอาหารจากใจป้าอ้วน ❤️"
+            >
               <Text style={styles.resultEmoji}>🍜</Text>
               <Text style={styles.resultName}>{result}</Text>
             </CaptureCard>
