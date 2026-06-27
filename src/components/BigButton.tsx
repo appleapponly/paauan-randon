@@ -2,6 +2,7 @@
  * 🔘 BigButton — ปุ่มใหญ่สไตล์การ์ตูนเส้นหนา
  * เวลากดจะ "ยุบลง" (เลื่อนตามเงา) ให้ความรู้สึกเหมือนกดปุ่มจริง
  */
+import { ReactNode } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Animated, {
   useAnimatedStyle,
@@ -18,6 +19,8 @@ interface Props {
   color?: string;
   /** สีตัวอักษร (ค่าเริ่มต้น ขาว) */
   textColor?: string;
+  /** ไอคอนวางหน้าตัวอักษร (เช่น กระบอกเซียมซี) */
+  icon?: ReactNode;
   disabled?: boolean;
 }
 
@@ -28,6 +31,7 @@ export function BigButton({
   onPress,
   color = colors.pink,
   textColor = colors.white,
+  icon,
   disabled = false,
 }: Props) {
   const pressed = useSharedValue(0); // 0 = ปกติ, 1 = กำลังกด
@@ -57,7 +61,10 @@ export function BigButton({
           faceStyle,
         ]}
       >
-        <Text style={[styles.label, { color: textColor }]}>{label}</Text>
+        <View style={styles.inner}>
+          {icon}
+          <Text style={[styles.label, { color: textColor }]}>{label}</Text>
+        </View>
       </Animated.View>
     </Pressable>
   );
@@ -86,6 +93,11 @@ const styles = StyleSheet.create({
     borderColor: colors.ink,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  inner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
   },
   label: {
     fontFamily: fonts.bold,

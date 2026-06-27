@@ -115,6 +115,6 @@ const styles = StyleSheet.create({
     fontFamily: fonts.medium,
     fontSize: fontSize.sm,
     color: colors.ink,
-    lineHeight: 24, // เผื่อสระบน/ล่างไม่ถูกตัด
+    lineHeight: 26, // เผื่อสระบน/ล่างไม่ถูกตัด
   },
 });

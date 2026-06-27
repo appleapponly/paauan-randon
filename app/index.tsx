@@ -10,6 +10,7 @@ import { useRouter } from 'expo-router';
 import { CATEGORIES } from '@/data/categories';
 import { openingLines, pickLine } from '@/data/paaUanLines';
 import { RandomizerCard } from '@/components/RandomizerCard';
+import { SiamsiTube } from '@/components/SiamsiTube';
 import { paaUanPoses } from '@/theme/assets';
 import { colors } from '@/theme/colors';
 import { fonts, fontSize } from '@/theme/typography';
@@ -67,6 +68,7 @@ export default function HomeScreen() {
                       item={item}
                       accent={cat.color}
                       onPress={() => router.push(item.route as never)}
+                      iconOverride={item.id === 'siamsi' ? <SiamsiTube size={40} /> : undefined}
                     />
                   </View>
                 ))}

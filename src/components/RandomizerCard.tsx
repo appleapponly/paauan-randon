@@ -4,6 +4,7 @@
  * แตะแล้วไปหน้าเครื่องสุ่มนั้น ถ้ายังไม่พร้อม (ready=false) จะจาง + โชว์ "เร็ว ๆ นี้"
  * กดแล้วการ์ด "จม" ลงตามเงา (translate + เงาหด) ให้รู้สึกเหมือนกดสติกเกอร์
  */
+import { ReactNode } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { colors } from '@/theme/colors';
 import { fonts, fontSize } from '@/theme/typography';
@@ -14,9 +15,11 @@ interface Props {
   item: Randomizer;
   accent: string;
   onPress: () => void;
+  /** ไอคอนแบบรูปวาดเอง (ถ้าใส่จะใช้แทนอิโมจิ) เช่นกระบอกเซียมซี */
+  iconOverride?: ReactNode;
 }
 
-export function RandomizerCard({ item, accent, onPress }: Props) {
+export function RandomizerCard({ item, accent, onPress, iconOverride }: Props) {
   const label = textOn(accent);
   return (
     <Pressable
@@ -27,7 +30,11 @@ export function RandomizerCard({ item, accent, onPress }: Props) {
         pressed && item.ready && styles.pressed,
       ]}
     >
-      <Text style={styles.emoji}>{item.emoji}</Text>
+      {iconOverride ? (
+        <View style={styles.iconBox}>{iconOverride}</View>
+      ) : (
+        <Text style={styles.emoji}>{item.emoji}</Text>
+      )}
       <Text style={[styles.title, { color: label }]} numberOfLines={2}>
         {item.title}
       </Text>
@@ -64,6 +71,11 @@ const styles = StyleSheet.create({
   emoji: {
     fontSize: 44,
     lineHeight: 52,
+  },
+  iconBox: {
+    height: 52,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   title: {
     fontFamily: fonts.semibold,

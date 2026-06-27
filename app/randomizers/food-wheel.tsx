@@ -15,6 +15,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFoodStore } from '@/store/useFoodStore';
 import { PRESET_FOOD_MENU } from '@/data/foodMenu';
+import { getFoodEmoji } from '@/data/foodEmoji';
 import {
   spinningLines,
   pickLine,
@@ -129,7 +130,7 @@ export default function FoodWheelScreen() {
               pose={cardPose}
               watermark="แอปสุ่มอาหารจากใจป้าอ้วน ❤️"
             >
-              <Text style={styles.resultEmoji}>🍜</Text>
+              <Text style={styles.resultEmoji}>{getFoodEmoji(result)}</Text>
               <Text style={styles.resultName}>{result}</Text>
             </CaptureCard>
           </Animated.View>

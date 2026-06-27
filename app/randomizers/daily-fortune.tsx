@@ -74,6 +74,7 @@ const styles = StyleSheet.create({
     fontSize: fontSize.xl,
     color: colors.wine,
     textAlign: 'center',
-    lineHeight: 40, // เผื่อสระบน/ล่างภาษาไทยไม่ถูกตัดทั้งบนและล่าง
+    lineHeight: 46, // เผื่อสระบน/ล่าง + วรรณยุกต์ ทุกบรรทัดไม่ถูกตัด
+    paddingVertical: 2,
   },
 });

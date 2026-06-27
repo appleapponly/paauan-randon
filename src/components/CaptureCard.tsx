@@ -123,8 +123,9 @@ const styles = StyleSheet.create({
     alignItems: 'stretch',
   },
   pattern: {
-    width: '100%',
-    aspectRatio: PATTERN_RATIO, // เต็มความกว้าง โลโก้ใหญ่ คมชัด
+    width: '64%', // เล็กลง พอเหมาะ (ต้นฉบับ 1774px ความละเอียดสูง จึงยังคมชัด)
+    aspectRatio: PATTERN_RATIO,
+    alignSelf: 'center',
   },
   resultArea: {
     alignItems: 'center',
