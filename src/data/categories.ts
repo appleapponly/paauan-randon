@@ -34,6 +34,7 @@ export const CATEGORIES: Category[] = [
       { id: 'coin', title: 'หัว / ก้อย', emoji: '🪙', route: '/randomizers/coin', ready: true },
       { id: 'dice', title: 'ลูกเต๋าตัดสินใจ', emoji: '🎲', route: '/randomizers/decision-dice', ready: true },
       { id: 'outfit', title: 'สุ่มแต่งตัว', emoji: '👗', route: '/randomizers/outfit', ready: true },
+      { id: 'travel', title: 'สุ่มที่เที่ยว', emoji: '🧳', route: '/randomizers/travel', ready: true },
     ],
   },
   {
@@ -42,6 +43,7 @@ export const CATEGORIES: Category[] = [
     color: colors.wine,
     items: [
       { id: 'horoscope', title: 'ดวงประจำวัน', emoji: '🔮', route: '/randomizers/daily-horoscope', ready: true },
+      { id: 'siamsi', title: 'เซียมซี', emoji: '🥠', route: '/randomizers/siamsi', ready: true },
       { id: 'insight', title: 'ข้อคิดประจำวัน', emoji: '💡', route: '/randomizers/daily-fortune', ready: true },
     ],
   },

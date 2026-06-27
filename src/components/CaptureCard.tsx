@@ -1,9 +1,10 @@
 /**
  * 🖼️ CaptureCard — การ์ดผลลัพธ์
  *
- * แสดงผล "บนจอ" = ผลลัพธ์ (รูป+ชื่อ) + ป้าอ้วน + บับเบิลคำพูด (ไม่มีหัวกระดาษ ดูสะอาด)
- * เวลา "กดแชร์" = แคปการ์ดอีกใบ (ซ่อนนอกจอ) ที่เป็น "สี่เหลี่ยมจัตุรัส" พร้อมหัวกระดาษ pattern
- *   + ป้ายเกริ่น + ลายเซ็นแอป → โพสลงโซเชียลได้พอดี
+ * แสดงผล "บนจอ" = ผลลัพธ์ + ป้าอ้วน + บับเบิลคำพูด (พื้นครีม ไม่มีหัวกระดาษ ดูสะอาด)
+ * เวลา "กดแชร์" = แคปการ์ดอีกใบ (ซ่อนนอกจอ) พื้นเหลือง มีหัวกระดาษ pattern + ลายเซ็นแอป
+ *   - เนื้อหาพอดี → เป็นสี่เหลี่ยมจัตุรัส (โพสโซเชียลสวย)
+ *   - เนื้อหายาวเกินจัตุรัส → ยืดสูงตามจริง (ไม่ตัดขอบ)
  *
  * โครง: [ผลลัพธ์อยู่นอกบับเบิล]  +  [ป้าอ้วน + บับเบิลคำพูดล้วน ๆ]
  * ✅ ทุกเครื่องสุ่มใช้ตัวนี้ → ส่ง ref ไปที่ "ใบสำหรับแชร์" อัตโนมัติ ไม่ต้องแก้หน้าจอ
@@ -16,11 +17,12 @@ import { fonts, fontSize } from '@/theme/typography';
 import { cartoonBox } from '@/theme/styles';
 import type { PaaUanMood } from '@/data/paaUanLines';
 
-// หัวกระดาษแบรนด์ (ไอคอนแอป + ชื่อ "ป้าอ้วน สุ่มให้") — โผล่เฉพาะตอนแชร์
-const PATTERN = require('../../assets/images/pattern.jpg');
-// ขนาด "ใบสำหรับแชร์" (สี่เหลี่ยมจัตุรัส) — ซ่อนนอกจอ จึงตั้งใหญ่ได้ตามต้องการ
+// หัวกระดาษแบรนด์ (ตัดขอบเหลืองว่างออกแล้ว เต็มความกว้าง คมชัด) — โผล่เฉพาะตอนแชร์
+const PATTERN = require('../../assets/images/pattern.png');
+const PATTERN_RATIO = 1774 / 565; // อัตราส่วนหัวกระดาษหลัง trim
+// ขนาด "ใบสำหรับแชร์" จัตุรัสขั้นต่ำ (เนื้อหายาวเกินก็ยืดได้) — ซ่อนนอกจอ ตั้งใหญ่ได้
 const CAPTURE_SIZE = 480;
-// หางบับเบิลอยู่สูงเท่าปากป้า (≈ 22% จากหัวรูปป้า) — รูปป้าสูง 124
+// หางบับเบิลอยู่สูงเท่าปากป้า (≈ 22% จากหัวรูปป้า)
 const PAA_HEIGHT = 124;
 const MOUTH_TOP = Math.round(PAA_HEIGHT * 0.22);
 
@@ -30,24 +32,18 @@ interface Props {
   mood?: PaaUanMood;
   /** บังคับเลือกอิริยาบทรูปเอง (เช่น 'dice') — ถ้าใส่จะข้าม mood */
   pose?: PaaUanPose;
-  /** ป้ายเกริ่น (พิลล์) ใต้หัวกระดาษ เช่น "สุ่มเมนูวันนี้ ป้าจัดให้!" — โชว์เฉพาะตอนแชร์ */
-  tagline?: string;
-  /** อิโมจิ badge หน้าป้ายเกริ่น เช่น "🍜" */
-  taglineEmoji?: string;
   /** ลายเซ็นใต้การ์ด (โชว์เฉพาะตอนแชร์) */
   watermark?: string;
   children: ReactNode;
 }
 
-/** เนื้อการ์ดจริง — withHeader=true จะเป็นสี่เหลี่ยมจัตุรัส มีหัวกระดาษ/ป้ายเกริ่น/ลายเซ็น (ใบแชร์) */
+/** เนื้อการ์ดจริง — withHeader=true = ใบแชร์ (พื้นเหลือง จัตุรัส มีหัวกระดาษ/ลายเซ็น) */
 const CardInner = forwardRef<View, Props & { withHeader: boolean }>(
   (
     {
       comment,
       mood = 'happy',
       pose,
-      tagline,
-      taglineEmoji,
       watermark = 'สุ่มจากใจป้าอ้วน 👵❤️',
       withHeader,
       children,
@@ -60,24 +56,13 @@ const CardInner = forwardRef<View, Props & { withHeader: boolean }>(
       <View
         ref={ref}
         collapsable={false}
-        style={[styles.card, withHeader && styles.cardSquare]}
+        style={[styles.card, withHeader && styles.cardShare]}
       >
         {withHeader && (
           <Image source={PATTERN} style={styles.pattern} resizeMode="contain" />
         )}
 
-        {withHeader && tagline ? (
-          <View style={styles.taglinePill}>
-            {taglineEmoji ? (
-              <View style={styles.taglineBadge}>
-                <Text style={styles.taglineBadgeText}>{taglineEmoji}</Text>
-              </View>
-            ) : null}
-            <Text style={styles.taglineText}>{tagline}</Text>
-          </View>
-        ) : null}
-
-        {/* ผลลัพธ์ (รูป+ชื่อ) — อยู่ "นอกบับเบิล" โชว์เด่น */}
+        {/* ผลลัพธ์ (รูป+ชื่อ / ใบเซียมซี ฯลฯ) — อยู่ "นอกบับเบิล" โชว์เด่น */}
         <View style={styles.resultArea}>{children}</View>
 
         {/* ป้าอ้วน (ซ้าย) + บับเบิล "คำพูดล้วน ๆ" (ขวา) */}
@@ -101,10 +86,10 @@ CardInner.displayName = 'CardInner';
 
 export const CaptureCard = forwardRef<View, Props>((props, ref) => (
   <View>
-    {/* สิ่งที่เห็นบนจอ — ไม่มีหัวกระดาษ ความสูงตามเนื้อหา */}
+    {/* สิ่งที่เห็นบนจอ — พื้นครีม ไม่มีหัวกระดาษ ความสูงตามเนื้อหา */}
     <CardInner {...props} withHeader={false} />
 
-    {/* ใบสำหรับ "แคปตอนแชร์" — จัตุรัส มีหัวกระดาษครบ ซ่อนนอกจอ */}
+    {/* ใบสำหรับ "แคปตอนแชร์" — พื้นเหลือง มีหัวกระดาษ ซ่อนนอกจอ */}
     <View style={styles.captureHost} pointerEvents="none">
       <CardInner {...props} withHeader ref={ref} />
     </View>
@@ -121,59 +106,25 @@ const styles = StyleSheet.create({
     top: 0,
     width: CAPTURE_SIZE,
   },
+  // การ์ดบนจอ — พื้นครีม
   card: {
-    ...cartoonBox(colors.butter, 5),
+    ...cartoonBox(colors.cream, 5),
     padding: 16,
     gap: 14,
   },
-  // ใบแชร์: บังคับจัตุรัส + กระจายเนื้อหาให้สมดุลเต็มกรอบ
-  cardSquare: {
+  // ใบแชร์ — พื้นเหลือง (เข้ากับหัวกระดาษ), จัตุรัสขั้นต่ำแต่ยืดได้, กระจายเนื้อหาสมดุล
+  cardShare: {
+    backgroundColor: colors.butter,
     width: CAPTURE_SIZE,
-    height: CAPTURE_SIZE,
+    minHeight: CAPTURE_SIZE,
     padding: 22,
-    gap: 0,
+    gap: 12,
     justifyContent: 'space-between',
     alignItems: 'stretch',
   },
   pattern: {
     width: '100%',
-    height: 84, // หัวกระดาษเล็ก สมส่วน (พื้นเหลืองข้าง ๆ กลืนกับการ์ด)
-  },
-  taglinePill: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    alignSelf: 'center',
-    gap: 8,
-    backgroundColor: colors.white,
-    borderWidth: 3,
-    borderColor: colors.ink,
-    borderRadius: 999,
-    paddingVertical: 7,
-    paddingLeft: 7,
-    paddingRight: 18,
-    shadowColor: colors.ink,
-    shadowOffset: { width: 2, height: 2 },
-    shadowOpacity: 1,
-    shadowRadius: 0,
-    elevation: 2,
-  },
-  taglineBadge: {
-    width: 32,
-    height: 32,
-    borderRadius: 999,
-    backgroundColor: colors.gold,
-    borderWidth: 2,
-    borderColor: colors.ink,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  taglineBadgeText: { fontSize: 17 },
-  taglineText: {
-    fontFamily: fonts.bold,
-    fontSize: fontSize.md,
-    color: colors.pink,
-    textAlign: 'center',
-    lineHeight: 24,
+    aspectRatio: PATTERN_RATIO, // เต็มความกว้าง โลโก้ใหญ่ คมชัด
   },
   resultArea: {
     alignItems: 'center',
@@ -201,7 +152,7 @@ const styles = StyleSheet.create({
     fontFamily: fonts.medium,
     fontSize: fontSize.sm,
     color: colors.ink,
-    lineHeight: 25, // เผื่อสระบน/ล่างภาษาไทยไม่ถูกตัด
+    lineHeight: 28, // เผื่อสระบน/ล่าง + วรรณยุกต์ภาษาไทยไม่ถูกตัด
     textAlign: 'center',
   },
   // หางบับเบิลชี้ซ้าย ตรงปากป้า
