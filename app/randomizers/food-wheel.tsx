@@ -127,7 +127,8 @@ export default function FoodWheelScreen() {
               comment={bubble}
               mood={mood}
               pose={cardPose}
-              tagline="🍜 สุ่มเมนูวันนี้ ป้าจัดให้!"
+              tagline="สุ่มเมนูวันนี้ ป้าจัดให้!"
+              taglineEmoji="🍜"
               watermark="แอปสุ่มอาหารจากใจป้าอ้วน ❤️"
             >
               <Text style={styles.resultEmoji}>🍜</Text>

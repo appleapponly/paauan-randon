@@ -45,6 +45,8 @@ export function PaaUanBubble({ text, mood = 'happy', pose, imageWidth = 96 }: Pr
 
   const source = paaUanPoses[pose ?? paaUanByMood[mood]];
   const imageHeight = imageWidth * 1.3;
+  // หางบับเบิลอยู่สูงเท่าปากป้า (≈ 22% จากหัวรูปป้า) ให้ดูเหมือนป้าพูดออกมา
+  const mouthTop = Math.round(imageHeight * 0.22);
 
   return (
     <View style={styles.row}>
@@ -58,9 +60,9 @@ export function PaaUanBubble({ text, mood = 'happy', pose, imageWidth = 96 }: Pr
 
       <View style={styles.bubble}>
         <Text style={styles.bubbleText}>{text}</Text>
-        {/* หางบับเบิลชี้ไปทางป้า */}
-        <View style={styles.tailBorder} />
-        <View style={styles.tailFill} />
+        {/* หางบับเบิลชี้ตรงปากป้า */}
+        <View style={[styles.tailBorder, { top: mouthTop }]} />
+        <View style={[styles.tailFill, { top: mouthTop }]} />
       </View>
     </View>
   );
@@ -69,7 +71,7 @@ export function PaaUanBubble({ text, mood = 'happy', pose, imageWidth = 96 }: Pr
 const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start', // หัวป้าเสมอด้านบนบับเบิล → หางชี้ตรงปากได้
     gap: 8,
   },
   bubble: {
@@ -87,7 +89,6 @@ const styles = StyleSheet.create({
   tailBorder: {
     position: 'absolute',
     left: -14,
-    top: 26,
     width: 0,
     height: 0,
     borderTopWidth: 9,
@@ -100,7 +101,6 @@ const styles = StyleSheet.create({
   tailFill: {
     position: 'absolute',
     left: -9,
-    top: 26,
     width: 0,
     height: 0,
     borderTopWidth: 9,
