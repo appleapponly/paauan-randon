@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
     alignItems: 'stretch',
   },
   pattern: {
-    width: '64%', // เล็กลง พอเหมาะ (ต้นฉบับ 1774px ความละเอียดสูง จึงยังคมชัด)
+    width: '38%', // หัวกระดาษเล็ก ๆ พอเป็นโลโก้ (ต้นฉบับ 1774px จึงยังคมชัด)
     aspectRatio: PATTERN_RATIO,
     alignSelf: 'center',
   },

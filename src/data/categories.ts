@@ -31,7 +31,6 @@ export const CATEGORIES: Category[] = [
     items: [
       { id: 'food', title: 'กินอะไรดี', emoji: '🍜', route: '/randomizers/food-wheel', ready: true },
       { id: 'yesno', title: 'ใช่ / ไม่ใช่', emoji: '🤷', route: '/randomizers/yes-no', ready: true },
-      { id: 'coin', title: 'หัว / ก้อย', emoji: '🪙', route: '/randomizers/coin', ready: true },
       { id: 'dice', title: 'ลูกเต๋าตัดสินใจ', emoji: '🎲', route: '/randomizers/decision-dice', ready: true },
       { id: 'outfit', title: 'สุ่มแต่งตัว', emoji: '👗', route: '/randomizers/outfit', ready: true },
       { id: 'travel', title: 'สุ่มที่เที่ยว', emoji: '🧳', route: '/randomizers/travel', ready: true },
