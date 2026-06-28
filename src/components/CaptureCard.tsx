@@ -20,6 +20,7 @@ import type { PaaUanMood } from '@/data/paaUanLines';
 // หัวกระดาษแบรนด์ (ตัดขอบเหลืองว่างออกแล้ว เต็มความกว้าง คมชัด) — โผล่เฉพาะตอนแชร์
 const PATTERN = require('../../assets/images/pattern.png');
 const PATTERN_RATIO = 1774 / 565; // อัตราส่วนหัวกระดาษหลัง trim
+const PATTERN_W = 150; // ความกว้างหัวกระดาษบนใบแชร์ (พิกเซลตายตัว ≈ 31% ของการ์ด)
 // ขนาด "ใบสำหรับแชร์" จัตุรัสขั้นต่ำ (เนื้อหายาวเกินก็ยืดได้) — ซ่อนนอกจอ ตั้งใหญ่ได้
 const CAPTURE_SIZE = 480;
 // หางบับเบิลอยู่สูงเท่าปากป้า (≈ 22% จากหัวรูปป้า)
@@ -112,9 +113,9 @@ const styles = StyleSheet.create({
     padding: 16,
     gap: 14,
   },
-  // ใบแชร์ — พื้นเหลือง (เข้ากับหัวกระดาษ), จัตุรัสขั้นต่ำแต่ยืดได้, กระจายเนื้อหาสมดุล
+  // ใบแชร์ — พื้นครีม (สีเดียวกับการ์ดในแอป), จัตุรัสขั้นต่ำแต่ยืดได้, กระจายเนื้อหาสมดุล
   cardShare: {
-    backgroundColor: colors.butter,
+    backgroundColor: colors.cream,
     width: CAPTURE_SIZE,
     minHeight: CAPTURE_SIZE,
     padding: 22,
@@ -122,9 +123,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'stretch',
   },
+  // หัวกระดาษ: ใช้ "พิกเซลตายตัว" ไม่ใช้ % เพราะตอน view-shot แคปนอกจอ
+  // % บางทีคำนวณไม่ได้ เลยตกไปใช้ขนาดจริงของภาพ (1774px) → ระเบิดใหญ่
   pattern: {
-    width: '38%', // หัวกระดาษเล็ก ๆ พอเป็นโลโก้ (ต้นฉบับ 1774px จึงยังคมชัด)
-    aspectRatio: PATTERN_RATIO,
+    width: PATTERN_W,
+    height: Math.round(PATTERN_W / PATTERN_RATIO),
     alignSelf: 'center',
   },
   resultArea: {
