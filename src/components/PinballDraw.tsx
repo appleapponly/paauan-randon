@@ -34,7 +34,12 @@ interface Props {
 const BOARD_H = 300;
 const SLOT_H = 56;
 const BALL = 24;
-const FALL_MS = 2000;
+const PEG_YS = [58, 104, 150, 196, 242]; // แถวหมุด (แท่งกั้น) เรียงสลับฟันปลา
+const SEG_MS = 300; // เวลาเด้งต่อ 1 หมุด
+const LAND_MS = 520; // เวลาตกลงช่องสุดท้าย (เด้งหน่อย)
+
+const clamp = (v: number, lo: number, hi: number) =>
+  Math.max(lo, Math.min(hi, v));
 
 export const PinballDraw = forwardRef<PinballHandle, Props>(
   ({ names, accent, onLand }, ref) => {
@@ -50,12 +55,11 @@ export const PinballDraw = forwardRef<PinballHandle, Props>(
     const n = Math.max(names.length, 1);
     const slotW = boardW / n;
 
-    // หมุด (แท่งกั้น) เรียงสลับฟันปลา — เป็นแค่ของตกแต่งให้ดูเหมือนพินบอล
+    // หมุด (แท่งกั้น) เรียงสลับฟันปลา — ลูกบอลจะเด้งกระทบหมุดพวกนี้
     const pegs = useMemo(() => {
-      const rows = [60, 108, 156, 204];
       const out: { x: number; y: number }[] = [];
-      rows.forEach((y, ri) => {
-        const count = ri % 2 === 0 ? 4 : 5;
+      PEG_YS.forEach((y, ri) => {
+        const count = ri % 2 === 0 ? 5 : 4;
         const gap = boardW / (count + 1);
         for (let i = 1; i <= count; i++) out.push({ x: gap * i, y });
       });
@@ -65,38 +69,72 @@ export const PinballDraw = forwardRef<PinballHandle, Props>(
     useImperativeHandle(ref, () => ({
       drop(winnerIndex: number) {
         const targetX = (winnerIndex + 0.5) * slotW - boardW / 2;
+        const half = boardW / 2;
+        const margin = BALL / 2 + 6;
         setLanded(null);
         setRunning(true);
         ballX.setValue(0);
         ballY.setValue(0);
         ballRot.setValue(0);
 
-        // เด้งซ้าย-ขวาระหว่างตก แล้วจบที่ตรงช่องผู้ถูกสุ่ม
-        const wobble = [0.20, -0.17, 0.13, -0.09, 0]
-          .map((f) => f * boardW * 0.5);
-        wobble.push(targetX);
-        const step = FALL_MS / wobble.length;
+        // ===== หาตำแหน่ง x ที่แต่ละแถวหมุด =====
+        // เด้งสลับซ้าย-ขวา (ขั้นบันได) แต่ค่อย ๆ ดริฟต์เข้าหาช่องเป้าหมาย
+        // แอมพลิจูดหดลงเรื่อย ๆ → แถวสุดท้ายลงตรงช่องพอดี
+        const amp = boardW * 0.17; // ระยะเด้งออกข้างต่อหมุด
+        const xs: number[] = [];
+        for (let i = 0; i < PEG_YS.length; i++) {
+          const t = (i + 1) / (PEG_YS.length + 1); // ความคืบหน้า 0→1
+          const drift = targetX * t; // ค่อย ๆ เข้าหาเป้า
+          const zig = (i % 2 === 0 ? 1 : -1) * amp * (1 - t); // สลับซ้าย/ขวา หดลง
+          xs.push(clamp(drift + zig, -half + margin, half - margin));
+        }
+        const slotY = BOARD_H - SLOT_H / 2 - BALL / 2 - 6;
 
-        Animated.parallel([
-          Animated.timing(ballY, {
-            toValue: BOARD_H - SLOT_H / 2 - BALL / 2 - 6,
-            duration: FALL_MS,
-            easing: Easing.in(Easing.quad), // เร่งลงเหมือนแรงโน้มถ่วง
-            useNativeDriver: true,
-          }),
-          Animated.sequence(
-            wobble.map((x) =>
-              Animated.timing(ballX, {
-                toValue: x,
-                duration: step,
-                easing: Easing.inOut(Easing.quad),
+        // ===== สร้างชุดแอนิเมชัน: ตกชนหมุดทีละแถว → เด้งเฉียง =====
+        // แต่ละช่วง Y เร่งลง (แรงโน้มถ่วง) + X พุ่งออกข้างเร็ว (เด้งกระทบ)
+        const segs: Animated.CompositeAnimation[] = [];
+        PEG_YS.forEach((y, i) => {
+          segs.push(
+            Animated.parallel([
+              Animated.timing(ballY, {
+                toValue: y,
+                duration: SEG_MS,
+                easing: Easing.in(Easing.quad),
                 useNativeDriver: true,
-              })
-            )
-          ),
+              }),
+              Animated.timing(ballX, {
+                toValue: xs[i],
+                duration: SEG_MS,
+                easing: Easing.out(Easing.cubic), // เด้งออกข้างไว แล้วชะลอ
+                useNativeDriver: true,
+              }),
+            ])
+          );
+        });
+        // ตกลงช่องสุดท้าย — เด้งหน่อยเหมือนหล่นลงกล่อง
+        segs.push(
+          Animated.parallel([
+            Animated.timing(ballY, {
+              toValue: slotY,
+              duration: LAND_MS,
+              easing: Easing.bounce,
+              useNativeDriver: true,
+            }),
+            Animated.timing(ballX, {
+              toValue: targetX,
+              duration: LAND_MS,
+              easing: Easing.out(Easing.quad),
+              useNativeDriver: true,
+            }),
+          ])
+        );
+
+        const total = SEG_MS * PEG_YS.length + LAND_MS;
+        Animated.parallel([
+          Animated.sequence(segs),
           Animated.timing(ballRot, {
             toValue: 1,
-            duration: FALL_MS,
+            duration: total,
             easing: Easing.linear,
             useNativeDriver: true,
           }),
