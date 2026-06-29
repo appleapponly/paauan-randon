@@ -9,6 +9,7 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
+import { registerSpin } from '@/ads/interstitial';
 import { colors } from '@/theme/colors';
 import { fonts, fontSize } from '@/theme/typography';
 
@@ -22,6 +23,8 @@ interface Props {
   /** ไอคอนวางหน้าตัวอักษร (เช่น กระบอกเซียมซี) */
   icon?: ReactNode;
   disabled?: boolean;
+  /** false = ไม่นับเป็น "การกดสุ่ม" (ไม่ trigger โฆษณาเต็มจอ) */
+  countAd?: boolean;
 }
 
 const OFFSET = 6; // ระยะเงา/ระยะยุบ
@@ -33,8 +36,15 @@ export function BigButton({
   textColor = colors.white,
   icon,
   disabled = false,
+  countAd = true,
 }: Props) {
   const pressed = useSharedValue(0); // 0 = ปกติ, 1 = กำลังกด
+
+  // กดปุ่มสุ่ม → ทำงานปกติก่อน แล้วค่อยนับเพื่อเด้งโฆษณาเต็มจอ (ครบ 2-4 ครั้ง)
+  function handlePress() {
+    onPress();
+    if (countAd) registerSpin();
+  }
 
   const faceStyle = useAnimatedStyle(() => ({
     transform: [
@@ -45,7 +55,7 @@ export function BigButton({
 
   return (
     <Pressable
-      onPress={onPress}
+      onPress={handlePress}
       disabled={disabled}
       onPressIn={() => (pressed.value = withTiming(1, { duration: 60 }))}
       onPressOut={() => (pressed.value = withTiming(0, { duration: 90 }))}

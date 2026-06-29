@@ -4,13 +4,15 @@
  * - แต่ละหมวด: ป้ายพิลล์สีประจำหมวด + ตารางการ์ด 2 คอลัมน์ (อิโมจิใหญ่)
  */
 import { useMemo } from 'react';
-import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { CATEGORIES } from '@/data/categories';
 import { openingLines, pickLine } from '@/data/paaUanLines';
 import { RandomizerCard } from '@/components/RandomizerCard';
 import { SiamsiTube } from '@/components/SiamsiTube';
+import { AdBanner } from '@/ads/AdBanner';
+import { useProStore } from '@/store/useProStore';
 import { paaUanPoses } from '@/theme/assets';
 import { colors } from '@/theme/colors';
 import { fonts, fontSize } from '@/theme/typography';
@@ -27,6 +29,7 @@ const CATEGORY_TAG: Record<string, string> = {
 
 export default function HomeScreen() {
   const router = useRouter();
+  const isPro = useProStore((s) => s.isPro);
 
   // สุ่มคำทักทายครั้งเดียวตอนเปิดหน้า (useMemo กันสุ่มใหม่ทุกครั้งที่ render)
   const greeting = useMemo(() => pickLine(openingLines), []);
@@ -53,28 +56,44 @@ export default function HomeScreen() {
 
         {/* ===== หมวดต่าง ๆ ===== */}
         <View style={styles.body}>
-          {CATEGORIES.map((cat) => (
-            <View key={cat.id} style={styles.category}>
-              <View style={[styles.catPill, { backgroundColor: cat.color }]}>
-                <Text style={[styles.catPillText, { color: textOn(cat.color) }]}>
-                  {CATEGORY_TAG[cat.id] ?? '✨'} {cat.title}
-                </Text>
+          {CATEGORIES.map((cat, ci) => (
+            <View key={cat.id}>
+              <View style={styles.category}>
+                <View style={[styles.catPill, { backgroundColor: cat.color }]}>
+                  <Text style={[styles.catPillText, { color: textOn(cat.color) }]}>
+                    {CATEGORY_TAG[cat.id] ?? '✨'} {cat.title}
+                  </Text>
+                </View>
+
+                <View style={styles.grid}>
+                  {cat.items.map((item) => (
+                    <View key={item.id} style={styles.gridCell}>
+                      <RandomizerCard
+                        item={item}
+                        accent={cat.color}
+                        onPress={() => router.push(item.route as never)}
+                        iconOverride={item.id === 'siamsi' ? <SiamsiTube size={40} /> : undefined}
+                      />
+                    </View>
+                  ))}
+                </View>
               </View>
 
-              <View style={styles.grid}>
-                {cat.items.map((item) => (
-                  <View key={item.id} style={styles.gridCell}>
-                    <RandomizerCard
-                      item={item}
-                      accent={cat.color}
-                      onPress={() => router.push(item.route as never)}
-                      iconOverride={item.id === 'siamsi' ? <SiamsiTube size={40} /> : undefined}
-                    />
-                  </View>
-                ))}
-              </View>
+              {/* แบนเนอร์โฆษณา คั่นระหว่างหมวด (ไม่ใส่ใต้หมวดสุดท้าย) */}
+              {ci < CATEGORIES.length - 1 && <AdBanner style={styles.homeBanner} />}
             </View>
           ))}
+
+          {/* ปุ่มสนับสนุนป้า — ซื้อ Pro ปิดโฆษณา */}
+          {isPro ? (
+            <View style={styles.proThanks}>
+              <Text style={styles.proThanksText}>ขอบใจที่รักป้านะ หลานป้าคนเก่ง ❤️</Text>
+            </View>
+          ) : (
+            <Pressable style={styles.proBtn} onPress={() => router.push('/pro' as never)}>
+              <Text style={styles.proBtnText}>❤️ หลานรักป้า — สนับสนุนป้า ปิดโฆษณา</Text>
+            </Pressable>
+          )}
 
           <Text style={styles.footer}>ป้าอ้วนรอสุ่มให้อยู่นะจ๊ะ 👵</Text>
         </View>
@@ -202,5 +221,49 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 6,
     marginBottom: 8,
+  },
+  homeBanner: {
+    marginBottom: 18,
+  },
+  proBtn: {
+    backgroundColor: colors.wine,
+    borderWidth: 3,
+    borderColor: colors.ink,
+    borderRadius: 16,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    alignItems: 'center',
+    marginTop: 4,
+    marginBottom: 10,
+    shadowColor: colors.ink,
+    shadowOffset: { width: 3, height: 3 },
+    shadowOpacity: 1,
+    shadowRadius: 0,
+    elevation: 3,
+  },
+  proBtnText: {
+    fontFamily: fonts.bold,
+    fontSize: fontSize.md,
+    color: colors.white,
+    textAlign: 'center',
+    lineHeight: 26,
+  },
+  proThanks: {
+    backgroundColor: colors.white,
+    borderWidth: 2.5,
+    borderColor: colors.wine,
+    borderRadius: 16,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    alignItems: 'center',
+    marginTop: 4,
+    marginBottom: 10,
+  },
+  proThanksText: {
+    fontFamily: fonts.bold,
+    fontSize: fontSize.md,
+    color: colors.wine,
+    textAlign: 'center',
+    lineHeight: 26,
   },
 });
