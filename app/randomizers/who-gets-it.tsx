@@ -8,12 +8,12 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, { BounceIn } from 'react-native-reanimated';
 import { useNamesStore } from '@/store/useNamesStore';
 import { victimLines, pickLine, PaaUanMood } from '@/data/paaUanLines';
-import { pickOne } from '@/utils/random';
 import { PaaUanBubble } from '@/components/PaaUanBubble';
 import { NameListEditor } from '@/components/NameListEditor';
 import { BigButton } from '@/components/BigButton';
 import { CaptureCard } from '@/components/CaptureCard';
 import { ShareButton } from '@/components/ShareButton';
+import { PinballDraw, PinballHandle } from '@/components/PinballDraw';
 import { colors } from '@/theme/colors';
 import { fonts, fontSize } from '@/theme/typography';
 
@@ -23,27 +23,52 @@ export default function WhoGetsItScreen() {
   const removeName = useNamesStore((s) => s.removeName);
 
   const cardRef = useRef<View>(null);
+  const pinballRef = useRef<PinballHandle>(null);
+  const pendingIdx = useRef(0);
   const [victim, setVictim] = useState<string | null>(null);
   const [comment, setComment] = useState('');
   const [mood, setMood] = useState<PaaUanMood>('sassy');
   const [round, setRound] = useState(0);
+  const [dropping, setDropping] = useState(false);
 
   function draw() {
-    if (names.length < 2) return;
-    const picked = pickOne(names);
+    if (names.length < 2 || dropping) return;
+    const idx = Math.floor(Math.random() * names.length);
+    pendingIdx.current = idx;
+    setVictim(null);
+    setDropping(true);
+    pinballRef.current?.drop(idx);
+  }
+
+  // เรียกเมื่อลูกบอลตกถึงช่อง → เด้งการ์ดผู้โชคร้ายออกมา
+  function onLand() {
+    const picked = names[pendingIdx.current];
     const line = pickLine(victimLines, picked);
     setVictim(picked);
     setComment(line.text);
     setMood(line.mood);
     setRound((r) => r + 1);
+    setDropping(false);
   }
 
   return (
     <SafeAreaView style={styles.safe} edges={['bottom']}>
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-        {victim === null ? (
-          <PaaUanBubble text="ใครจะซวยรอบนี้น้า~ ใส่ชื่อมาให้ป้าจิ้ม!" mood="sassy" />
-        ) : (
+        <PaaUanBubble
+          text={
+            dropping
+              ? 'ลูกบอลกำลังกลิ้งหาเหยื่อ~ 😈'
+              : 'ใครจะซวยรอบนี้น้า~ ใส่ชื่อมาให้ป้าจิ้ม!'
+          }
+          mood="sassy"
+          pose={dropping ? undefined : 'shock'}
+        />
+
+        {names.length >= 2 && (
+          <PinballDraw ref={pinballRef} names={names} accent={colors.pink} onLand={onLand} />
+        )}
+
+        {victim !== null && !dropping && (
           <Animated.View key={round} entering={BounceIn.duration(600)}>
             <CaptureCard ref={cardRef} comment={comment} mood={mood} pose="shock">
               <Text style={styles.emoji}>😈</Text>
@@ -54,12 +79,12 @@ export default function WhoGetsItScreen() {
         )}
 
         <BigButton
-          label={victim === null ? 'สุ่มผู้โชคร้าย!' : 'สุ่มใหม่'}
+          label={dropping ? 'กำลังสุ่ม...' : victim === null ? 'สุ่มผู้โชคร้าย!' : 'สุ่มใหม่'}
           onPress={draw}
-          disabled={names.length < 2}
+          disabled={names.length < 2 || dropping}
         />
 
-        {victim !== null && <ShareButton targetRef={cardRef} />}
+        {victim !== null && !dropping && <ShareButton targetRef={cardRef} />}
 
         <NameListEditor
           names={names}
