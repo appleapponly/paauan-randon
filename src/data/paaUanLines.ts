@@ -335,6 +335,19 @@ export const fortuneLines: PaaUanLine[] = [
 ];
 
 /**
+ * วงล้อของฉัน (custom) — ผู้ใช้ใส่คำอะไรก็ได้ (อาจเป็นเรื่องจริงจัง)
+ * ป้าจึงพูด "กลาง ๆ" ไม่กวน ไม่ตัดสิน แค่บอกผลให้ชัด ใช้ {result}
+ */
+export const customWheelLines: PaaUanLine[] = [
+  { text: 'วงล้อหยุดที่ "{result}" จ้ะ', mood: 'happy' },
+  { text: 'ได้ "{result}" นะลูก', mood: 'happy' },
+  { text: 'ป้าหมุนให้แล้ว ออกมาเป็น "{result}" จ้า', mood: 'happy' },
+  { text: 'ผลออกมาคือ "{result}"', mood: 'thinking' },
+  { text: '"{result}" จ้ะ เอาไปตัดสินใจได้เลย', mood: 'happy' },
+  { text: 'ฟ้าเลือก "{result}" ให้แล้วนะลูก', mood: 'thinking' },
+];
+
+/**
  * ดึงคำพูดแบบสุ่ม 1 อัน แล้วแทนค่า {result} ให้เรียบร้อย
  * @param lines อาเรย์คำพูด
  * @param result ค่าผลสุ่มที่จะแทนใน {result} (ถ้ามี)

@@ -24,6 +24,8 @@ interface Props {
   size?: number;
   onStart?: () => void;
   onResult: (item: string, index: number) => void;
+  /** สีของแต่ละชิ้น (วนซ้ำ) — ถ้าไม่ส่งใช้ชุดสีเริ่มต้น (ใช้กับวงล้อ custom ที่ผู้ใช้เลือกสีเอง) */
+  sliceColors?: string[];
 }
 
 // สีไล่สำหรับแต่ละชิ้นวงล้อ (วนซ้ำ)
@@ -53,7 +55,10 @@ const SPIN_DURATION = 3500; // มิลลิวินาที
 const POINTER_DEG = 270; // ตำแหน่งหัวลูกศร: 0=บน, 90=ขวา, 180=ล่าง, 270=ซ้าย
 
 export const SpinWheel = forwardRef<SpinWheelHandle, Props>(
-  ({ items, size = 300, onStart, onResult }, ref) => {
+  ({ items, size = 300, onStart, onResult, sliceColors }, ref) => {
+    // ชุดสีที่ใช้จริง — ถ้าผู้ใช้เลือกเอง (custom) ใช้ชุดนั้น ไม่งั้นใช้ค่าเริ่มต้น
+    const palette =
+      sliceColors && sliceColors.length > 0 ? sliceColors : SLICE_COLORS;
     const rotation = useRef(new Animated.Value(0)).current;
     const rotRef = useRef(0); // องศาที่วงล้อหยุดอยู่ตอนนี้ (ไว้เริ่มหมุนครั้งถัดไปต่อเนื่อง)
     const settleTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -122,7 +127,7 @@ export const SpinWheel = forwardRef<SpinWheelHandle, Props>(
                 // มุมหมุน = mid + 90 → ชิ้นซ้าย (ตรงหัวลูกศร) ตั้งตรงอ่านได้ ชิ้นขวากลับหัว
                 const labelPos = polar(r, r, r * 0.9, mid);
                 const labelRot = mid + 90;
-                const fill = SLICE_COLORS[i % SLICE_COLORS.length];
+                const fill = palette[i % palette.length];
                 // ตัดคำเฉพาะตอนยาวมากจริง ๆ (ผลเต็ม ๆ ยังโชว์บนการ์ดใหญ่อยู่ดี)
                 const label = item.length > 16 ? item.slice(0, 15) + '…' : item;
                 const fontSize = items.length > 18 ? 11 : items.length > 12 ? 12.5 : 14;

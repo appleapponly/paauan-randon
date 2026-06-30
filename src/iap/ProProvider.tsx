@@ -42,7 +42,11 @@ export function ProProvider({ children }: { children: React.ReactNode }) {
     },
     onPurchaseError: (e) => {
       if (e?.code !== 'user-cancelled') {
-        Alert.alert('ซื้อไม่สำเร็จ', 'ลองใหม่อีกครั้งนะลูก 🙏');
+        // โชว์ code จริงจาก Play เพื่อวินิจฉัยได้ (เช่น item-unavailable, developer-error)
+        Alert.alert(
+          'ซื้อไม่สำเร็จ',
+          `${e?.message ?? 'ลองใหม่อีกครั้งนะลูก'} 🙏\n(code: ${e?.code ?? '-'})`
+        );
       }
     },
   });
@@ -84,6 +88,18 @@ export function ProProvider({ children }: { children: React.ReactNode }) {
       try {
         // Android subscription ต้องส่ง offerToken ของออฟเฟอร์แรก
         const sub = (subscriptions as any[]).find((s) => s?.id === sku);
+        // ถ้ายังโหลดสินค้าไม่ได้ → ซื้อไม่ได้แน่นอน บอกสาเหตุที่พบบ่อยแทนปล่อยให้ Play เด้ง error งง ๆ
+        if (!sub) {
+          Alert.alert(
+            'สินค้ายังไม่พร้อมขาย',
+            'ป้ายังดึงราคาจาก Play ไม่ได้ ลองเช็ค:\n' +
+              '• ติดตั้งแอปผ่าน "ลิงก์ tester" ของ Play เท่านั้น (ไม่ใช่ลง APK เอง)\n' +
+              '• บัญชี Google ในเครื่องต้องเป็น License tester\n' +
+              '• ถ้าเพิ่งสร้าง/Activate สินค้า รอ Play ประมวลผล 2-3 ชม.\n' +
+              '• Base plan ต้องขึ้นสถานะ Active'
+          );
+          return;
+        }
         const offerToken =
           sub?.subscriptionOfferDetailsAndroid?.[0]?.offerToken;
         await requestPurchase({
@@ -100,7 +116,10 @@ export function ProProvider({ children }: { children: React.ReactNode }) {
         });
       } catch (e: any) {
         if (e?.code !== 'user-cancelled') {
-          Alert.alert('ซื้อไม่สำเร็จ', 'ลองใหม่อีกครั้งนะลูก 🙏');
+          Alert.alert(
+            'ซื้อไม่สำเร็จ',
+            `${e?.message ?? 'ลองใหม่อีกครั้งนะลูก'} 🙏\n(code: ${e?.code ?? '-'})`
+          );
         }
       }
     },

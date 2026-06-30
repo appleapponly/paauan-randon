@@ -73,6 +73,7 @@ export const CATEGORIES: Category[] = [
     items: [
       { id: 'number', title: 'สุ่มตัวเลข', emoji: '🔢', route: '/randomizers/number', ready: true },
       { id: 'color', title: 'สุ่มสี', emoji: '🎨', route: '/randomizers/color', ready: true },
+      { id: 'customwheel', title: 'วงล้อของฉัน', emoji: '🎡', route: '/randomizers/custom-wheel', ready: true },
     ],
   },
 ];

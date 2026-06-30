@@ -96,6 +96,7 @@ export default function RootLayout() {
         <Stack.Screen name="randomizers/queue" options={{ title: 'สุ่มลำดับคิว' }} />
             <Stack.Screen name="randomizers/number" options={{ title: 'สุ่มตัวเลข' }} />
             <Stack.Screen name="randomizers/color" options={{ title: 'สุ่มสี' }} />
+            <Stack.Screen name="randomizers/custom-wheel" options={{ title: 'วงล้อของฉัน 🎡' }} />
             <Stack.Screen name="pro" options={{ title: 'หลานรักป้า ❤️' }} />
           </Stack>
           <GlobalBottomBanner />
