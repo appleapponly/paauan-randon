@@ -1,4 +1,4 @@
-name: Build Android APK
+name: Build Android (APK + AAB)
 
 # ▶️ รันเมื่อ: กดปุ่ม Run เองในแท็บ Actions (workflow_dispatch) หรือ push เข้า master/main
 on:
@@ -7,7 +7,14 @@ on:
     branches: [master, main]
 
 permissions:
-  contents: write # ให้สิทธิ์สร้าง Release + แนบไฟล์ APK
+  contents: write # ให้สิทธิ์สร้าง Release + แนบไฟล์
+
+# 🔑 ดึง secrets มาเป็น env (ถ้ายังไม่ตั้ง = ค่าว่าง → ระบบจะ build debug APK ให้เหมือนเดิม)
+env:
+  ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+  ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+  ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+  ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
 
 jobs:
   build:
@@ -31,29 +38,56 @@ jobs:
       - name: 📦 ติดตั้ง dependencies
         run: npm install
 
+      # ตั้ง versionCode = หมายเลขรัน เพื่อให้แต่ละครั้งที่อัป Play ไม่ชนกัน (Play ห้าม versionCode ซ้ำ)
+      - name: 🔢 ตั้ง versionCode อัตโนมัติ (= run number)
+        run: |
+          node -e "const fs=require('fs');const p='app.json';const j=JSON.parse(fs.readFileSync(p));j.expo.android=j.expo.android||{};j.expo.android.versionCode=${{ github.run_number }};fs.writeFileSync(p,JSON.stringify(j,null,2));console.log('versionCode =',${{ github.run_number }});"
+
       - name: 🛠️ สร้างโปรเจกต์ Android (expo prebuild)
         run: npx expo prebuild --platform android --no-install
 
-      - name: 🤖 Build APK (release — ฝัง JS ในไฟล์ เปิดได้เลยไม่ต้องพึ่ง Metro)
+      # 🔓 ถอดรหัส keystore จาก secret (เฉพาะเมื่อมีตั้งไว้)
+      - name: 🔓 เตรียม keystore (ถ้ามี)
+        if: env.ANDROID_KEYSTORE_BASE64 != ''
+        run: echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > "$GITHUB_WORKSPACE/upload.jks"
+
+      # ✅ มี keystore → เซ็นจริง สร้างทั้ง AAB (อัป Play) และ APK (ลงเองทดสอบ)
+      - name: 🔏 Build AAB + APK (เซ็นด้วย upload key)
+        if: env.ANDROID_KEYSTORE_BASE64 != ''
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew bundleRelease assembleRelease --no-daemon \
+            -Pandroid.injected.signing.store.file="$GITHUB_WORKSPACE/upload.jks" \
+            -Pandroid.injected.signing.store.password="$ANDROID_KEYSTORE_PASSWORD" \
+            -Pandroid.injected.signing.key.alias="$ANDROID_KEY_ALIAS" \
+            -Pandroid.injected.signing.key.password="$ANDROID_KEY_PASSWORD"
+          cp app/build/outputs/bundle/release/app-release.aab "$GITHUB_WORKSPACE/paauan-randon.aab"
+          cp app/build/outputs/apk/release/app-release.apk "$GITHUB_WORKSPACE/paauan-randon.apk"
+
+      # ⚠️ ยังไม่มี keystore → build debug APK เหมือนเดิม (ลงเองได้ แต่ขึ้น Play ไม่ได้)
+      - name: 🤖 Build debug APK (ยังไม่ได้ตั้ง keystore)
+        if: env.ANDROID_KEYSTORE_BASE64 == ''
         run: |
           cd android
           chmod +x gradlew
           ./gradlew assembleRelease --no-daemon
+          cp app/build/outputs/apk/release/app-release.apk "$GITHUB_WORKSPACE/paauan-randon.apk"
 
-      - name: 🏷️ เปลี่ยนชื่อไฟล์ APK
-        run: cp android/app/build/outputs/apk/release/app-release.apk paauan-randon.apk
-
-      # เก็บไว้เป็น artifact (โหลดได้ในหน้า run นี้)
-      - name: ⬆️ อัปโหลด APK เป็น artifact
+      - name: ⬆️ อัปโหลดไฟล์เป็น artifact
         uses: actions/upload-artifact@v4
         with:
-          name: paauan-randon-apk
-          path: paauan-randon.apk
+          name: paauan-randon
+          path: |
+            paauan-randon.apk
+            paauan-randon.aab
+          if-no-files-found: warn
 
-      # สร้าง Release ให้ได้ลิงก์โหลดตรง ๆ (เปิดในมือถือแล้วโหลดติดตั้งได้)
-      - name: 🚀 สร้าง GitHub Release พร้อมแนบ APK
+      - name: 🚀 สร้าง GitHub Release พร้อมแนบไฟล์
         uses: softprops/action-gh-release@v2
         with:
           tag_name: build-${{ github.run_number }}
           name: ป้าอ้วนสุ่มให้ (build ${{ github.run_number }})
-          files: paauan-randon.apk
+          files: |
+            paauan-randon.apk
+            paauan-randon.aab

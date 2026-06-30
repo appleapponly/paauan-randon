@@ -12,6 +12,7 @@
     },
     "android": {
       "package": "com.paauan.randon",
+      "versionCode": 1,
       "adaptiveIcon": {
         "backgroundColor": "#FECC11",
         "foregroundImage": "./assets/android-icon-foreground.png",
@@ -33,7 +34,7 @@
     ]
   },
   "react-native-google-mobile-ads": {
-    "android_app_id": "ca-app-pub-3940256099942544~3347511713",
+    "android_app_id": "ca-app-pub-4108810718545537~1622805485",
     "ios_app_id": "ca-app-pub-3940256099942544~1458002511"
   }
 }

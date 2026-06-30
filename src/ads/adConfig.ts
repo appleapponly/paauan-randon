@@ -8,12 +8,16 @@
 import { Platform } from 'react-native';
 import { TestIds } from 'react-native-google-mobile-ads';
 
-// true = ใช้ Test ID เสมอ (ยังไม่ขึ้น production จริง) — สลับเป็น false เมื่อมี ad unit จริง
+// ⚠️ ตอนทดสอบ (internal testing) ให้ true เสมอ = เห็นโฆษณา test ไม่ผิดนโยบาย
+//    เมื่อพร้อมปล่อย production จริง → เปลี่ยนเป็น false เพื่อใช้ ad unit จริงด้านล่าง
+//    (อย่ากดโฆษณาจริงของตัวเองเด็ดขาด AdMob แบนได้)
 const USE_TEST_ADS = true;
 
-// 🔁 ad unit จริง (ใส่ทีหลังเมื่อสมัคร AdMob เสร็จ) — ต้องแยก Android/iOS
-const REAL_BANNER = Platform.select({ android: '', ios: '' }) ?? '';
-const REAL_INTERSTITIAL = Platform.select({ android: '', ios: '' }) ?? '';
+// 🔁 ad unit จริงของแอป "ป้าอ้วนสุ่มให้" (AdMob app id: ca-app-pub-4108810718545537~1622805485)
+const REAL_BANNER =
+  Platform.select({ android: 'ca-app-pub-4108810718545537/2080568112', ios: '' }) ?? '';
+const REAL_INTERSTITIAL =
+  Platform.select({ android: 'ca-app-pub-4108810718545537/6724344532', ios: '' }) ?? '';
 
 export const AD_UNITS = {
   banner: USE_TEST_ADS || !REAL_BANNER ? TestIds.BANNER : REAL_BANNER,
