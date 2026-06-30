@@ -1,4 +1,4 @@
-name: Build Android (APK + AAB)
+name: Build Android (AAB)
 
 # ▶️ รันเมื่อ: กดปุ่ม Run เองในแท็บ Actions (workflow_dispatch) หรือ push เข้า master/main
 on:
@@ -51,36 +51,23 @@ jobs:
         if: env.ANDROID_KEYSTORE_BASE64 != ''
         run: echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > "$GITHUB_WORKSPACE/upload.jks"
 
-      # ✅ มี keystore → เซ็นจริง สร้างทั้ง AAB (อัป Play) และ APK (ลงเองทดสอบ)
-      - name: 🔏 Build AAB + APK (เซ็นด้วย upload key)
-        if: env.ANDROID_KEYSTORE_BASE64 != ''
+      # ✅ เซ็น AAB ด้วย upload key เพื่ออัปขึ้น Play (build อย่างเดียว ไม่ทำ APK แล้ว ประหยัดเวลา)
+      - name: 🔏 Build AAB (เซ็นด้วย upload key)
         run: |
           cd android
           chmod +x gradlew
-          ./gradlew bundleRelease assembleRelease --no-daemon \
+          ./gradlew bundleRelease --no-daemon \
             -Pandroid.injected.signing.store.file="$GITHUB_WORKSPACE/upload.jks" \
             -Pandroid.injected.signing.store.password="$ANDROID_KEYSTORE_PASSWORD" \
             -Pandroid.injected.signing.key.alias="$ANDROID_KEY_ALIAS" \
             -Pandroid.injected.signing.key.password="$ANDROID_KEY_PASSWORD"
           cp app/build/outputs/bundle/release/app-release.aab "$GITHUB_WORKSPACE/paauan-randon.aab"
-          cp app/build/outputs/apk/release/app-release.apk "$GITHUB_WORKSPACE/paauan-randon.apk"
-
-      # ⚠️ ยังไม่มี keystore → build debug APK เหมือนเดิม (ลงเองได้ แต่ขึ้น Play ไม่ได้)
-      - name: 🤖 Build debug APK (ยังไม่ได้ตั้ง keystore)
-        if: env.ANDROID_KEYSTORE_BASE64 == ''
-        run: |
-          cd android
-          chmod +x gradlew
-          ./gradlew assembleRelease --no-daemon
-          cp app/build/outputs/apk/release/app-release.apk "$GITHUB_WORKSPACE/paauan-randon.apk"
 
       - name: ⬆️ อัปโหลดไฟล์เป็น artifact
         uses: actions/upload-artifact@v4
         with:
           name: paauan-randon
-          path: |
-            paauan-randon.apk
-            paauan-randon.aab
+          path: paauan-randon.aab
           if-no-files-found: warn
 
       - name: 🚀 สร้าง GitHub Release พร้อมแนบไฟล์
@@ -88,6 +75,4 @@ jobs:
         with:
           tag_name: build-${{ github.run_number }}
           name: ป้าอ้วนสุ่มให้ (build ${{ github.run_number }})
-          files: |
-            paauan-randon.apk
-            paauan-randon.aab
+          files: paauan-randon.aab
