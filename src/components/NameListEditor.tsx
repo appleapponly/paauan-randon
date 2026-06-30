@@ -90,7 +90,10 @@ const styles = StyleSheet.create({
     borderColor: colors.ink,
     borderRadius: 12,
     paddingHorizontal: 14,
-    height: 48,
+    paddingVertical: 10,
+    minHeight: 48,
+    textAlignVertical: 'center', // Android: จัดข้อความกึ่งกลางแนวตั้ง ไม่ให้สระบนถูกตัด
+    includeFontPadding: true,
     fontFamily: fonts.regular,
     fontSize: fontSize.md,
     color: colors.ink,

@@ -77,14 +77,16 @@ const styles = StyleSheet.create({
   bubble: {
     ...cartoonBox(colors.white, 4),
     flex: 1,
-    paddingVertical: 12,
+    paddingTop: 15, // เผื่อสระบน/วรรณยุกต์บรรทัดแรกไม่ถูกตัด
+    paddingBottom: 12,
     paddingHorizontal: 16,
   },
   bubbleText: {
     fontFamily: fonts.medium,
     fontSize: fontSize.md,
     color: colors.ink,
-    lineHeight: 28, // เผื่อสระบน/ล่าง + วรรณยุกต์ภาษาไทยไม่ถูกตัด
+    lineHeight: 30, // เผื่อสระบน/ล่าง + วรรณยุกต์ภาษาไทยไม่ถูกตัด
+    includeFontPadding: true, // Android: กันตัดหัวอักษร (สระ/วรรณยุกต์บน)
   },
   tailBorder: {
     position: 'absolute',

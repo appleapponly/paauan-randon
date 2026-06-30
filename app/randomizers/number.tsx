@@ -91,11 +91,14 @@ const styles = StyleSheet.create({
     borderColor: colors.ink,
     borderRadius: 12,
     paddingHorizontal: 14,
+    paddingVertical: 0,
     height: 52,
     fontFamily: fonts.bold,
     fontSize: fontSize.lg,
     color: colors.ink,
     backgroundColor: colors.white,
-    textAlign: 'center',
+    textAlign: 'center', // จัดกึ่งกลางแนวนอน
+    textAlignVertical: 'center', // Android: จัดกึ่งกลางแนวตั้ง (เลขไม่ลอยขึ้นบน + ไม่ถูกตัด)
+    includeFontPadding: true,
   },
 });
