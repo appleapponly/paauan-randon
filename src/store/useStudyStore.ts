@@ -41,7 +41,7 @@ export const useStudyStore = create<StudyState>()(
         if (!t) return;
         const id = 'custom-' + Date.now();
         set({
-          custom: [...get().custom, { id, text: t, emoji: '⭐' }],
+          custom: [...get().custom, { id, text: t, emoji: '⭐', phase: 2 }],
           selectedIds: [...get().selectedIds, id],
         });
       },

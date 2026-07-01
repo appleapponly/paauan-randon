@@ -1,5 +1,6 @@
 /**
- * 📚 สุ่มการเรียน — สุ่มภารกิจ + ตั้งเวลา Pomodoro → เริ่มจับเวลาเต็มจอ
+ * 📚 สุ่มการเรียน — บันไดวิบวับสุ่ม 2 ภารกิจไม่ซ้ำ (เรียง รับข้อมูล→ฝึก→สรุป)
+ * ตั้งเวลา Pomodoro ได้ทีละภารกิจ → กดเริ่มโฟกัส เข้าจับเวลาทีละรายการต่อเนื่อง
  */
 import { useMemo, useRef, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
@@ -8,8 +9,9 @@ import { useRouter } from 'expo-router';
 import Animated, { BounceIn } from 'react-native-reanimated';
 import { useStudyStore } from '@/store/useStudyStore';
 import { PRESET_STUDY_TASKS, studyMissionLines, StudyTask } from '@/data/studyTasks';
-import { pickLine, PaaUanMood } from '@/data/paaUanLines';
+import { spinningLines, pickLine, PaaUanMood } from '@/data/paaUanLines';
 import { pickOne, randomInt } from '@/utils/random';
+import { LadderBoard, LadderHandle } from '@/components/LadderBoard';
 import { PaaUanBubble } from '@/components/PaaUanBubble';
 import { BigButton } from '@/components/BigButton';
 import { CaptureCard } from '@/components/CaptureCard';
@@ -25,6 +27,23 @@ interface Mission {
   text: string;
 }
 
+function shuffle<T>(arr: T[]): T[] {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function toMission(task: StudyTask): Mission {
+  if (task.quantity) {
+    const amount = pickOne(task.quantity.amounts);
+    return { task, amount, unit: task.quantity.unit, text: `${task.text} ${amount} ${task.quantity.unit}` };
+  }
+  return { task, text: task.text };
+}
+
 export default function StudyScreen() {
   const router = useRouter();
   const selectedIds = useStudyStore((s) => s.selectedIds);
@@ -33,54 +52,78 @@ export default function StudyScreen() {
   const addCustom = useStudyStore((s) => s.addCustom);
   const removeCustom = useStudyStore((s) => s.removeCustom);
   const workMin = useStudyStore((s) => s.workMin);
-  const breakMin = useStudyStore((s) => s.breakMin);
-  const setWorkMin = useStudyStore((s) => s.setWorkMin);
-  const setBreakMin = useStudyStore((s) => s.setBreakMin);
   const incSession = useStudyStore((s) => s.incSession);
 
+  const ladderRef = useRef<LadderHandle>(null);
   const cardRef = useRef<View>(null);
-  const [bubble, setBubble] = useState('กดสุ่มภารกิจ เดี๋ยวป้าจัดให้ แล้วเริ่มโฟกัสกันเลย!');
+  const pending = useRef<Mission[]>([]);
+  const [bubble, setBubble] = useState('กดสุ่ม เดี๋ยวบันไดวิบวับเลือกภารกิจให้ 2 อย่าง!');
   const [mood, setMood] = useState<PaaUanMood>('happy');
-  const [mission, setMission] = useState<Mission | null>(null);
+  const [running, setRunning] = useState(false);
+  const [missions, setMissions] = useState<Mission[] | null>(null);
+  const [times, setTimes] = useState<number[]>([]);
+  const [options, setOptions] = useState<string[]>([]);
   const [round, setRound] = useState(0);
   const [newItem, setNewItem] = useState('');
 
   const all = useMemo(() => [...PRESET_STUDY_TASKS, ...custom], [custom]);
-  const pool = useMemo(
-    () => all.filter((t) => selectedIds.includes(t.id)),
-    [all, selectedIds]
-  );
+  const pool = useMemo(() => all.filter((t) => selectedIds.includes(t.id)), [all, selectedIds]);
 
   function roll() {
-    if (pool.length < 1) return;
-    const task = pickOne(pool);
-    let amount: number | undefined;
-    let unit: string | undefined;
-    let text = task.text;
-    if (task.quantity) {
-      amount = pickOne(task.quantity.amounts);
-      unit = task.quantity.unit;
-      text = `${task.text} ${amount} ${unit}`;
-    }
-    const m: Mission = { task, amount, unit, text };
-    const line = pickLine(studyMissionLines, text);
+    if (pool.length < 2 || running) return;
+    setMissions(null);
+    setRunning(true);
+    const line = pickLine(spinningLines);
     setBubble(line.text);
     setMood(line.mood);
-    setMission(m);
+
+    // เลือก 2 ภารกิจไม่ซ้ำ
+    const winners = shuffle(pool).slice(0, 2);
+    // ช่องบันได = ผู้ชนะ + ตัวลวงบางส่วน (รวมไม่เกิน 5) สลับลำดับ
+    const extra = shuffle(pool.filter((t) => !winners.includes(t))).slice(0, 3);
+    const display = shuffle([...winners, ...extra]);
+    const opts = display.map((t) => t.text);
+    const targets = winners.map((w) => display.findIndex((d) => d.id === w.id));
+
+    // ภารกิจเรียงลำดับ รับข้อมูล(1) → ฝึก(2) → สรุป(3)
+    const ordered = [...winners].sort((a, b) => a.phase - b.phase);
+    pending.current = ordered.map(toMission);
+
+    setOptions(opts);
+    // รอ options ผูกเข้า LadderBoard แล้วค่อยวิ่ง
+    setTimeout(() => ladderRef.current?.run(targets), 60);
+  }
+
+  function onLand() {
+    const ms = pending.current;
+    if (ms.length === 0) return;
+    const line = pickLine(studyMissionLines, ms.map((m) => m.text).join(' + '));
+    setBubble(line.text);
+    setMood(line.mood);
+    setMissions(ms);
+    setTimes(ms.map(() => workMin));
     setRound((r) => r + 1);
+    setRunning(false);
+  }
+
+  function setTime(i: number, delta: number) {
+    setTimes((prev) => prev.map((v, idx) => (idx === i ? Math.max(5, Math.min(90, v + delta)) : v)));
   }
 
   function startFocus() {
-    if (!mission) return;
+    if (!missions) return;
     const next = useStudyStore.getState().sessionCount + 1;
     incSession();
+    const queue = missions.map((m, i) => ({ label: m.text, minutes: times[i] ?? workMin }));
     router.push({
       pathname: '/timer',
       params: {
-        minutes: String(workMin),
-        label: mission.text,
+        minutes: String(queue[0].minutes),
+        label: queue[0].label,
         mode: 'work',
         session: String(next),
+        queue: JSON.stringify(queue),
+        qi: '0',
       },
     });
   }
@@ -93,75 +136,71 @@ export default function StudyScreen() {
   return (
     <SafeAreaView style={styles.safe} edges={['bottom']}>
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-        <PaaUanBubble text={bubble} mood={mood} pose="point" />
+        <PaaUanBubble text={bubble} mood={mood} pose="studyRead" />
 
-        {mission && (
+        {pool.length < 2 ? (
+          <View style={styles.emptyBox}>
+            <Text style={styles.emptyText}>เลือกภารกิจอย่างน้อย 2 อย่างก่อนนะจ๊ะ</Text>
+          </View>
+        ) : (
+          options.length > 0 && (
+            <LadderBoard ref={ladderRef} options={options} accent={colors.ocean} onLand={onLand} />
+          )
+        )}
+
+        <BigButton
+          label={running ? 'บันไดกำลังไล่... 🪜' : missions ? 'สุ่มใหม่' : 'สุ่มภารกิจ!'}
+          color={colors.ocean}
+          onPress={roll}
+          disabled={running || pool.length < 2}
+        />
+
+        {missions && !running && (
           <Animated.View key={round} entering={BounceIn.duration(600)}>
             <CaptureCard
               ref={cardRef}
               comment={bubble}
               mood={mood}
-              pose="point"
+              pose="studyWrite"
               watermark="ตั้งใจเรียนกับป้าอ้วน 📚"
             >
-              <Text style={styles.missionBadge}>ภารกิจการเรียน</Text>
-              <Text style={styles.missionEmoji}>{mission.task.emoji}</Text>
-              <Text style={styles.missionName}>{mission.task.text}</Text>
-              {mission.amount != null && (
-                <Text style={styles.missionAmount}>
-                  {mission.amount} {mission.unit}
-                </Text>
-              )}
+              <Text style={styles.missionBadge}>ภารกิจการเรียน ({missions.length} อย่าง)</Text>
+              <View style={styles.missionList}>
+                {missions.map((m, i) => (
+                  <View key={i} style={styles.missionRow}>
+                    <Text style={styles.missionEmoji}>{m.task.emoji}</Text>
+                    <Text style={styles.missionName}>
+                      {i + 1}. {m.text}
+                    </Text>
+                  </View>
+                ))}
+              </View>
             </CaptureCard>
           </Animated.View>
         )}
 
-        <BigButton
-          label={mission ? 'สุ่มใหม่' : 'สุ่มภารกิจ!'}
-          color={colors.ocean}
-          onPress={roll}
-          disabled={pool.length < 1}
-        />
+        {missions && !running && <ShareButton targetRef={cardRef} />}
 
-        {mission && <ShareButton targetRef={cardRef} />}
-
-        {/* ตั้งเวลา Pomodoro */}
-        {mission && (
+        {/* ตั้งเวลาแต่ละภารกิจ + เริ่มโฟกัส */}
+        {missions && !running && (
           <View style={styles.timeBox}>
-            <Text style={styles.manageTitle}>ตั้งเวลา 🍅</Text>
-
-            <View style={styles.timeRow}>
-              <Text style={styles.timeLabel}>ทำงาน</Text>
-              <View style={styles.stepper}>
-                <Pressable style={styles.stepBtn} onPress={() => setWorkMin(workMin - 5)}>
-                  <Text style={styles.stepText}>−</Text>
-                </Pressable>
-                <Text style={styles.timeValue}>{workMin} นาที</Text>
-                <Pressable style={styles.stepBtn} onPress={() => setWorkMin(workMin + 5)}>
-                  <Text style={styles.stepText}>＋</Text>
-                </Pressable>
+            <Text style={styles.manageTitle}>ตั้งเวลาแต่ละภารกิจ 🍅</Text>
+            {missions.map((m, i) => (
+              <View key={i} style={styles.timeRow}>
+                <Text style={styles.timeLabel} numberOfLines={1}>
+                  {i + 1}. {m.task.text}
+                </Text>
+                <View style={styles.stepper}>
+                  <Pressable style={styles.stepBtn} onPress={() => setTime(i, -5)}>
+                    <Text style={styles.stepText}>−</Text>
+                  </Pressable>
+                  <Text style={styles.timeValue}>{times[i] ?? workMin} น.</Text>
+                  <Pressable style={styles.stepBtn} onPress={() => setTime(i, 5)}>
+                    <Text style={styles.stepText}>＋</Text>
+                  </Pressable>
+                </View>
               </View>
-            </View>
-
-            <View style={styles.timeRow}>
-              <Text style={styles.timeLabel}>พัก</Text>
-              <View style={styles.stepper}>
-                <Pressable style={styles.stepBtn} onPress={() => setBreakMin(breakMin - 1)}>
-                  <Text style={styles.stepText}>−</Text>
-                </Pressable>
-                <Text style={styles.timeValue}>{breakMin} นาที</Text>
-                <Pressable style={styles.stepBtn} onPress={() => setBreakMin(breakMin + 1)}>
-                  <Text style={styles.stepText}>＋</Text>
-                </Pressable>
-              </View>
-            </View>
-            <Pressable
-              style={styles.randomBreak}
-              onPress={() => setBreakMin(randomInt(5, 15))}
-            >
-              <Text style={styles.randomBreakText}>🎲 สุ่มเวลาพัก (5-15 นาที)</Text>
-            </Pressable>
-
+            ))}
             <BigButton label="เริ่มโฟกัส 🍅" color={colors.ocean} onPress={startFocus} countAd={false} />
           </View>
         )}
@@ -169,7 +208,7 @@ export default function StudyScreen() {
         {/* เลือกภารกิจ */}
         <View style={styles.manageBox}>
           <Text style={styles.manageTitle}>เลือกภารกิจการเรียน ({pool.length})</Text>
-          <Text style={styles.hint}>แตะเพื่อเปิด/ปิดภารกิจที่จะสุ่ม</Text>
+          <Text style={styles.hint}>แตะเพื่อเปิด/ปิด (สุ่มออกมา 2 อย่างต่อครั้ง)</Text>
           <View style={styles.chips}>
             {all.map((t) => {
               const on = selectedIds.includes(t.id);
@@ -215,27 +254,31 @@ export default function StudyScreen() {
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.cream },
   content: { padding: 20, gap: 18 },
-  missionBadge: { fontFamily: fonts.bold, fontSize: fontSize.sm, color: colors.ocean },
-  missionEmoji: { fontSize: 48 },
-  missionName: {
-    fontFamily: fonts.bold,
-    fontSize: fontSize.xl,
+  emptyBox: { ...cartoonBox(colors.white, 4), padding: 20 },
+  emptyText: {
+    fontFamily: fonts.medium,
+    fontSize: fontSize.md,
     color: colors.ink,
     textAlign: 'center',
+    lineHeight: 24,
   },
-  missionAmount: {
+  missionBadge: {
     fontFamily: fonts.bold,
-    fontSize: fontSize.xxl,
+    fontSize: fontSize.md,
     color: colors.ocean,
     textAlign: 'center',
   },
-  timeBox: { ...cartoonBox(colors.white, 4), padding: 16, gap: 14 },
-  timeRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  timeLabel: { fontFamily: fonts.semibold, fontSize: fontSize.md, color: colors.ink },
-  stepper: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  missionList: { alignSelf: 'stretch', gap: 10, marginTop: 4 },
+  missionRow: { flexDirection: 'row', gap: 10, alignItems: 'center' },
+  missionEmoji: { fontSize: 30 },
+  missionName: { flex: 1, fontFamily: fonts.bold, fontSize: fontSize.md, color: colors.ink, lineHeight: 26 },
+  timeBox: { ...cartoonBox(colors.white, 4), padding: 16, gap: 12 },
+  timeRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 10 },
+  timeLabel: { flex: 1, fontFamily: fonts.semibold, fontSize: fontSize.sm, color: colors.ink },
+  stepper: { flexDirection: 'row', alignItems: 'center', gap: 10 },
   stepBtn: {
-    width: 40,
-    height: 40,
+    width: 38,
+    height: 38,
     borderRadius: 10,
     borderWidth: 2.5,
     borderColor: colors.ink,
@@ -246,21 +289,11 @@ const styles = StyleSheet.create({
   stepText: { fontFamily: fonts.bold, fontSize: 22, color: colors.ink },
   timeValue: {
     fontFamily: fonts.bold,
-    fontSize: fontSize.lg,
+    fontSize: fontSize.md,
     color: colors.ocean,
-    minWidth: 78,
+    minWidth: 58,
     textAlign: 'center',
   },
-  randomBreak: {
-    alignSelf: 'flex-start',
-    backgroundColor: colors.cream,
-    borderWidth: 2,
-    borderColor: colors.ink,
-    borderRadius: 999,
-    paddingHorizontal: 14,
-    paddingVertical: 7,
-  },
-  randomBreakText: { fontFamily: fonts.semibold, fontSize: fontSize.sm, color: colors.ink },
   manageBox: { ...cartoonBox(colors.white, 4), padding: 16, gap: 12 },
   manageTitle: { fontFamily: fonts.bold, fontSize: fontSize.lg, color: colors.ink },
   hint: { fontFamily: fonts.regular, fontSize: fontSize.sm, color: colors.muted, marginTop: -6 },

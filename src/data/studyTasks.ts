@@ -7,25 +7,30 @@ export interface StudyTask {
   id: string;
   text: string;
   emoji: string;
+  /** ลำดับขั้น: 1=รับข้อมูล(input) 2=ฝึก/ทำ(process) 3=สรุป(output) — ใช้เรียงลำดับโฟกัส */
+  phase: 1 | 2 | 3;
   /** ถ้ามี = ภารกิจนี้สุ่มจำนวนด้วย (เช่น อ่านกี่หน้า) */
   quantity?: { unit: string; amounts: number[] };
 }
 
 export const PRESET_STUDY_TASKS: StudyTask[] = [
-  { id: 'read', text: 'อ่านหนังสือ', emoji: '📖', quantity: { unit: 'หน้า', amounts: [5, 10, 15, 20] } },
-  { id: 'problems', text: 'ทำโจทย์', emoji: '✏️', quantity: { unit: 'ข้อ', amounts: [10, 15, 20, 30] } },
-  { id: 'exercise', text: 'ทำแบบฝึกหัด', emoji: '📝', quantity: { unit: 'ข้อ', amounts: [10, 15, 20] } },
-  { id: 'vocab', text: 'ท่องศัพท์', emoji: '🔤', quantity: { unit: 'คำ', amounts: [10, 20, 30] } },
-  { id: 'sentence', text: 'แต่งประโยค', emoji: '🖊️', quantity: { unit: 'ประโยค', amounts: [5, 10] } },
-  { id: 'exam', text: 'ทำข้อสอบเก่า', emoji: '🧾' },
-  { id: 'reviewwrong', text: 'ทบทวนข้อที่ทำผิด', emoji: '🔍' },
-  { id: 'listen', text: 'ฟังภาษาอังกฤษ', emoji: '🎧' },
-  { id: 'mindmap', text: 'ทำ mind map', emoji: '🗺️' },
-  { id: 'summary', text: 'สรุปเนื้อหา', emoji: '📋' },
-  { id: 'teachself', text: 'อธิบายบทเรียนให้ตัวเองฟัง', emoji: '🗣️' },
-  { id: 'readaloud', text: 'อ่านออกเสียง', emoji: '📢' },
-  { id: 'note', text: 'จดโน้ตย่อ', emoji: '🗒️' },
-  { id: 'video', text: 'ดูคลิปติว', emoji: '📺' },
+  // ---- 1) รับข้อมูล ----
+  { id: 'read', text: 'อ่านหนังสือ', emoji: '📖', phase: 1, quantity: { unit: 'หน้า', amounts: [5, 10, 15, 20] } },
+  { id: 'vocab', text: 'ท่องศัพท์', emoji: '🔤', phase: 1, quantity: { unit: 'คำ', amounts: [10, 20, 30] } },
+  { id: 'listen', text: 'ฟังภาษาอังกฤษ', emoji: '🎧', phase: 1 },
+  { id: 'video', text: 'ดูคลิปติว', emoji: '📺', phase: 1 },
+  // ---- 2) ฝึก/ทำ ----
+  { id: 'problems', text: 'ทำโจทย์', emoji: '✏️', phase: 2, quantity: { unit: 'ข้อ', amounts: [10, 15, 20, 30] } },
+  { id: 'exercise', text: 'ทำแบบฝึกหัด', emoji: '📝', phase: 2, quantity: { unit: 'ข้อ', amounts: [10, 15, 20] } },
+  { id: 'exam', text: 'ทำข้อสอบเก่า', emoji: '🧾', phase: 2 },
+  { id: 'reviewwrong', text: 'ทบทวนข้อที่ทำผิด', emoji: '🔍', phase: 2 },
+  { id: 'sentence', text: 'แต่งประโยค', emoji: '🖊️', phase: 2, quantity: { unit: 'ประโยค', amounts: [5, 10] } },
+  { id: 'teachself', text: 'อธิบายบทเรียนให้ตัวเองฟัง', emoji: '🗣️', phase: 2 },
+  { id: 'readaloud', text: 'อ่านออกเสียง', emoji: '📢', phase: 2 },
+  // ---- 3) สรุป ----
+  { id: 'mindmap', text: 'ทำ mind map', emoji: '🗺️', phase: 3 },
+  { id: 'summary', text: 'สรุปเนื้อหา', emoji: '📋', phase: 3 },
+  { id: 'note', text: 'จดโน้ตย่อ', emoji: '🗒️', phase: 3 },
 ];
 
 export const DEFAULT_STUDY_IDS = [

@@ -1,8 +1,9 @@
 /**
  * ⏳ Pomodoro Timer เต็มจอ — นับถอยหลัง + ป้าให้กำลังใจ
  * รับพารามิเตอร์: minutes, label (ภารกิจ), mode ('work'|'break'), session
+ *   queue (JSON [{label,minutes}]) + qi = คิวภารกิจต่อเนื่อง (สุ่มการเรียนส่งมา)
  * - จอไม่ดับระหว่างจับเวลา (useKeepAwake)
- * - หมดเวลา: สั่น (Haptics) + ป้าฉลอง + ปุ่มไปต่อ (work→พัก / break→เรียนต่อ)
+ * - หมดเวลา: สั่น (Haptics) + ป้าฉลอง + ปุ่มไปต่อ (ภารกิจถัดไปในคิว / เริ่มพัก / กลับ)
  * - ไหล manual: จบแล้วผู้ใช้กดเริ่มรอบถัดไปเอง
  */
 import { useEffect, useRef, useState } from 'react';
@@ -31,15 +32,36 @@ function mmss(total: number) {
   return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
 }
 
+interface QItem {
+  label: string;
+  minutes: number;
+}
+
 export default function TimerScreen() {
-  useKeepAwake(); // กันจอดับระหว่างจับเวลา
+  useKeepAwake();
   const router = useRouter();
   const params = useLocalSearchParams();
 
-  const minutes = Math.max(1, parseInt(one(params.minutes, '25'), 10) || 25);
-  const label = one(params.label, 'โฟกัส');
   const mode = one(params.mode, 'work') as 'work' | 'break';
   const session = parseInt(one(params.session, '1'), 10) || 1;
+
+  // คิวภารกิจ (ถ้ามี) — จับเวลาทีละรายการ
+  const queue: QItem[] = (() => {
+    try {
+      const q = one(params.queue, '');
+      return q ? (JSON.parse(q) as QItem[]) : [];
+    } catch {
+      return [];
+    }
+  })();
+  const qi = parseInt(one(params.qi, '0'), 10) || 0;
+  const hasQueue = queue.length > 0;
+
+  const minutes = Math.max(
+    1,
+    hasQueue ? queue[qi]?.minutes ?? 25 : parseInt(one(params.minutes, '25'), 10) || 25
+  );
+  const label = hasQueue ? queue[qi]?.label ?? 'โฟกัส' : one(params.label, 'โฟกัส');
 
   const breakMin = useStudyStore((s) => s.breakMin);
 
@@ -52,8 +74,10 @@ export default function TimerScreen() {
 
   const tick = useRef<ReturnType<typeof setInterval> | null>(null);
   const cheerTimer = useRef<ReturnType<typeof setInterval> | null>(null);
+  const doneMsgRef = useRef(
+    mode === 'work' ? pickOne(timerDoneWorkLines) : pickOne(timerDoneBreakLines)
+  );
 
-  // นับถอยหลัง
   useEffect(() => {
     if (paused || done) return;
     tick.current = setInterval(() => {
@@ -72,7 +96,6 @@ export default function TimerScreen() {
     };
   }, [paused, done]);
 
-  // หมุนเวียนคำให้กำลังใจระหว่างทำงาน
   useEffect(() => {
     if (done) return;
     cheerTimer.current = setInterval(() => {
@@ -88,6 +111,19 @@ export default function TimerScreen() {
   }, [done, mode]);
 
   const bg = mode === 'work' ? colors.ocean : colors.jade;
+  const hasNext = hasQueue && qi + 1 < queue.length;
+
+  function goNext() {
+    router.replace({
+      pathname: '/timer',
+      params: {
+        mode: 'work',
+        session: String(session + 1),
+        queue: JSON.stringify(queue),
+        qi: String(qi + 1),
+      },
+    });
+  }
 
   function startBreak() {
     router.replace({
@@ -101,24 +137,26 @@ export default function TimerScreen() {
     });
   }
 
-  const doneMsg =
-    mode === 'work' ? pickOne(timerDoneWorkLines) : pickOne(timerDoneBreakLines);
-  const doneMsgRef = useRef(doneMsg);
+  const workPose = done ? paaUanPoses.happy : paaUanPoses.studyWrite;
+  const breakPose = paaUanPoses.satisfied;
 
   return (
     <View style={[styles.root, { backgroundColor: bg }]}>
       <Stack.Screen options={{ headerShown: false }} />
       <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
-        {/* หัวเรื่อง + เซสชัน */}
         <View style={styles.header}>
           <Text style={styles.mode}>{mode === 'work' ? '🍅 โฟกัส' : '☕ พักผ่อน'}</Text>
-          {mode === 'work' && <Text style={styles.session}>เซสชันที่ {session}</Text>}
+          {mode === 'work' && (
+            <Text style={styles.session}>
+              เซสชันที่ {session}
+              {hasQueue ? ` · ภารกิจ ${qi + 1}/${queue.length}` : ''}
+            </Text>
+          )}
           <Text style={styles.label} numberOfLines={2}>
             {label}
           </Text>
         </View>
 
-        {/* เวลานับถอยหลัง */}
         <View style={styles.center}>
           {!done ? (
             <Text style={styles.clock}>{mmss(secondsLeft)}</Text>
@@ -126,7 +164,7 @@ export default function TimerScreen() {
             <Text style={styles.doneEmoji}>{mode === 'work' ? '🎉' : '💪'}</Text>
           )}
           <Image
-            source={done ? paaUanPoses.happy : paaUanPoses.fortune}
+            source={mode === 'work' ? workPose : breakPose}
             style={styles.paa}
             resizeMode="contain"
           />
@@ -135,29 +173,30 @@ export default function TimerScreen() {
           </View>
         </View>
 
-        {/* ปุ่มควบคุม */}
         <View style={styles.controls}>
           {!done ? (
             <>
               <Pressable style={styles.ctrlBtn} onPress={() => setPaused((p) => !p)}>
                 <Text style={styles.ctrlText}>{paused ? '▶️ ไปต่อ' : '⏸️ หยุดชั่วคราว'}</Text>
               </Pressable>
-              <Pressable
-                style={[styles.ctrlBtn, styles.ctrlGhost]}
-                onPress={() => router.back()}
-              >
+              <Pressable style={[styles.ctrlBtn, styles.ctrlGhost]} onPress={() => router.back()}>
                 <Text style={styles.ctrlText}>เลิก</Text>
               </Pressable>
             </>
           ) : mode === 'work' ? (
             <>
-              <Pressable style={styles.ctrlBtn} onPress={startBreak}>
-                <Text style={styles.ctrlText}>☕ เริ่มพัก {breakMin} นาที</Text>
-              </Pressable>
-              <Pressable
-                style={[styles.ctrlBtn, styles.ctrlGhost]}
-                onPress={() => router.back()}
-              >
+              {hasNext ? (
+                <Pressable style={styles.ctrlBtn} onPress={goNext}>
+                  <Text style={styles.ctrlText} numberOfLines={1}>
+                    ➡️ ภารกิจถัดไป: {queue[qi + 1].label}
+                  </Text>
+                </Pressable>
+              ) : (
+                <Pressable style={styles.ctrlBtn} onPress={startBreak}>
+                  <Text style={styles.ctrlText}>☕ เริ่มพัก {breakMin} นาที</Text>
+                </Pressable>
+              )}
+              <Pressable style={[styles.ctrlBtn, styles.ctrlGhost]} onPress={() => router.back()}>
                 <Text style={styles.ctrlText}>เสร็จแล้ว กลับหน้าเรียน</Text>
               </Pressable>
             </>
@@ -182,6 +221,7 @@ const styles = StyleSheet.create({
     fontSize: fontSize.md,
     color: colors.white,
     opacity: 0.9,
+    textAlign: 'center',
   },
   label: {
     fontFamily: fonts.medium,
@@ -192,12 +232,7 @@ const styles = StyleSheet.create({
     lineHeight: 26,
   },
   center: { alignItems: 'center', gap: 14 },
-  clock: {
-    fontFamily: fonts.bold,
-    fontSize: 84,
-    color: colors.white,
-    letterSpacing: 2,
-  },
+  clock: { fontFamily: fonts.bold, fontSize: 84, color: colors.white, letterSpacing: 2 },
   doneEmoji: { fontSize: 84 },
   paa: { width: 150, height: 170 },
   bubble: {
@@ -223,6 +258,7 @@ const styles = StyleSheet.create({
     borderColor: colors.ink,
     borderRadius: 16,
     paddingVertical: 15,
+    paddingHorizontal: 12,
     alignItems: 'center',
     shadowColor: colors.ink,
     shadowOffset: { width: 3, height: 3 },
