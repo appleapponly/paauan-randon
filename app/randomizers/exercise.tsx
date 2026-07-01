@@ -1,6 +1,6 @@
 /**
- * 🏃 สุ่มออกกำลังกาย — กระดานงูตกช่อง 2 สเตจ (ท่า → จำนวน) → การ์ดภารกิจ
- * เลือกท่าเองได้ (จัดกลุ่มตามโหมด Cardio/Strength/HIIT) + เพิ่มท่าเอง
+ * 🏃 สุ่มออกกำลังกาย — กระดานงูวิ่งวนลุ้น → สุ่ม 3 ท่าไม่ซ้ำ → การ์ดโปรแกรม (พร้อมวิธีทำ)
+ * เลือกท่าเองได้ (จัดกลุ่มตามโหมด Cardio/Strength/HIIT + ⭐ ท่าของฉัน) + เพิ่มท่าเอง (นับเป็นนาที)
  */
 import { useMemo, useRef, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
@@ -13,10 +13,10 @@ import {
   MODE_LABEL,
   UNIT_LABEL,
   Exercise,
+  exerciseComboLines,
 } from '@/data/exercises';
-import { exerciseLinesByMode } from '@/data/exercises';
 import { spinningLines, pickLine, PaaUanMood } from '@/data/paaUanLines';
-import { randomInt, pickIndex } from '@/utils/random';
+import { randomInt } from '@/utils/random';
 import { SnakeBoard, SnakeHandle } from '@/components/SnakeBoard';
 import { PaaUanBubble } from '@/components/PaaUanBubble';
 import { BigButton } from '@/components/BigButton';
@@ -29,7 +29,17 @@ import { cartoonBox } from '@/theme/styles';
 interface Mission {
   ex: Exercise;
   amount: number;
-  unit: string; // label ไทยแล้ว
+  unit: string;
+}
+
+/** สุ่มหยิบ index ไม่ซ้ำ k ตัวจาก 0..len-1 */
+function pickDistinct(len: number, k: number): number[] {
+  const idx = Array.from({ length: len }, (_, i) => i);
+  for (let i = idx.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [idx[i], idx[j]] = [idx[j], idx[i]];
+  }
+  return idx.slice(0, Math.min(k, len));
 }
 
 export default function ExerciseScreen() {
@@ -41,15 +51,14 @@ export default function ExerciseScreen() {
 
   const snakeRef = useRef<SnakeHandle>(null);
   const cardRef = useRef<View>(null);
-  const pending = useRef<Mission | null>(null);
+  const pending = useRef<Mission[]>([]);
   const [running, setRunning] = useState(false);
-  const [bubble, setBubble] = useState('เลือกท่าที่ชอบ แล้วกดปล่อยงูเลือกภารกิจให้เลยจ้ะ!');
+  const [bubble, setBubble] = useState('เลือกท่าที่ชอบ แล้วกดปล่อยงูเลือกโปรแกรมให้เลยจ้ะ!');
   const [mood, setMood] = useState<PaaUanMood>('happy');
-  const [mission, setMission] = useState<Mission | null>(null);
+  const [missions, setMissions] = useState<Mission[] | null>(null);
   const [round, setRound] = useState(0);
   const [newItem, setNewItem] = useState('');
 
-  // ท่าทั้งหมด (preset + เพิ่มเอง) และ pool ที่เลือกไว้ (ตามลำดับ = ช่องบนกระดาน)
   const all = useMemo(() => [...PRESET_EXERCISES, ...custom], [custom]);
   const pool = useMemo(
     () => all.filter((e) => selectedIds.includes(e.id)),
@@ -58,35 +67,30 @@ export default function ExerciseScreen() {
 
   function handleRoll() {
     if (pool.length < 2 || running) return;
-    setMission(null);
+    setMissions(null);
     setRunning(true);
     const line = pickLine(spinningLines);
     setBubble(line.text);
     setMood(line.mood);
 
-    // สุ่มท่า → variant → จำนวน
-    const exIndex = pickIndex(pool);
-    const ex = pool[exIndex];
-    const variantIndex = randomInt(0, ex.variants.length - 1);
-    const variant = ex.variants[variantIndex];
-    const amountIndex = randomInt(0, variant.amounts.length - 1);
-
-    pending.current = {
-      ex,
-      amount: variant.amounts[amountIndex],
-      unit: UNIT_LABEL[variant.unit],
-    };
-    snakeRef.current?.roll({ exIndex, variantIndex, amountIndex });
+    // สุ่ม 3 ท่าไม่ซ้ำ (หรือเท่าที่มี) + จำนวนของแต่ละท่า
+    const targets = pickDistinct(pool.length, 3);
+    pending.current = targets.map((ti) => {
+      const ex = pool[ti];
+      const variant = ex.variants[randomInt(0, ex.variants.length - 1)];
+      const amount = variant.amounts[randomInt(0, variant.amounts.length - 1)];
+      return { ex, amount, unit: UNIT_LABEL[variant.unit] };
+    });
+    snakeRef.current?.roll(targets);
   }
 
   function onLand() {
-    const m = pending.current;
-    if (!m) return;
-    const missionText = `${m.ex.name} ${m.amount} ${m.unit}`;
-    const line = pickLine(exerciseLinesByMode[m.ex.mode], missionText);
+    const ms = pending.current;
+    if (ms.length === 0) return;
+    const line = pickLine(exerciseComboLines);
     setBubble(line.text);
     setMood(line.mood);
-    setMission(m);
+    setMissions(ms);
     setRound((r) => r + 1);
     setRunning(false);
   }
@@ -99,7 +103,7 @@ export default function ExerciseScreen() {
   return (
     <SafeAreaView style={styles.safe} edges={['bottom']}>
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-        <PaaUanBubble text={bubble} mood={mood} />
+        <PaaUanBubble text={bubble} mood={mood} pose="coachPoint" />
 
         {pool.length < 2 ? (
           <View style={styles.emptyBox}>
@@ -112,36 +116,48 @@ export default function ExerciseScreen() {
         )}
 
         <BigButton
-          label={running ? 'งูกำลังเลื้อย...' : 'ปล่อยงูเลย! 🐍'}
+          label={running ? 'งูกำลังเลื้อย... 🐍' : 'ปล่อยงูเลย! 🐍'}
           color={colors.orange}
           onPress={handleRoll}
           disabled={running || pool.length < 2}
         />
 
-        {mission && !running && (
+        {missions && !running && (
           <Animated.View key={round} entering={BounceIn.duration(600)}>
             <CaptureCard
               ref={cardRef}
               comment={bubble}
               mood={mood}
-              watermark="ภารกิจสุขภาพจากป้าอ้วน 💪"
+              pose="coach"
+              watermark="โปรแกรมสุขภาพจากป้าอ้วน 💪"
             >
-              <Text style={styles.missionBadge}>ภารกิจวันนี้</Text>
-              <Text style={styles.missionEmoji}>{mission.ex.emoji}</Text>
-              <Text style={styles.missionName}>{mission.ex.name}</Text>
-              <Text style={styles.missionAmount}>
-                {mission.amount} {mission.unit}
-              </Text>
+              <Text style={styles.missionBadge}>โปรแกรมวันนี้ ({missions.length} ท่า)</Text>
+              <View style={styles.missionList}>
+                {missions.map((m, i) => (
+                  <View key={i} style={styles.missionRow}>
+                    <Text style={styles.missionEmoji}>{m.ex.emoji}</Text>
+                    <View style={styles.missionInfo}>
+                      <Text style={styles.missionName}>
+                        {i + 1}. {m.ex.name}{' '}
+                        <Text style={styles.missionAmount}>
+                          {m.amount} {m.unit}
+                        </Text>
+                      </Text>
+                      {m.ex.howto && <Text style={styles.missionHowto}>ป้าบอก: {m.ex.howto}</Text>}
+                    </View>
+                  </View>
+                ))}
+              </View>
             </CaptureCard>
           </Animated.View>
         )}
 
-        {mission && !running && <ShareButton targetRef={cardRef} />}
+        {missions && !running && <ShareButton targetRef={cardRef} />}
 
         {/* เลือกท่า จัดกลุ่มตามโหมด */}
         <View style={styles.manageBox}>
           <Text style={styles.manageTitle}>เลือกท่าออกกำลังกาย ({pool.length})</Text>
-          <Text style={styles.hint}>แตะเพื่อเปิด/ปิดท่าในกระดาน</Text>
+          <Text style={styles.hint}>แตะเพื่อเปิด/ปิดท่าในกระดาน (สุ่มออกมา 3 ท่าต่อครั้ง)</Text>
 
           {MODE_ORDER.map((mode) => {
             const items = all.filter((e) => e.mode === mode);
@@ -152,7 +168,7 @@ export default function ExerciseScreen() {
                 <View style={styles.chips}>
                   {items.map((ex) => {
                     const on = selectedIds.includes(ex.id);
-                    const isCustom = ex.id.startsWith('custom-');
+                    const isCustom = ex.mode === 'custom';
                     return (
                       <Pressable
                         key={ex.id}
@@ -178,7 +194,7 @@ export default function ExerciseScreen() {
           <View style={styles.addRow}>
             <TextInput
               style={styles.input}
-              placeholder="เพิ่มท่าของตัวเอง..."
+              placeholder="เพิ่มท่าของตัวเอง (นับเป็นนาที)..."
               placeholderTextColor={colors.muted}
               value={newItem}
               onChangeText={setNewItem}
@@ -208,21 +224,26 @@ const styles = StyleSheet.create({
   },
   missionBadge: {
     fontFamily: fonts.bold,
-    fontSize: fontSize.sm,
+    fontSize: fontSize.md,
     color: colors.orange,
+    textAlign: 'center',
   },
-  missionEmoji: { fontSize: 52 },
+  missionList: { alignSelf: 'stretch', gap: 12, marginTop: 4 },
+  missionRow: { flexDirection: 'row', gap: 10, alignItems: 'flex-start' },
+  missionEmoji: { fontSize: 32 },
+  missionInfo: { flex: 1, gap: 2 },
   missionName: {
     fontFamily: fonts.bold,
-    fontSize: fontSize.xl,
+    fontSize: fontSize.md,
     color: colors.ink,
-    textAlign: 'center',
+    lineHeight: 26,
   },
-  missionAmount: {
-    fontFamily: fonts.bold,
-    fontSize: fontSize.xxl,
-    color: colors.orange,
-    textAlign: 'center',
+  missionAmount: { color: colors.orange },
+  missionHowto: {
+    fontFamily: fonts.regular,
+    fontSize: fontSize.xs,
+    color: colors.muted,
+    lineHeight: 20,
   },
   manageBox: { ...cartoonBox(colors.white, 4), padding: 16, gap: 12 },
   manageTitle: { fontFamily: fonts.bold, fontSize: fontSize.lg, color: colors.ink },

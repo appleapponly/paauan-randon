@@ -29,7 +29,7 @@ export const useExerciseStore = create<ExerciseState>()(
         });
       },
 
-      // เพิ่มท่าเอง — ตั้งค่าเริ่มต้นเป็น strength นับ "ครั้ง"
+      // เพิ่มท่าเอง — เข้าหมวด custom (รูปดาว), นับเป็น "นาที" ทั้งหมด
       addCustom: (name) => {
         const trimmed = name.trim();
         if (!trimmed) return;
@@ -38,8 +38,8 @@ export const useExerciseStore = create<ExerciseState>()(
           id,
           name: trimmed,
           emoji: '⭐',
-          mode: 'strength',
-          variants: [{ unit: 'reps', amounts: [10, 15, 20, 25, 30] }],
+          mode: 'custom',
+          variants: [{ unit: 'min', amounts: [5, 10, 15, 20, 30] }],
         };
         set({ custom: [...get().custom, ex], selectedIds: [...get().selectedIds, id] });
       },
