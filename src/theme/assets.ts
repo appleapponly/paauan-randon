@@ -25,6 +25,10 @@ export const paaUanPoses = {
   dizzy: require('../../assets/images/paa-uan-dizzy.png'), // 😵‍💫 เวียนหัว ดาวหมุน
   fortune: require('../../assets/images/paa-uan-fortune.png'), // 🔮 หมอดู ลูกแก้ว
   fashion: require('../../assets/images/paa-uan-fashion.png'), // 😎 แฟชั่น แว่นดำ เครื่องเพชร
+  coach: require('../../assets/images/paa-uan-coach.png'), // 🏃 โค้ช โบกมือ นกหวีด (หมวดสุขภาพ)
+  coachPoint: require('../../assets/images/paa-uan-coach-point.png'), // 📋 โค้ช ถือกระดานแทคติก ชี้ (หมวดสุขภาพ)
+  studyRead: require('../../assets/images/paa-uan-study-read.png'), // 📖 คาดผ้า "เอาจริง!" อ่านหนังสือ (การเรียน)
+  studyWrite: require('../../assets/images/paa-uan-study-write.png'), // ✍️ คาดผ้า นั่งโต๊ะเขียน (การเรียน)
 } as const;
 
 export type PaaUanPose = keyof typeof paaUanPoses;

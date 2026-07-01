@@ -65,7 +65,7 @@ export default function CleanFoodScreen() {
   return (
     <SafeAreaView style={styles.safe} edges={['bottom']}>
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-        <PaaUanBubble text={bubble} mood={mood} pose={result && !spinning ? 'satisfied' : 'happy'} />
+        <PaaUanBubble text={bubble} mood={mood} pose={result && !spinning ? 'satisfied' : 'coach'} />
 
         {menu.length < 2 ? (
           <View style={styles.emptyBox}>
