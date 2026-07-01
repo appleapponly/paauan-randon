@@ -34,7 +34,8 @@ SplashScreen.preventAutoHideAsync();
 function GlobalBottomBanner() {
   const pathname = usePathname();
   // ซ่อนบนหน้าหลัก (มีแบนเนอร์คั่นหมวดเอง) และหน้าซื้อ Pro (โชว์โฆษณาตรงนั้นแปลก)
-  if (pathname === '/' || pathname === '/index' || pathname === '/pro') return null;
+  if (pathname === '/' || pathname === '/index' || pathname === '/pro' || pathname === '/timer')
+    return null;
   return <AdBanner />;
 }
 
@@ -97,6 +98,11 @@ export default function RootLayout() {
             <Stack.Screen name="randomizers/number" options={{ title: 'สุ่มตัวเลข' }} />
             <Stack.Screen name="randomizers/color" options={{ title: 'สุ่มสี' }} />
             <Stack.Screen name="randomizers/custom-wheel" options={{ title: 'วงล้อของฉัน 🎡' }} />
+            <Stack.Screen name="randomizers/exercise" options={{ title: 'สุ่มออกกำลังกาย' }} />
+            <Stack.Screen name="randomizers/clean-food" options={{ title: 'สุ่มเมนูคลีน' }} />
+            <Stack.Screen name="randomizers/study" options={{ title: 'สุ่มการเรียน' }} />
+            <Stack.Screen name="randomizers/break-time" options={{ title: 'สุ่มเวลาพัก' }} />
+            <Stack.Screen name="timer" options={{ headerShown: false }} />
             <Stack.Screen name="pro" options={{ title: 'หลานรักป้า ❤️' }} />
           </Stack>
           <GlobalBottomBanner />
