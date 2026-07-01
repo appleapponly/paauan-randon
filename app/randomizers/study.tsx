@@ -79,9 +79,8 @@ export default function StudyScreen() {
 
     // เลือก 2 ภารกิจไม่ซ้ำ
     const winners = shuffle(pool).slice(0, 2);
-    // ช่องบันได = ผู้ชนะ + ตัวลวงบางส่วน (รวมไม่เกิน 5) สลับลำดับ
-    const extra = shuffle(pool.filter((t) => !winners.includes(t))).slice(0, 3);
-    const display = shuffle([...winners, ...extra]);
+    // ช่องบันได = ภารกิจที่เลือกไว้ "ทั้งหมด" (สลับลำดับ) — โชว์ครบทุกอัน
+    const display = shuffle([...pool]);
     const opts = display.map((t) => t.text);
     const targets = winners.map((w) => display.findIndex((d) => d.id === w.id));
 
@@ -286,7 +285,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  stepText: { fontFamily: fonts.bold, fontSize: 22, color: colors.ink },
+  stepText: {
+    fontFamily: fonts.bold,
+    fontSize: 22,
+    lineHeight: 26,
+    color: colors.ink,
+    includeFontPadding: false,
+    textAlign: 'center',
+    textAlignVertical: 'center',
+  },
   timeValue: {
     fontFamily: fonts.bold,
     fontSize: fontSize.md,

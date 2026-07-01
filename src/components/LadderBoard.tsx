@@ -22,10 +22,10 @@ interface Props {
 }
 
 const TOP_PAD = 16;
-const LEVELS = 5; // จำนวนชั้นคานขวาง
-const LEVEL_GAP = 42;
+const LEVELS = 9; // จำนวนชั้นคานขวาง (มากขึ้น = ลุ้นนานขึ้น)
+const LEVEL_GAP = 34;
 const BOTTOM_PAD = 20;
-const STEP_MS = 260; // เวลาต่อ 1 ช่วงเส้น (ช้าลง = ลุ้นนาน)
+const STEP_MS = 240; // เวลาต่อ 1 ช่วงเส้น (ช้าลง = ลุ้นนาน)
 const MARK = 16;
 
 export const LadderBoard = forwardRef<LadderHandle, Props>(
@@ -242,7 +242,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 3,
   },
-  slotText: { fontFamily: fonts.medium, fontSize: 10, color: colors.ink, textAlign: 'center' },
+  slotText: { fontFamily: fonts.medium, fontSize: 9, color: colors.ink, textAlign: 'center' },
   slotTextWin: { fontFamily: fonts.bold, color: colors.white },
   orderBadge: {
     position: 'absolute',
