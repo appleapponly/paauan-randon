@@ -231,12 +231,13 @@ const styles = StyleSheet.create({
   missionList: { alignSelf: 'stretch', gap: 12, marginTop: 4 },
   missionRow: { flexDirection: 'row', gap: 10, alignItems: 'flex-start' },
   missionEmoji: { fontSize: 32 },
-  missionInfo: { flex: 1, gap: 2 },
+  missionInfo: { flex: 1, gap: 2, paddingTop: 2 },
   missionName: {
     fontFamily: fonts.bold,
     fontSize: fontSize.md,
     color: colors.ink,
-    lineHeight: 26,
+    lineHeight: 30, // เผื่อสระบน/วรรณยุกต์ไม่ถูกตัด
+    includeFontPadding: true,
   },
   missionAmount: { color: colors.orange },
   missionHowto: {

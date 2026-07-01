@@ -8,7 +8,7 @@
  * ใช้ RN Animated (useNativeDriver, translateX/Y) แบบเดียวกับ PinballDraw
  * เรียกผ่าน ref: snakeRef.current?.roll([i0, i1, i2])
  */
-import { forwardRef, useImperativeHandle, useMemo, useRef, useState } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import {
   Animated,
   Easing,
@@ -78,14 +78,23 @@ export const SnakeBoard = forwardRef<SnakeHandle, Props>(
     // เก็บไว้ใน state เพื่อสร้าง interpolation ให้หัวงูเลื่อนตาม (เริ่มต้น 2 จุด กัน interpolate error)
     const [seq, setSeq] = useState<number[]>([0, 1]);
 
+    // ถ้า pool เปลี่ยนขนาด (เพิ่ม/ลบท่า) ระหว่างหรือหลังสุ่ม → รีเซ็ตลำดับ กัน index เกินขอบ centers (แอปเด้งปิด)
+    useEffect(() => {
+      setSeq([0, 1]);
+      setLanded([]);
+    }, [n]);
+
+    // clamp index กัน seq ค้างค่าเก่าเกินจำนวนช่องปัจจุบัน (กัน centers[i] undefined → crash)
+    const safe = (i: number) => Math.min(Math.max(i, 0), grid.centers.length - 1);
+
     // แปลง t (0..seq.length-1) → พิกัดหัวงู
     const headX = t.interpolate({
       inputRange: seq.map((_, i) => i),
-      outputRange: seq.map((i) => grid.centers[i].x - HEAD / 2),
+      outputRange: seq.map((i) => grid.centers[safe(i)].x - HEAD / 2),
     });
     const headY = t.interpolate({
       inputRange: seq.map((_, i) => i),
-      outputRange: seq.map((i) => grid.centers[i].y - HEAD / 2),
+      outputRange: seq.map((i) => grid.centers[safe(i)].y - HEAD / 2),
     });
 
     useImperativeHandle(ref, () => ({
@@ -93,19 +102,27 @@ export const SnakeBoard = forwardRef<SnakeHandle, Props>(
         const tg = targets.filter((x) => x >= 0 && x < n);
         if (tg.length === 0) return;
 
-        // ---- สร้างลำดับวิ่งวน (ping-pong) ----
-        const L = Math.max(2 * n, 14); // จำนวนช่องที่วิ่งผ่านตอนลุ้น (ยิ่งมาก = ผ่านหลายช่อง)
-        const walk: number[] = [];
+        // ---- สร้างลำดับวิ่งวน (ping-pong) ให้ "จบพอดี" ที่ช่องเป้าหมายแรก ----
+        // จะได้ชะลอแล้วหยุดนิ่งบนช่องนั้นเลย ไม่กระตุกเด้งไปหาเป้าหมายทีหลัง
+        const first = tg[0];
+        const minSteps = Math.max(2 * n, 16);
+        const cap = minSteps + 4 * n + 6;
+        const walk: number[] = [0];
         let i = 0;
         let dir = 1;
-        for (let s = 0; s <= L; s++) {
-          walk.push(i);
+        let steps = 0;
+        while (true) {
           if (n > 1) {
             if (i + dir > n - 1 || i + dir < 0) dir *= -1;
             i += dir;
           }
+          walk.push(i);
+          steps++;
+          if ((steps >= minSteps && i === first) || steps > cap) break;
         }
-        const full = [...walk, ...tg]; // ต่อท้ายด้วยช่องเป้าหมายทีละช่อง
+        const L = walk.length - 1; // จบที่ช่องเป้าหมายแรกพอดี
+        const rest = tg.slice(1); // ช่องเป้าหมายที่เหลือ (2-3) เผยต่อทีละช่อง
+        const full = [...walk, ...rest];
         setSeq(full);
         setLanded([]);
         setRunning(true);
@@ -113,29 +130,32 @@ export const SnakeBoard = forwardRef<SnakeHandle, Props>(
 
         // ให้ interpolation (ที่อิง seq ใหม่) ผูกก่อน แล้วค่อยเริ่มวิ่ง
         setTimeout(() => {
-          // ช่วงลุ้น: วิ่งจาก 0 → L ช้าลงเรื่อย ๆ
+          // ช่วงลุ้น: วิ่งจาก 0 → L ชะลอลงเรื่อย ๆ (quart = ชะลอแรง) แล้วหยุดนิ่งบนเป้าหมายแรก
           Animated.timing(t, {
             toValue: L,
             duration: LOOP_MS,
-            easing: Easing.out(Easing.cubic),
+            easing: Easing.out(Easing.poly(4)),
             useNativeDriver: true,
           }).start(() => {
-            // ลงช่องเป้าหมายทีละช่อง
+            setLanded([first]);
+            // เผยช่องเป้าหมายที่เหลือทีละช่อง
             const landStep = (k: number) => {
-              if (k >= tg.length) {
+              if (k >= rest.length) {
                 setRunning(false);
                 onLand();
                 return;
               }
-              Animated.timing(t, {
-                toValue: L + 1 + k,
-                duration: LAND_MS,
-                easing: Easing.inOut(Easing.quad),
-                useNativeDriver: true,
-              }).start(() => {
-                setLanded((prev) => [...prev, tg[k]]);
-                setTimeout(() => landStep(k + 1), 280);
-              });
+              setTimeout(() => {
+                Animated.timing(t, {
+                  toValue: L + 1 + k,
+                  duration: LAND_MS,
+                  easing: Easing.inOut(Easing.quad),
+                  useNativeDriver: true,
+                }).start(() => {
+                  setLanded((prev) => [...prev, rest[k]]);
+                  landStep(k + 1);
+                });
+              }, 320);
             };
             landStep(0);
           });
