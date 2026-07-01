@@ -3,8 +3,8 @@
  * - Hero ชมพู: ชื่อแอป + บับเบิลทักทาย + รูปป้าชี้นิ้วล้นกรอบมุมขวาล่าง
  * - แต่ละหมวด: ป้ายพิลล์สีประจำหมวด + ตารางการ์ด 2 คอลัมน์ (อิโมจิใหญ่)
  */
-import { useMemo } from 'react';
-import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useMemo, useRef } from 'react';
+import { Alert, Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { CATEGORIES } from '@/data/categories';
@@ -25,13 +25,28 @@ const CATEGORY_TAG: Record<string, string> = {
   health: '💪',
   fun: '🎉',
   group: '👯',
-  study: '📚',
+  study: '🎓',
   basic: '🧰',
 };
 
 export default function HomeScreen() {
   const router = useRouter();
   const isPro = useProStore((s) => s.isPro);
+  const setPro = useProStore((s) => s.setPro);
+
+  // 🕹️ ปุ่มลับ: แตะแถบ "ป้าอ้วนรอสุ่มให้..." 5 ครั้ง → กลับ Free mode (ปิดสถานะ Pro ในเครื่อง ไว้ทดสอบโฆษณา)
+  const tapCount = useRef(0);
+  const tapTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  function secretTap() {
+    tapCount.current += 1;
+    if (tapTimer.current) clearTimeout(tapTimer.current);
+    tapTimer.current = setTimeout(() => (tapCount.current = 0), 1500); // ต้องแตะรัว ๆ ภายใน 1.5 วิ
+    if (tapCount.current >= 5) {
+      tapCount.current = 0;
+      setPro(false);
+      Alert.alert('Free mode', 'กลับสู่โหมดฟรีแล้วจ้ะ (โฆษณากลับมาแสดง)');
+    }
+  }
 
   // สุ่มคำทักทายครั้งเดียวตอนเปิดหน้า (useMemo กันสุ่มใหม่ทุกครั้งที่ render)
   const greeting = useMemo(() => pickLine(openingLines), []);
@@ -97,7 +112,9 @@ export default function HomeScreen() {
             </Pressable>
           )}
 
-          <Text style={styles.footer}>ป้าอ้วนรอสุ่มให้อยู่นะจ๊ะ 👵</Text>
+          <Pressable onPress={secretTap}>
+            <Text style={styles.footer}>ป้าอ้วนรอสุ่มให้อยู่นะจ๊ะ 👵</Text>
+          </Pressable>
         </View>
       </ScrollView>
     </View>

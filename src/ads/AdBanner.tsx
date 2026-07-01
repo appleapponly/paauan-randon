@@ -28,6 +28,6 @@ const styles = StyleSheet.create({
   wrap: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 6,
+    // ไม่ใส่ padding/พื้นหลัง — ให้เหลือแค่ตัวโฆษณา ไม่มีแถบครีมค้างใต้จอ
   },
 });
