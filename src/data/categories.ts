@@ -47,6 +47,15 @@ export const CATEGORIES: Category[] = [
     ],
   },
   {
+    id: 'health',
+    title: 'สุขภาพ',
+    color: colors.orange,
+    items: [
+      { id: 'exercise', title: 'สุ่มออกกำลังกาย', emoji: '🏃', route: '/randomizers/exercise', ready: true },
+      { id: 'cleanfood', title: 'สุ่มเมนูคลีน', emoji: '🥗', route: '/randomizers/clean-food', ready: true },
+    ],
+  },
+  {
     id: 'fun',
     title: 'สนุก / ปาร์ตี้',
     color: colors.gold,
@@ -64,6 +73,15 @@ export const CATEGORIES: Category[] = [
       { id: 'lucky', title: 'จับฉลากรายชื่อ', emoji: '🎁', route: '/randomizers/lucky-draw', ready: true },
       { id: 'teams', title: 'แบ่งทีม', emoji: '👥', route: '/randomizers/teams', ready: true },
       { id: 'queue', title: 'สุ่มลำดับคิว', emoji: '🔢', route: '/randomizers/queue', ready: true },
+    ],
+  },
+  {
+    id: 'study',
+    title: 'การเรียน',
+    color: colors.ocean,
+    items: [
+      { id: 'studytask', title: 'สุ่มการเรียน', emoji: '📚', route: '/randomizers/study', ready: true },
+      { id: 'breaktime', title: 'สุ่มเวลาพัก', emoji: '☕', route: '/randomizers/break-time', ready: true },
     ],
   },
   {

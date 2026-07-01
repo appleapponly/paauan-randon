@@ -22,8 +22,10 @@ import { textOn } from '@/theme/styles';
 const CATEGORY_TAG: Record<string, string> = {
   decide: '🤔',
   fortune: '🔮',
+  health: '💪',
   fun: '🎉',
   group: '👯',
+  study: '📚',
   basic: '🧰',
 };
 
