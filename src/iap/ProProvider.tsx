@@ -33,12 +33,20 @@ export function ProProvider({ children }: { children: React.ReactNode }) {
     subscriptions,
     fetchProducts,
     requestPurchase,
+    finishTransaction,
     getActiveSubscriptions,
     hasActiveSubscriptions,
   } = useIAP({
-    onPurchaseSuccess: () => {
+    onPurchaseSuccess: async (purchase) => {
       // ซื้อ/ต่ออายุสำเร็จ → ปลด Pro ทันที
       setPro(true);
+      // ⚠️ สำคัญ: subscription ต้อง "acknowledge" ภายใน 3 วัน ไม่งั้น Google คืนเงิน/ยกเลิกอัตโนมัติ
+      //    (อาการ: "purchase was cancelled because it was not acknowledged")
+      try {
+        await finishTransaction({ purchase, isConsumable: false });
+      } catch {
+        /* acknowledge ไม่ได้ก็ไม่ปิดสิทธิ์ผู้ใช้ ครั้งถัดไปที่เปิดแอปจะเช็คซ้ำ */
+      }
     },
     onPurchaseError: (e) => {
       if (e?.code !== 'user-cancelled') {
