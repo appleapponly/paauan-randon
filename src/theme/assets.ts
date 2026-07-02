@@ -29,6 +29,14 @@ export const paaUanPoses = {
   coachPoint: require('../../assets/images/paa-uan-coach-point.png'), // 📋 โค้ช ถือกระดานแทคติก ชี้ (หมวดสุขภาพ)
   studyRead: require('../../assets/images/paa-uan-study-read.png'), // 📖 คาดผ้า "เอาจริง!" อ่านหนังสือ (การเรียน)
   studyWrite: require('../../assets/images/paa-uan-study-write.png'), // ✍️ คาดผ้า นั่งโต๊ะเขียน (การเรียน)
+  tea: require('../../assets/images/paa-uan-tea.png'), // 🍵 จิบชา คาดผ้า พักชิล
+  meditate: require('../../assets/images/paa-uan-meditate.png'), // 🧘 นั่งสมาธิ สงบ (พัก)
+  ponder: require('../../assets/images/paa-uan-ponder.png'), // 🤔 อ่านหนังสือแว่น ครุ่นคิด
+  knit: require('../../assets/images/paa-uan-knit.png'), // 🧶 ถักไหมพรม งานอดิเรก
+  veggie: require('../../assets/images/paa-uan-veggie.png'), // 🧺 ถือตะกร้าผัก (เมนูคลีน)
+  clap: require('../../assets/images/paa-uan-clap.png'), // 👏 ปรบมือดีใจ (ฉลอง/สุ่มรายชื่อ)
+  grocery: require('../../assets/images/paa-uan-grocery.png'), // 🛍️ ถือถุงจ่ายตลาด (เมนูคลีน)
+  fan: require('../../assets/images/paa-uan-fan.png'), // 🪭 พัดพัด นั่งชิล (พัก)
 } as const;
 
 export type PaaUanPose = keyof typeof paaUanPoses;

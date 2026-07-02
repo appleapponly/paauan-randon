@@ -65,7 +65,7 @@ export default function CleanFoodScreen() {
   return (
     <SafeAreaView style={styles.safe} edges={['bottom']}>
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-        <PaaUanBubble text={bubble} mood={mood} pose={result && !spinning ? 'satisfied' : 'coach'} />
+        <PaaUanBubble text={bubble} mood={mood} pose={result && !spinning ? 'veggie' : 'grocery'} />
 
         {menu.length < 2 ? (
           <View style={styles.emptyBox}>
@@ -99,7 +99,7 @@ export default function CleanFoodScreen() {
               ref={cardRef}
               comment={bubble}
               mood={mood}
-              pose="satisfied"
+              pose="veggie"
               watermark="กินคลีนกับป้าอ้วน 🥗❤️"
             >
               <Text style={styles.resultEmoji}>{getCleanEmoji(result)}</Text>

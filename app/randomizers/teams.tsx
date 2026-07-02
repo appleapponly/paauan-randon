@@ -49,7 +49,7 @@ export default function TeamsScreen() {
           <PaaUanBubble text="ใส่ชื่อ เลือกจำนวนทีม เดี๋ยวป้าแบ่งให้!" mood="happy" />
         ) : (
           <Animated.View key={round} entering={BounceIn.duration(600)}>
-            <CaptureCard ref={cardRef} comment={comment} mood={mood}>
+            <CaptureCard ref={cardRef} comment={comment} mood={mood} pose="clap">
               <View style={styles.teamsWrap}>
                 {teams.map((team, i) => (
                   <View

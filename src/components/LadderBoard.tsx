@@ -6,9 +6,11 @@
  * เรียกผ่าน ref: ladderRef.current?.run([slotA, slotB])
  */
 import { forwardRef, useImperativeHandle, useMemo, useRef, useState } from 'react';
-import { Animated, Easing, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import { Animated, Easing, Image, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { colors } from '@/theme/colors';
 import { fonts, fontSize } from '@/theme/typography';
+
+const HEAD_IMG = require('../../assets/images/paa-head.png'); // หน้าป้า ใช้แทนลูกบอลวิ่งบนบันได
 
 export interface LadderHandle {
   /** targets = ช่องผลลัพธ์ (index ใน options) ที่ต้องการให้เส้นไปจบ ไล่ทีละเส้น */
@@ -26,7 +28,7 @@ const LEVELS = 9; // จำนวนชั้นคานขวาง (มาก
 const LEVEL_GAP = 34;
 const BOTTOM_PAD = 20;
 const STEP_MS = 240; // เวลาต่อ 1 ช่วงเส้น (ช้าลง = ลุ้นนาน)
-const MARK = 16;
+const MARK = 30; // ขนาดหน้าป้าที่วิ่งบนบันได
 
 export const LadderBoard = forwardRef<LadderHandle, Props>(
   ({ options, accent, onLand }, ref) => {
@@ -194,12 +196,11 @@ export const LadderBoard = forwardRef<LadderHandle, Props>(
         {/* marker เดินตามเส้น */}
         {showMarker && (
           <Animated.View
-            style={[
-              styles.marker,
-              { backgroundColor: accent, transform: [{ translateX: markerX }, { translateY: markerY }] },
-            ]}
+            style={[styles.marker, { transform: [{ translateX: markerX }, { translateY: markerY }] }]}
             pointerEvents="none"
-          />
+          >
+            <Image source={HEAD_IMG} style={styles.markerImg} resizeMode="contain" />
+          </Animated.View>
         )}
 
         {running && <View style={styles.lock} pointerEvents="auto" />}
@@ -264,10 +265,8 @@ const styles = StyleSheet.create({
     left: 0,
     width: MARK,
     height: MARK,
-    borderRadius: MARK / 2,
-    borderWidth: 2,
-    borderColor: colors.ink,
     zIndex: 5,
   },
+  markerImg: { width: '100%', height: '100%' },
   lock: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 },
 });

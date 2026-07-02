@@ -69,7 +69,7 @@ export default function LuckyDrawScreen() {
 
         {winner !== null && !dropping && (
           <Animated.View key={round} entering={BounceIn.duration(600)}>
-            <CaptureCard ref={cardRef} comment={comment} mood={mood}>
+            <CaptureCard ref={cardRef} comment={comment} mood={mood} pose="clap">
               <Text style={styles.emoji}>🎉</Text>
               <Text style={styles.label}>ผู้โชคดีคือ</Text>
               <Text style={styles.name}>{winner}</Text>

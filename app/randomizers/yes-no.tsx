@@ -34,7 +34,7 @@ export default function YesNoScreen() {
     <SafeAreaView style={styles.safe} edges={['bottom']}>
       <ScrollView contentContainerStyle={styles.content}>
         {answer === null ? (
-          <PaaUanBubble text="มีอะไรอยากถามป้า? กดปุ่มเลยจ้า" mood="happy" />
+          <PaaUanBubble text="มีอะไรอยากถามป้า? กดปุ่มเลยจ้า" mood="happy" pose="ponder" />
         ) : (
           <Animated.View key={round} entering={BounceIn.duration(600)}>
             <CaptureCard

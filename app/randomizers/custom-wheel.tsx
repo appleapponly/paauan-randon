@@ -97,7 +97,7 @@ export default function CustomWheelScreen() {
   return (
     <SafeAreaView style={styles.safe} edges={['bottom']}>
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-        <PaaUanBubble text={bubble} mood={mood} />
+        <PaaUanBubble text={bubble} mood={mood} pose="knit" />
 
         {items.length < 2 ? (
           <View style={styles.emptyBox}>
@@ -130,6 +130,7 @@ export default function CustomWheelScreen() {
               ref={cardRef}
               comment={bubble}
               mood={mood}
+              pose="knit"
               watermark="วงล้อของฉัน · ป้าอ้วนสุ่มให้ ❤️"
             >
               <Text style={styles.resultName}>{result}</Text>

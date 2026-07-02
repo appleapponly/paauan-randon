@@ -43,7 +43,7 @@ export default function QueueScreen() {
           <PaaUanBubble text="ใส่ชื่อ เดี๋ยวป้าจัดคิวให้ ใครก่อนใครหลัง!" mood="happy" />
         ) : (
           <Animated.View key={round} entering={BounceIn.duration(600)}>
-            <CaptureCard ref={cardRef} comment={comment} mood={mood}>
+            <CaptureCard ref={cardRef} comment={comment} mood={mood} pose="clap">
               <View style={styles.list}>
                 {order.map((name, i) => (
                   <View key={name} style={styles.row}>

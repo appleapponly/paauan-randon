@@ -80,7 +80,7 @@ export const CATEGORIES: Category[] = [
     title: 'การเรียน',
     color: colors.ocean,
     items: [
-      { id: 'studytask', title: 'สุ่มการเรียน', emoji: '📚', route: '/randomizers/study', ready: true },
+      { id: 'studytask', title: 'สุ่มการเรียน', emoji: '🧠', route: '/randomizers/study', ready: true },
       { id: 'breaktime', title: 'สุ่มเวลาพัก', emoji: '☕', route: '/randomizers/break-time', ready: true },
     ],
   },
