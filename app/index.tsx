@@ -3,7 +3,7 @@
  * - Hero ชมพู: ชื่อแอป + บับเบิลทักทาย + รูปป้าชี้นิ้วล้นกรอบมุมขวาล่าง
  * - แต่ละหมวด: ป้ายพิลล์สีประจำหมวด + ตารางการ์ด 2 คอลัมน์ (อิโมจิใหญ่)
  */
-import { useMemo, useRef } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { Alert, Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
@@ -52,12 +52,16 @@ export default function HomeScreen() {
   // สุ่มคำทักทายครั้งเดียวตอนเปิดหน้า (useMemo กันสุ่มใหม่ทุกครั้งที่ render)
   const greeting = useMemo(() => pickLine(openingLines), []);
 
+  // นิ้วแตะรูบิคอยู่ → ล็อกไม่ให้จอเลื่อน (จะได้บิดแนวตั้งได้ ไม่แย่งกับ ScrollView)
+  const [scrollEnabled, setScrollEnabled] = useState(true);
+
   return (
     <View style={styles.root}>
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
+        scrollEnabled={scrollEnabled}
       >
         {/* ===== Hero ชมพู ===== */}
         <SafeAreaView edges={['top']} style={styles.hero}>
@@ -79,8 +83,10 @@ export default function HomeScreen() {
             <View style={[styles.catPill, { backgroundColor: colors.ink }]}>
               <Text style={[styles.catPillText, { color: colors.white }]}>🧩 รูบิคของฉัน</Text>
             </View>
-            <RubikBoard />
-            <Text style={styles.rubikHint}>ปัดขึ้นลง-ซ้ายขวาเพื่อบิดเปลี่ยนหน้า · แตะเพื่อเข้าสุ่ม</Text>
+            <RubikBoard onTouchingChange={(t) => setScrollEnabled(!t)} />
+            <Text style={styles.rubikHint}>
+              ปัดขึ้นลง-ซ้ายขวาเพื่อบิดเปลี่ยนหน้า · แตะหน้าไหนก็ได้ (รวมด้านบน/ขวา) เพื่อเข้าสุ่ม
+            </Text>
           </View>
 
           {CATEGORIES.map((cat, ci) => (

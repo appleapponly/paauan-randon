@@ -1,12 +1,13 @@
 /**
- * 🧩 RubikBoard — รูบิค 2x2 บนหน้า Home
+ * 🧩 RubikBoard — รูบิค 2x2 แบบ 3D บนหน้า Home
  *
- * แต่ละช่อง = เครื่องสุ่ม 1 อัน · ปัดแถวแนวนอน / คอลัมน์แนวตั้ง เพื่อ "บิด" เปลี่ยนหน้า
- * (ลากตามนิ้วลื่น ๆ แล้ว snap เหมือนรูบิคจริง) · แตะช่องเพื่อเข้าหน้าสุ่มนั้น
+ * เห็น 3 ด้านเหมือนลูกบาศก์จริง: หน้าตรง (2x2) + ด้านบน + ด้านขวา (skew 45°)
+ * - หน้าตรง: ปัดแนวนอน = บิดแถว / แนวตั้ง = บิดคอลัมน์ (ลากตามนิ้ว + สะบัดได้)
+ * - ด้านบน = ตัวอย่างหน้าที่จะหมุนเข้ามาเมื่อปัดลง · ด้านขวา = เมื่อปัดซ้าย
+ * - แตะได้ทุกด้าน (รวมบน/ขวา) เพื่อเปิดหน้าสุ่มนั้น
+ * - ระหว่างนิ้วแตะในรูบิค จะล็อกไม่ให้จอเลื่อน (แจ้งผ่าน onTouchingChange)
  *
- * ต่างจากรูบิคจริง: ช่องที่หมุนเข้ามาใหม่จะ "ข้าม" อันที่โชว์อยู่แล้ว
- * → ไม่มีหน้าซ้ำ และผู้ใช้จัดหน้าไหนมาอยู่ด้วยกันก็ได้ทุกแบบ
- *
+ * ต่างจากรูบิคจริง: หน้าที่หมุนเข้ามาจะ "ข้าม" หน้าที่โชว์อยู่ → ไม่ซ้ำ จัดคู่ไหนก็ได้
  * ตำแหน่งช่อง: [0]=บนซ้าย [1]=บนขวา [2]=ล่างซ้าย [3]=ล่างขวา (persist ใน useRubikStore)
  */
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -47,13 +48,20 @@ const ALL: Tile[] = CATEGORIES.flatMap((c) =>
 
 type Active = { axis: 'row' | 'col'; index: 0 | 1 } | null;
 
-const SWIPE_START = 8; // ระยะขยับก่อนเริ่มนับเป็นการบิด (กันชนกับการแตะ)
-const COMMIT_RATIO = 0.3; // ลากเกิน 30% ของช่อง = บิดสำเร็จ
+const SWIPE_START = 4; // ขยับนิดเดียวก็เริ่มบิดได้เลย (จอถูกล็อกไม่เลื่อนอยู่แล้ว)
+const COMMIT_RATIO = 0.25; // ลากเกิน 25% ของช่อง = บิดสำเร็จ
+const FLING_V = 0.3; // สะบัดเร็วเกินนี้ = บิดสำเร็จแม้ลากสั้น (px/ms)
+const DEPTH = 30; // ความลึกด้านบน/ขวาของลูกบาศก์
 
-export function RubikBoard() {
+interface Props {
+  /** แจ้ง parent ว่านิ้วกำลังแตะรูบิคอยู่ (ให้ล็อก ScrollView) */
+  onTouchingChange?: (touching: boolean) => void;
+}
+
+export function RubikBoard({ onTouchingChange }: Props) {
   const router = useRouter();
   const { width } = useWindowDimensions();
-  const board = Math.min(width - 36, 300);
+  const board = Math.min(width - 36 - DEPTH, 300);
   const tile = board / 2;
 
   const facesIds = useRubikStore((s) => s.faces);
@@ -120,23 +128,19 @@ export function RubikBoard() {
       const i0 = a.index * 2;
       const [x, y] = [f[i0], f[i0 + 1]];
       if (dir > 0) {
-        // ลากไปขวา → หน้าใหม่เข้าซ้าย
-        f[i0] = prevOf(x).id;
+        f[i0] = prevOf(x).id; // ลากขวา → หน้าใหม่เข้าซ้าย
         f[i0 + 1] = x;
       } else {
-        // ลากไปซ้าย → หน้าใหม่เข้าขวา
-        f[i0] = y;
+        f[i0] = y; // ลากซ้าย → หน้าใหม่เข้าขวา
         f[i0 + 1] = nextOf(y).id;
       }
     } else {
       const [t, b] = [f[a.index], f[a.index + 2]];
       if (dir > 0) {
-        // ลากลง → หน้าใหม่เข้าบน
-        f[a.index] = prevOf(t).id;
+        f[a.index] = prevOf(t).id; // ลากลง → หน้าใหม่เข้าบน
         f[a.index + 2] = t;
       } else {
-        // ลากขึ้น → หน้าใหม่เข้าล่าง
-        f[a.index] = b;
+        f[a.index] = b; // ลากขึ้น → หน้าใหม่เข้าล่าง
         f[a.index + 2] = nextOf(b).id;
       }
     }
@@ -151,7 +155,6 @@ export function RubikBoard() {
   const pan = useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: () => false,
-      // ขยับเกิน threshold ค่อยยึด gesture (แตะเฉย ๆ ยังกดเข้าหน้าสุ่มได้)
       onMoveShouldSetPanResponderCapture: (_e, g) =>
         Math.abs(g.dx) > SWIPE_START || Math.abs(g.dy) > SWIPE_START,
       onPanResponderTerminationRequest: () => false,
@@ -181,12 +184,14 @@ export function RubikBoard() {
         if (!a) return;
         const s = tileRef.current;
         const v = clampDrag(a.axis === 'row' ? g.dx : g.dy);
-        if (Math.abs(v) > s * COMMIT_RATIO) {
-          const dir: 1 | -1 = v > 0 ? 1 : -1;
-          // ไหลต่อให้สุดช่อง แล้วค่อยสลับหน้า (ภาพต่อเนื่องไม่กระโดด)
+        const vel = a.axis === 'row' ? g.vx : g.vy;
+        // ลากพอ หรือ "สะบัด" เร็ว = บิดสำเร็จ
+        const shouldCommit = Math.abs(v) > s * COMMIT_RATIO || Math.abs(vel) > FLING_V;
+        if (shouldCommit && (v !== 0 || vel !== 0)) {
+          const dir: 1 | -1 = (Math.abs(v) > 2 ? v : vel) > 0 ? 1 : -1;
           Animated.timing(drag, {
             toValue: dir * s,
-            duration: 110,
+            duration: 90,
             useNativeDriver: true,
           }).start(() => {
             commit(a, dir);
@@ -198,8 +203,8 @@ export function RubikBoard() {
           Animated.spring(drag, {
             toValue: 0,
             useNativeDriver: true,
-            speed: 30,
-            bounciness: 6,
+            speed: 40,
+            bounciness: 5,
           }).start(() => {
             activeRef.current = null;
             setActive(null);
@@ -240,81 +245,186 @@ export function RubikBoard() {
     return active.axis === 'row' ? row === active.index : col === active.index;
   };
 
+  // ด้านบน = หน้าที่จะเข้ามาเมื่อ "ปัดลง" ของแต่ละคอลัมน์ · ด้านขวา = เมื่อ "ปัดซ้าย" ของแต่ละแถว
+  const topTiles = [prevOf(faces[0]), prevOf(faces[1])];
+  const rightTiles = [nextOf(faces[1]), nextOf(faces[3])];
+
   return (
     <View
-      ref={boardRef}
-      style={[styles.board, { width: board, height: board }]}
-      onLayout={() => {
-        // เก็บพิกัดกระดานบนจอ ไว้คำนวณว่านิ้วเริ่มลากที่แถว/คอลัมน์ไหน
-        boardRef.current?.measureInWindow((x, y) => {
-          boardXY.current = { x, y };
-        });
-      }}
-      {...pan.panHandlers}
+      style={{ width: board + DEPTH, height: board + DEPTH, alignSelf: 'center' }}
+      onTouchStart={() => onTouchingChange?.(true)}
+      onTouchEnd={() => onTouchingChange?.(false)}
+      onTouchCancel={() => onTouchingChange?.(false)}
     >
-      {/* ช่องนิ่ง (นอกแถวที่กำลังบิด) */}
-      {faces.map((id, idx) =>
-        inActive(idx)
-          ? null
-          : renderTile(item(id), (idx & 1) * tile, (idx >> 1) * tile, `s-${idx}`)
-      )}
+      {/* ===== ด้านบนของลูกบาศก์ (เอียง 45° ชนหน้าตรงพอดี) ===== */}
+      <View
+        style={[
+          styles.topFace,
+          {
+            width: board,
+            height: DEPTH,
+            transform: [{ translateX: DEPTH / 2 }, { skewX: '-45deg' }],
+          },
+        ]}
+      >
+        {topTiles.map((t, i) => (
+          <Pressable
+            key={`top-${i}`}
+            style={[styles.sideTile, { backgroundColor: t.color }]}
+            onPress={() => router.push(t.route as never)}
+          >
+            <View style={styles.topShade} />
+            {/* skew กลับ ให้อิโมจิตั้งตรง */}
+            <Text style={[styles.sideEmoji, { transform: [{ skewX: '45deg' }] }]}>
+              {t.emoji}
+            </Text>
+          </Pressable>
+        ))}
+      </View>
 
-      {/* แถบที่กำลังบิด — มีหน้าเพื่อนบ้านโผล่เข้ามาจากขอบ */}
-      {active?.axis === 'row' && (
-        <Animated.View
-          style={[
-            styles.strip,
-            { top: active.index * tile, width: board, height: tile },
-            { transform: [{ translateX: drag }] },
-          ]}
-          pointerEvents="none"
-        >
-          {(() => {
-            const a = item(faces[active.index * 2]);
-            const b = item(faces[active.index * 2 + 1]);
-            return [
-              renderTile(prevOf(a.id), -tile, 0, 'rp'),
-              renderTile(a, 0, 0, 'ra'),
-              renderTile(b, tile, 0, 'rb'),
-              renderTile(nextOf(b.id), tile * 2, 0, 'rn'),
-            ];
-          })()}
-        </Animated.View>
-      )}
-      {active?.axis === 'col' && (
-        <Animated.View
-          style={[
-            styles.strip,
-            { left: active.index * tile, width: tile, height: board },
-            { transform: [{ translateY: drag }] },
-          ]}
-          pointerEvents="none"
-        >
-          {(() => {
-            const t = item(faces[active.index]);
-            const b = item(faces[active.index + 2]);
-            return [
-              renderTile(prevOf(t.id), 0, -tile, 'cp'),
-              renderTile(t, 0, 0, 'ct'),
-              renderTile(b, 0, tile, 'cb'),
-              renderTile(nextOf(b.id), 0, tile * 2, 'cn'),
-            ];
-          })()}
-        </Animated.View>
-      )}
+      {/* ===== ด้านขวาของลูกบาศก์ ===== */}
+      <View
+        style={[
+          styles.rightFace,
+          {
+            left: board,
+            top: DEPTH,
+            width: DEPTH,
+            height: board,
+            transform: [{ translateY: -DEPTH / 2 }, { skewY: '-45deg' }],
+          },
+        ]}
+      >
+        {rightTiles.map((t, i) => (
+          <Pressable
+            key={`right-${i}`}
+            style={[styles.sideTile, { backgroundColor: t.color }]}
+            onPress={() => router.push(t.route as never)}
+          >
+            <View style={styles.rightShade} />
+            <Text style={[styles.sideEmoji, { transform: [{ skewY: '45deg' }] }]}>
+              {t.emoji}
+            </Text>
+          </Pressable>
+        ))}
+      </View>
+
+      {/* ===== หน้าตรง (2x2 บิดได้) ===== */}
+      <View
+        ref={boardRef}
+        style={[styles.board, { width: board, height: board, top: DEPTH }]}
+        onLayout={() => {
+          boardRef.current?.measureInWindow((x, y) => {
+            boardXY.current = { x, y };
+          });
+        }}
+        {...pan.panHandlers}
+      >
+        {faces.map((id, idx) =>
+          inActive(idx)
+            ? null
+            : renderTile(item(id), (idx & 1) * tile, (idx >> 1) * tile, `s-${idx}`)
+        )}
+
+        {active?.axis === 'row' && (
+          <Animated.View
+            style={[
+              styles.strip,
+              { top: active.index * tile, width: board, height: tile },
+              { transform: [{ translateX: drag }] },
+            ]}
+            pointerEvents="none"
+          >
+            {(() => {
+              const a = item(faces[active.index * 2]);
+              const b = item(faces[active.index * 2 + 1]);
+              return [
+                renderTile(prevOf(a.id), -tile, 0, 'rp'),
+                renderTile(a, 0, 0, 'ra'),
+                renderTile(b, tile, 0, 'rb'),
+                renderTile(nextOf(b.id), tile * 2, 0, 'rn'),
+              ];
+            })()}
+          </Animated.View>
+        )}
+        {active?.axis === 'col' && (
+          <Animated.View
+            style={[
+              styles.strip,
+              { left: active.index * tile, width: tile, height: board },
+              { transform: [{ translateY: drag }] },
+            ]}
+            pointerEvents="none"
+          >
+            {(() => {
+              const t = item(faces[active.index]);
+              const b = item(faces[active.index + 2]);
+              return [
+                renderTile(prevOf(t.id), 0, -tile, 'cp'),
+                renderTile(t, 0, 0, 'ct'),
+                renderTile(b, 0, tile, 'cb'),
+                renderTile(nextOf(b.id), 0, tile * 2, 'cn'),
+              ];
+            })()}
+          </Animated.View>
+        )}
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   board: {
-    alignSelf: 'center',
+    position: 'absolute',
+    left: 0,
     backgroundColor: colors.ink,
     borderWidth: 3,
     borderColor: colors.ink,
-    borderRadius: 18,
+    borderRadius: 10,
     overflow: 'hidden',
   },
+  topFace: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    flexDirection: 'row',
+    borderWidth: 2,
+    borderColor: colors.ink,
+    backgroundColor: colors.ink,
+    overflow: 'hidden',
+  },
+  rightFace: {
+    position: 'absolute',
+    borderWidth: 2,
+    borderColor: colors.ink,
+    backgroundColor: colors.ink,
+    overflow: 'hidden',
+  },
+  sideTile: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: colors.ink,
+  },
+  // แสงเงาให้ดูเป็น 3 มิติ: ด้านบนสว่าง ด้านขวามืด
+  topShade: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(255,255,255,0.3)',
+  },
+  rightShade: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.25)',
+  },
+  sideEmoji: { fontSize: 15 },
   strip: {
     position: 'absolute',
     left: 0,
