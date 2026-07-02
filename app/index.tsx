@@ -10,6 +10,7 @@ import { useRouter } from 'expo-router';
 import { CATEGORIES } from '@/data/categories';
 import { openingLines, pickLine } from '@/data/paaUanLines';
 import { RandomizerCard } from '@/components/RandomizerCard';
+import { RubikBoard } from '@/components/RubikBoard';
 import { SiamsiTube } from '@/components/SiamsiTube';
 import { AdBanner } from '@/ads/AdBanner';
 import { useProStore } from '@/store/useProStore';
@@ -73,6 +74,15 @@ export default function HomeScreen() {
 
         {/* ===== หมวดต่าง ๆ ===== */}
         <View style={styles.body}>
+          {/* 🧩 รูบิคทางลัด — บิดเลือกหน้าสุ่มโปรดมาเก็บไว้ (จำตำแหน่งแม้ปิดแอป) */}
+          <View style={styles.rubikSection}>
+            <View style={[styles.catPill, { backgroundColor: colors.ink }]}>
+              <Text style={[styles.catPillText, { color: colors.white }]}>🧩 รูบิคของฉัน</Text>
+            </View>
+            <RubikBoard />
+            <Text style={styles.rubikHint}>ปัดขึ้นลง-ซ้ายขวาเพื่อบิดเปลี่ยนหน้า · แตะเพื่อเข้าสุ่ม</Text>
+          </View>
+
           {CATEGORIES.map((cat, ci) => (
             <View key={cat.id}>
               <View style={styles.category}>
@@ -243,6 +253,17 @@ const styles = StyleSheet.create({
   },
   homeBanner: {
     marginBottom: 18,
+  },
+  rubikSection: {
+    marginBottom: 18,
+    gap: 4,
+  },
+  rubikHint: {
+    fontFamily: fonts.regular,
+    fontSize: fontSize.xs,
+    color: colors.muted,
+    textAlign: 'center',
+    marginTop: 8,
   },
   proBtn: {
     backgroundColor: colors.wine,
