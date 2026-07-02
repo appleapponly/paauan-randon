@@ -7,7 +7,7 @@
  * - ไหล manual: จบแล้วผู้ใช้กดเริ่มรอบถัดไปเอง
  */
 import { useEffect, useRef, useState } from 'react';
-import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Image, Pressable, StyleSheet, Text, Vibration, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useKeepAwake } from 'expo-keep-awake';
@@ -78,6 +78,9 @@ export default function TimerScreen() {
     mode === 'work' ? pickOne(timerDoneWorkLines) : pickOne(timerDoneBreakLines)
   );
 
+  // หยุดสั่นเมื่อออกจากหน้าจับเวลา
+  useEffect(() => () => Vibration.cancel(), []);
+
   useEffect(() => {
     if (paused || done) return;
     tick.current = setInterval(() => {
@@ -85,6 +88,8 @@ export default function TimerScreen() {
         if (s <= 1) {
           if (tick.current) clearInterval(tick.current);
           setDone(true);
+          // สั่นยาว ๆ ให้รู้ตัวชัด (RN Vibration pattern ~3 วิ) + haptic feedback
+          Vibration.vibrate([0, 600, 300, 600, 300, 700, 300, 800]);
           Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
           return 0;
         }
@@ -138,7 +143,7 @@ export default function TimerScreen() {
   }
 
   const workPose = done ? paaUanPoses.happy : paaUanPoses.studyWrite;
-  const breakPose = paaUanPoses.satisfied;
+  const breakPose = paaUanPoses.meditate;
 
   return (
     <View style={[styles.root, { backgroundColor: bg }]}>

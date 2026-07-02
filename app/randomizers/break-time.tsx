@@ -3,7 +3,7 @@
  * เหมาะเวลาทำอย่างอื่นมาแล้วอยากพักสั้น ๆ (ไม่ต้องมาจากหน้าเรียน)
  */
 import { useRef, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import Animated, { BounceIn } from 'react-native-reanimated';
@@ -54,8 +54,8 @@ export default function BreakTimeScreen() {
 
   return (
     <SafeAreaView style={styles.safe} edges={['bottom']}>
-      <View style={styles.content}>
-        <PaaUanBubble text={bubble} mood={mood} pose="satisfied" />
+      <ScrollView contentContainerStyle={styles.content}>
+        <PaaUanBubble text={bubble} mood={mood} pose={activity ? 'fan' : 'tea'} />
 
         {activity && (
           <Animated.View key={round} entering={BounceIn.duration(600)}>
@@ -63,7 +63,7 @@ export default function BreakTimeScreen() {
               ref={cardRef}
               comment={bubble}
               mood={mood}
-              pose="satisfied"
+              pose="fan"
               watermark="พักผ่อนกับป้าอ้วน ☕"
             >
               <Text style={styles.badge}>เวลาพัก</Text>
@@ -72,8 +72,6 @@ export default function BreakTimeScreen() {
             </CaptureCard>
           </Animated.View>
         )}
-
-        <View style={{ flex: 1 }} />
 
         <BigButton
           label={activity ? 'สุ่มใหม่' : 'สุ่มเวลาพัก!'}
@@ -84,14 +82,15 @@ export default function BreakTimeScreen() {
         {activity && (
           <BigButton label={`เริ่มพัก ${breakMin} นาที ☕`} color={colors.ocean} onPress={startBreak} countAd={false} />
         )}
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.cream },
-  content: { flex: 1, padding: 20, gap: 16 },
+  // paddingBottom เยอะ กันปุ่ม "เริ่มพัก" ตกไปโดนแถบ navigation ของเครื่องบัง
+  content: { padding: 20, gap: 16, paddingBottom: 48, flexGrow: 1 },
   badge: { fontFamily: fonts.bold, fontSize: fontSize.sm, color: colors.jade },
   mins: { fontFamily: fonts.bold, fontSize: 56, color: colors.jade, textAlign: 'center' },
   activity: {
