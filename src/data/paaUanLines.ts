@@ -6,6 +6,8 @@
  * - mood ใช้เลือกสีหน้า/อารมณ์บับเบิล (เผื่ออนาคตทำหลายสีหน้า)
  */
 
+import { t } from '@/i18n';
+
 export type PaaUanMood = 'happy' | 'sassy' | 'teasing' | 'thinking';
 
 export interface PaaUanLine {
@@ -13,23 +15,41 @@ export interface PaaUanLine {
   mood: PaaUanMood;
 }
 
-/** ตอนเปิดแอป — ป้าทักทาย */
-export const openingLines: PaaUanLine[] = [
-  { text: 'มาแล้วเหรอลูก วันนี้จะให้ป้าสุ่มอะไรล่ะ?', mood: 'happy' },
-  { text: 'ตัดสินใจไม่ได้อีกแล้วใช่มั้ย เดี๋ยวป้าจัดให้', mood: 'sassy' },
-  { text: 'อย่ามัวแต่คิดนาน เดี๋ยวข้าวเย็นหมดพอดี', mood: 'teasing' },
-  { text: 'ป้ารออยู่นี่แล้ว กดมาเลยอย่าเกรงใจ', mood: 'happy' },
-  { text: 'หัวใส ๆ เลือกเองได้นะ แต่ถ้าขี้เกียจคิดก็ให้ป้า', mood: 'sassy' },
-  { text: 'ชีวิตมันก็ดวงทั้งนั้นแหละลูก มาสุ่มกับป้า', mood: 'thinking' },
-];
+/** ตอนเปิดแอป — ป้าทักทาย (แอป global ใช้ชุดอังกฤษโทนคุณป้าอเมริกันอบอุ่น) */
+export const openingLines: PaaUanLine[] = t<PaaUanLine[]>(
+  [
+    { text: 'มาแล้วเหรอลูก วันนี้จะให้ป้าสุ่มอะไรล่ะ?', mood: 'happy' },
+    { text: 'ตัดสินใจไม่ได้อีกแล้วใช่มั้ย เดี๋ยวป้าจัดให้', mood: 'sassy' },
+    { text: 'อย่ามัวแต่คิดนาน เดี๋ยวข้าวเย็นหมดพอดี', mood: 'teasing' },
+    { text: 'ป้ารออยู่นี่แล้ว กดมาเลยอย่าเกรงใจ', mood: 'happy' },
+    { text: 'หัวใส ๆ เลือกเองได้นะ แต่ถ้าขี้เกียจคิดก็ให้ป้า', mood: 'sassy' },
+    { text: 'ชีวิตมันก็ดวงทั้งนั้นแหละลูก มาสุ่มกับป้า', mood: 'thinking' },
+  ],
+  [
+    { text: 'Well hey there, sweetie! What are we spinning for today?', mood: 'happy' },
+    { text: "Can't make up your mind again? Auntie's got you.", mood: 'sassy' },
+    { text: "Quit overthinking, hon — dinner's getting cold!", mood: 'teasing' },
+    { text: "I'm right here, sugar. Go on, give it a tap!", mood: 'happy' },
+    { text: "Smart cookie like you could choose... but Auntie's faster 😏", mood: 'sassy' },
+    { text: "Life's all about luck anyway, darlin'. Let's spin!", mood: 'thinking' },
+  ]
+);
 
 /** ตอนกำลังสุ่ม (วงล้อหมุน / เต๋ากลิ้ง) — แบบทั่วไป ใช้ได้ทุกเครื่อง */
-export const spinningLines: PaaUanLine[] = [
-  { text: 'เดี๋ยวนะ ป้ากำลังเขย่าดวงให้...', mood: 'thinking' },
-  { text: 'อืม... ฟ้าลิขิตกำลังทำงาน', mood: 'thinking' },
-  { text: 'ใจเย็น ๆ ของดีต้องรอ', mood: 'teasing' },
-  { text: 'หมุนไปสิจ๊ะ ป้าลุ้นอยู่', mood: 'happy' },
-];
+export const spinningLines: PaaUanLine[] = t<PaaUanLine[]>(
+  [
+    { text: 'เดี๋ยวนะ ป้ากำลังเขย่าดวงให้...', mood: 'thinking' },
+    { text: 'อืม... ฟ้าลิขิตกำลังทำงาน', mood: 'thinking' },
+    { text: 'ใจเย็น ๆ ของดีต้องรอ', mood: 'teasing' },
+    { text: 'หมุนไปสิจ๊ะ ป้าลุ้นอยู่', mood: 'happy' },
+  ],
+  [
+    { text: "Hold on now, Auntie's shaking up some luck...", mood: 'thinking' },
+    { text: 'Hmm... destiny is doing its thing', mood: 'thinking' },
+    { text: 'Patience, sugar — good things take a moment', mood: 'teasing' },
+    { text: "Spin, spin, spin! Auntie's on the edge of her seat!", mood: 'happy' },
+  ]
+);
 
 /**
  * ตอนได้ผล "กินอะไรดี" — มี {result} ให้แทนชื่อเมนู

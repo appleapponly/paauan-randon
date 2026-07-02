@@ -21,6 +21,7 @@ import {
   Mali_700Bold,
 } from '@expo-google-fonts/mali';
 import { ProProvider } from '@/iap/ProProvider';
+import { t } from '@/i18n';
 import { AdBanner } from '@/ads/AdBanner';
 import { initInterstitial } from '@/ads/interstitial';
 import { checkForUpdate } from '@/update/checkForUpdate';
@@ -80,30 +81,30 @@ export default function RootLayout() {
           >
         {/* หน้าหลัก ซ่อน header เพราะมีหัวเรื่องของตัวเอง */}
         <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen name="randomizers/food-wheel" options={{ title: 'กินอะไรดี' }} />
-        <Stack.Screen name="randomizers/decision-dice" options={{ title: 'ลูกเต๋าตัดสินใจ' }} />
-        <Stack.Screen name="randomizers/yes-no" options={{ title: 'ใช่ / ไม่ใช่' }} />
-        <Stack.Screen name="randomizers/coin" options={{ title: 'หัว / ก้อย' }} />
-        <Stack.Screen name="randomizers/who-gets-it" options={{ title: 'ใครโดน' }} />
-        <Stack.Screen name="randomizers/charades" options={{ title: 'ใบ้คำ' }} />
-        <Stack.Screen name="randomizers/dare" options={{ title: 'สุ่มท้าทาย' }} />
-        <Stack.Screen name="randomizers/daily-horoscope" options={{ title: 'ดวงประจำวัน' }} />
-        <Stack.Screen name="randomizers/siamsi" options={{ title: 'เซียมซี' }} />
-        <Stack.Screen name="randomizers/daily-fortune" options={{ title: 'ข้อคิดประจำวัน' }} />
-        <Stack.Screen name="randomizers/outfit" options={{ title: 'สุ่มแต่งตัว' }} />
-        <Stack.Screen name="randomizers/travel" options={{ title: 'สุ่มที่เที่ยว' }} />
-        <Stack.Screen name="randomizers/lucky-draw" options={{ title: 'จับฉลากรายชื่อ' }} />
-        <Stack.Screen name="randomizers/teams" options={{ title: 'แบ่งทีม' }} />
-        <Stack.Screen name="randomizers/queue" options={{ title: 'สุ่มลำดับคิว' }} />
-            <Stack.Screen name="randomizers/number" options={{ title: 'สุ่มตัวเลข' }} />
-            <Stack.Screen name="randomizers/color" options={{ title: 'สุ่มสี' }} />
-            <Stack.Screen name="randomizers/custom-wheel" options={{ title: 'วงล้อของฉัน 🎡' }} />
-            <Stack.Screen name="randomizers/exercise" options={{ title: 'สุ่มออกกำลังกาย' }} />
-            <Stack.Screen name="randomizers/clean-food" options={{ title: 'สุ่มเมนูคลีน' }} />
-            <Stack.Screen name="randomizers/study" options={{ title: 'สุ่มการเรียน' }} />
-            <Stack.Screen name="randomizers/break-time" options={{ title: 'สุ่มเวลาพัก' }} />
+        <Stack.Screen name="randomizers/food-wheel" options={{ title: t('กินอะไรดี', 'What to Eat') }} />
+        <Stack.Screen name="randomizers/decision-dice" options={{ title: t('ลูกเต๋าตัดสินใจ', 'Decision Dice') }} />
+        <Stack.Screen name="randomizers/yes-no" options={{ title: t('ใช่ / ไม่ใช่', 'Yes or No') }} />
+        <Stack.Screen name="randomizers/coin" options={{ title: t('หัว / ก้อย', 'Heads or Tails') }} />
+        <Stack.Screen name="randomizers/who-gets-it" options={{ title: t('ใครโดน', "Who's It?") }} />
+        <Stack.Screen name="randomizers/charades" options={{ title: t('ใบ้คำ', 'Charades') }} />
+        <Stack.Screen name="randomizers/dare" options={{ title: t('สุ่มท้าทาย', 'Dare Me') }} />
+        <Stack.Screen name="randomizers/daily-horoscope" options={{ title: t('ดวงประจำวัน', 'Daily Horoscope') }} />
+        <Stack.Screen name="randomizers/siamsi" options={{ title: t('เซียมซี', 'Fortune Sticks') }} />
+        <Stack.Screen name="randomizers/daily-fortune" options={{ title: t('ข้อคิดประจำวัน', 'Daily Wisdom') }} />
+        <Stack.Screen name="randomizers/outfit" options={{ title: t('สุ่มแต่งตัว', 'Outfit Picker') }} />
+        <Stack.Screen name="randomizers/travel" options={{ title: t('สุ่มที่เที่ยว', 'Travel Picker') }} />
+        <Stack.Screen name="randomizers/lucky-draw" options={{ title: t('จับฉลากรายชื่อ', 'Lucky Draw') }} />
+        <Stack.Screen name="randomizers/teams" options={{ title: t('แบ่งทีม', 'Team Split') }} />
+        <Stack.Screen name="randomizers/queue" options={{ title: t('สุ่มลำดับคิว', 'Queue Order') }} />
+            <Stack.Screen name="randomizers/number" options={{ title: t('สุ่มตัวเลข', 'Random Number') }} />
+            <Stack.Screen name="randomizers/color" options={{ title: t('สุ่มสี', 'Random Color') }} />
+            <Stack.Screen name="randomizers/custom-wheel" options={{ title: t('วงล้อของฉัน 🎡', 'My Wheel 🎡') }} />
+            <Stack.Screen name="randomizers/exercise" options={{ title: t('สุ่มออกกำลังกาย', 'Workout Roulette') }} />
+            <Stack.Screen name="randomizers/clean-food" options={{ title: t('สุ่มเมนูคลีน', 'Clean Eats') }} />
+            <Stack.Screen name="randomizers/study" options={{ title: t('สุ่มการเรียน', 'Study Mission') }} />
+            <Stack.Screen name="randomizers/break-time" options={{ title: t('สุ่มเวลาพัก', 'Break Time') }} />
             <Stack.Screen name="timer" options={{ headerShown: false }} />
-            <Stack.Screen name="pro" options={{ title: 'หลานรักป้า ❤️' }} />
+            <Stack.Screen name="pro" options={{ title: t('หลานรักป้า ❤️', 'Love Auntie ❤️') }} />
           </Stack>
           <GlobalBottomBanner />
         </View>

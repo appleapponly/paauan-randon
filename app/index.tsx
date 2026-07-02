@@ -15,6 +15,7 @@ import { SiamsiTube } from '@/components/SiamsiTube';
 import { AdBanner } from '@/ads/AdBanner';
 import { useProStore } from '@/store/useProStore';
 import { paaUanPoses } from '@/theme/assets';
+import { t } from '@/i18n';
 import { colors } from '@/theme/colors';
 import { fonts, fontSize } from '@/theme/typography';
 import { textOn } from '@/theme/styles';
@@ -45,7 +46,10 @@ export default function HomeScreen() {
     if (tapCount.current >= 5) {
       tapCount.current = 0;
       setPro(false);
-      Alert.alert('Free mode', 'กลับสู่โหมดฟรีแล้วจ้ะ (โฆษณากลับมาแสดง)');
+      Alert.alert(
+        'Free mode',
+        t('กลับสู่โหมดฟรีแล้วจ้ะ (โฆษณากลับมาแสดง)', 'Back to free mode, sweetie (ads are back on)')
+      );
     }
   }
 
@@ -65,7 +69,7 @@ export default function HomeScreen() {
       >
         {/* ===== Hero ชมพู ===== */}
         <SafeAreaView edges={['top']} style={styles.hero}>
-          <Text style={styles.appName}>ป้าอ้วน{'\n'}สุ่มให้!</Text>
+          <Text style={styles.appName}>{t('ป้าอ้วน\nสุ่มให้!', "Auntie's\nRandom!")}</Text>
 
           <View style={styles.heroBubble}>
             <Text style={styles.heroBubbleText}>{greeting.text}</Text>
@@ -81,11 +85,16 @@ export default function HomeScreen() {
           {/* 🧩 รูบิคทางลัด — บิดเลือกหน้าสุ่มโปรดมาเก็บไว้ (จำตำแหน่งแม้ปิดแอป) */}
           <View style={styles.rubikSection}>
             <View style={[styles.catPill, { backgroundColor: colors.ink }]}>
-              <Text style={[styles.catPillText, { color: colors.white }]}>🧩 รูบิคของฉัน</Text>
+              <Text style={[styles.catPillText, { color: colors.white }]}>
+                {t('🧩 รูบิคของฉัน', '🧩 My Cube')}
+              </Text>
             </View>
-            <RubikBoard onTouchingChange={(t) => setScrollEnabled(!t)} />
+            <RubikBoard onTouchingChange={(touching) => setScrollEnabled(!touching)} />
             <Text style={styles.rubikHint}>
-              ปัดขึ้นลง-ซ้ายขวาเพื่อบิดเปลี่ยนหน้า · แตะหน้าไหนก็ได้ (รวมด้านบน/ขวา) เพื่อเข้าสุ่ม
+              {t(
+                'ปัดขึ้นลง-ซ้ายขวาเพื่อบิดเปลี่ยนหน้า · แตะหน้าไหนก็ได้ (รวมด้านบน/ขวา) เพื่อเข้าสุ่ม',
+                'Swipe any direction to twist · tap any face (top/right too) to open'
+              )}
             </Text>
           </View>
 
@@ -120,16 +129,22 @@ export default function HomeScreen() {
           {/* ปุ่มสนับสนุนป้า — ซื้อ Pro ปิดโฆษณา */}
           {isPro ? (
             <View style={styles.proThanks}>
-              <Text style={styles.proThanksText}>ขอบใจที่รักป้านะ หลานป้าคนเก่ง ❤️</Text>
+              <Text style={styles.proThanksText}>
+                {t('ขอบใจที่รักป้านะ หลานป้าคนเก่ง ❤️', 'Thanks for loving Auntie, sweetie ❤️')}
+              </Text>
             </View>
           ) : (
             <Pressable style={styles.proBtn} onPress={() => router.push('/pro' as never)}>
-              <Text style={styles.proBtnText}>❤️ หลานรักป้า — สนับสนุนป้า ปิดโฆษณา</Text>
+              <Text style={styles.proBtnText}>
+                {t('❤️ หลานรักป้า — สนับสนุนป้า ปิดโฆษณา', '❤️ Love Auntie — support & remove ads')}
+              </Text>
             </Pressable>
           )}
 
           <Pressable onPress={secretTap}>
-            <Text style={styles.footer}>ป้าอ้วนรอสุ่มให้อยู่นะจ๊ะ 👵</Text>
+            <Text style={styles.footer}>
+              {t('ป้าอ้วนรอสุ่มให้อยู่นะจ๊ะ 👵', "Auntie's always here to spin for you 👵")}
+            </Text>
           </Pressable>
         </View>
       </ScrollView>
