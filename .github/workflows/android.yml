@@ -35,6 +35,22 @@ jobs:
           distribution: temurin
           java-version: 17
 
+      # ติดตั้ง NDK ล่วงหน้าแบบ retry — กัน gradle โหลดเองแล้วไฟล์พังกลางทาง
+      # (เคยเจอ "Archive is not a ZIP archive" ตอน Install NDK ระหว่าง build)
+      - name: 🧰 ติดตั้ง NDK 27.1.12297006 (retry 3 รอบ)
+        run: |
+          SDKMGR="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+          yes | "$SDKMGR" --licenses > /dev/null 2>&1 || true
+          for i in 1 2 3; do
+            if "$SDKMGR" "ndk;27.1.12297006"; then
+              echo "NDK installed (attempt $i)"; break
+            fi
+            echo "attempt $i failed — ลบไฟล์ค้างแล้วลองใหม่"
+            rm -rf "$ANDROID_HOME/ndk/27.1.12297006"
+            sleep 10
+            if [ "$i" = "3" ]; then exit 1; fi
+          done
+
       - name: 📦 ติดตั้ง dependencies
         run: npm install
 
