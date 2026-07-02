@@ -34,6 +34,8 @@ export function ProProvider({ children }: { children: React.ReactNode }) {
     fetchProducts,
     requestPurchase,
     finishTransaction,
+    availablePurchases,
+    getAvailablePurchases,
     getActiveSubscriptions,
     hasActiveSubscriptions,
   } = useIAP({
@@ -75,8 +77,38 @@ export function ProProvider({ children }: { children: React.ReactNode }) {
       } catch {
         /* เช็คไม่ได้ → คงสถานะเดิม (ไม่ปิดสิทธิ์คนจ่ายจริง) */
       }
+      try {
+        // ดึงรายการซื้อค้าง มาเช็ค acknowledge ซ้ำ (ดู effect ข้างล่าง)
+        await getAvailablePurchases();
+      } catch {
+        /* ดึงไม่ได้ก็ข้าม รอบหน้าเช็คใหม่ */
+      }
     })();
-  }, [connected, fetchProducts, getActiveSubscriptions, hasActiveSubscriptions, setPro]);
+  }, [
+    connected,
+    fetchProducts,
+    getActiveSubscriptions,
+    hasActiveSubscriptions,
+    getAvailablePurchases,
+    setPro,
+  ]);
+
+  // 🧹 กวาด acknowledge ตกค้างทุกครั้งที่เปิดแอป — กันเคส onPurchaseSuccess ack ไม่สำเร็จ
+  // (เช่น แอปถูกปิด/เน็ตหลุดพอดี) ไม่งั้น Google จะยกเลิก+คืนเงินอัตโนมัติภายใน 3 วัน
+  useEffect(() => {
+    (async () => {
+      for (const p of (availablePurchases as any[]) ?? []) {
+        try {
+          // ยังไม่ ack (หรือไม่รู้สถานะ) → ลอง ack ซ้ำ; ถ้า ack ไปแล้ว Play จะ error เฉย ๆ ไม่มีผลข้างเคียง
+          if (p?.isAcknowledgedAndroid !== true) {
+            await finishTransaction({ purchase: p, isConsumable: false });
+          }
+        } catch {
+          /* ack ไม่ได้รอบนี้ → รอบเปิดแอปหน้าลองใหม่ */
+        }
+      }
+    })();
+  }, [availablePurchases, finishTransaction]);
 
   const prices = useMemo(() => {
     const out: Record<string, string> = {};
