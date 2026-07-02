@@ -13,16 +13,19 @@
  */
 import { Alert, Linking } from 'react-native';
 import Constants from 'expo-constants';
+import { t } from '@/i18n';
 
 // เวอร์ชันปัจจุบันของแอป — ดึงจาก app.json (expo.version) อัตโนมัติ
 const APP_VERSION: string =
   (Constants.expoConfig?.version as string) ?? '1.0.0';
 
-// ที่อยู่ version.json (แก้เป็น repo จริงได้) + ลิงก์ Play Store
+// ที่อยู่ version.json (repo เดียวใช้ร่วมทั้ง 2 แอป)
 const VERSION_URL =
   'https://raw.githubusercontent.com/appleapponly/paauan-randon/master/version.json';
-const PLAY_URL =
-  'https://play.google.com/store/apps/details?id=com.paauan.randon';
+// ลิงก์ Play Store — อิง package ของแอปที่กำลังรัน (แอปไทย/แอป global คนละ listing)
+const PLAY_URL = `https://play.google.com/store/apps/details?id=${
+  Constants.expoConfig?.android?.package ?? 'com.paauan.randon'
+}`;
 
 /** เทียบ semver: คืน 1 ถ้า a>b, -1 ถ้า a<b, 0 ถ้าเท่ากัน */
 function cmp(a: string, b: string): number {
@@ -50,22 +53,28 @@ export async function checkForUpdate() {
     // บังคับอัปเดต: เวอร์ชันปัจจุบันต่ำกว่าขั้นต่ำ
     if (data.min && cmp(APP_VERSION, data.min) < 0) {
       Alert.alert(
-        'ต้องอัปเดตก่อนนะลูก',
-        'เวอร์ชันนี้เก่าไปแล้ว ป้าอัปเกรดของใหม่ให้ ไปโหลดกันจ้ะ',
-        [{ text: 'อัปเดตเลย', onPress: openStore }],
+        t('ต้องอัปเดตก่อนนะลูก', 'Time to update, sweetie'),
+        t(
+          'เวอร์ชันนี้เก่าไปแล้ว ป้าอัปเกรดของใหม่ให้ ไปโหลดกันจ้ะ',
+          "This version's too old — Auntie's got a fresh one waiting for you!"
+        ),
+        [{ text: t('อัปเดตเลย', 'Update now'), onPress: openStore }],
         { cancelable: false }
       );
       return;
     }
 
-    // ชวนอัปเดต: มีเวอร์ชันใหม่กว่า
+    // ชวนอัปเดต: มีเวอร์ชันใหม่กว่า (notes ใน version.json เป็นไทย → แอป global ใช้ข้อความกลาง)
     if (data.latest && cmp(data.latest, APP_VERSION) > 0) {
       Alert.alert(
-        'มีของใหม่จากป้าแล้ว! 🎉',
-        data.notes || 'อัปเดตเวอร์ชันใหม่เพื่อฟีเจอร์และของเล่นใหม่ ๆ นะลูก',
+        t('มีของใหม่จากป้าแล้ว! 🎉', 'Auntie brought you something new! 🎉'),
+        t(
+          data.notes || 'อัปเดตเวอร์ชันใหม่เพื่อฟีเจอร์และของเล่นใหม่ ๆ นะลูก',
+          'Update to get the latest features and goodies, hon!'
+        ),
         [
-          { text: 'ไว้ก่อน', style: 'cancel' },
-          { text: 'อัปเดตเลย', onPress: openStore },
+          { text: t('ไว้ก่อน', 'Later'), style: 'cancel' },
+          { text: t('อัปเดตเลย', 'Update now'), onPress: openStore },
         ]
       );
     }
