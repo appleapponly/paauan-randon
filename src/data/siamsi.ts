@@ -5,6 +5,8 @@
  * poem  = คำทำนาย (กลอน) โชว์บนใบเซียมซี
  * insight = แง่คิดสะกิดใจ (ป้าพูดในบับเบิล)
  */
+import { IS_GLOBAL } from '@/i18n';
+
 export interface SiamsiStick {
   id: number;
   title: string;
@@ -12,7 +14,7 @@ export interface SiamsiStick {
   insight: string;
 }
 
-export const SIAMSI: SiamsiStick[] = [
+const SIAMSI_TH: SiamsiStick[] = [
   {
     id: 1,
     title: 'เซียมซีเสี่ยงโชค',
@@ -294,3 +296,292 @@ export const SIAMSI: SiamsiStick[] = [
       'อย่าฝากความหวังทั้งหมดไว้กับโบนัสปลายปีเลยลูก เพราะคำว่า "เศรษฐกิจไม่ดี" มันเป็นข้ออ้างคลาสสิกที่เจ้านายชอบใช้! ให้รางวัลตัวเองด้วยความภูมิใจในผลงานที่ทำมาทั้งปีก็พอ แต่อย่าเพิ่งรีบไปสร้างหนี้ก้อนโตเผื่อรอเงินโบนัสเด็ดขาด เผื่อใจไว้บ้างจะได้ไม่เจ็บหนักจ้ะ',
   },
 ];
+
+/**
+ * 🥠 ชุดอังกฤษ (แอป global) — Fortune Sticks 40 ใบ กลอนสัมผัส + "Thought to Ponder" โทนคุณป้าอบอุ่น
+ */
+const SIAMSI_EN: SiamsiStick[] = [
+  {
+    id: 1,
+    title: 'The Empty Wallet',
+    poem: "Number one says your funds are low,\nWhere did your money really go?\nYou wish for wealth to come your way,\nBut you just bought ten things today!",
+    insight:
+      "This card says your luck isn't bad, you're just losing to your own temptations, my child! Stop adding things to your cart and resist those sales for a bit. Do that, and the money will start rolling in!",
+  },
+  {
+    id: 2,
+    title: 'The Single Life',
+    poem: "Number two says you want a mate,\nBut you keep skipping every date.\nYou pray for love that's purely gold,\nJust hug your pillow till you're old!",
+    insight:
+      "Don't just grab anyone out of loneliness, my child. Being single, rich, and gorgeous is way better than letting a toxic person burn your heart. If you haven't found someone amazing yet, staying home and binge-watching series is much safer!",
+  },
+  {
+    id: 3,
+    title: 'The Procrastinator',
+    poem: "Number three says your work is piled,\nWhile you are scrolling like a child.\nThe deadline's near, you start to sweat,\nBecause you haven't started yet!",
+    insight:
+      "Work will only get done when you actually start doing it, my child! Scrolling through your feed to relieve stress won't make the workload magically shrink. Success doesn't come to those who just daydream. Get up and clear it out—your bonus is waiting!",
+  },
+  {
+    id: 4,
+    title: 'The Endless Diet',
+    poem: "Number four says your pants are tight,\nYou eat the buffet every night.\nYou swear you'll hit the gym today,\nBut order pizza anyway!",
+    insight:
+      "Your body can still handle it, but you have to resist all that food sometimes, my child! Your body isn't a trash can. Move around and exercise a little bit every day. It's much better than giving all your hard-earned money to the doctor later!",
+  },
+  {
+    id: 5,
+    title: 'The Social Media Envy',
+    poem: "Number five says to drop the phone,\nYou scroll all night and feel alone.\nYou envy posts that look so bright,\nBut they just used a filter's light!",
+    insight:
+      "Our life is good in its own way, my child. Don't tie your happiness to likes or other people's perfectly filtered photos on social media. Put the screen down for a bit and look at the real happiness around you. You'll realize just how lucky you already are!",
+  },
+  {
+    id: 6,
+    title: 'The Stock Market Trap',
+    poem: "Number six says you bought a stock,\nHoping your wealth would truly rock.\nIt turned from green to bloody red,\nNow you are broke and stay in bed!",
+    insight:
+      "Investing has risks, my child! This card warns you not to be gullible or greedy enough to go all-in. Study the facts carefully. Slow and steady wins the race. It's much better than rushing to get rich and ending up freezing on the mountaintop!",
+  },
+  {
+    id: 7,
+    title: 'The Gossip Queen/King',
+    poem: "Number seven says you love to speak,\nBut into drama you always peek.\nYou mind the business of your friends,\nIn court is where this story ends!",
+    insight:
+      "Your stars are clashing right now, my child. It's best to step back and avoid arguments. Silence is golden! Arguing to win over things that aren't your business only ruins your mental health and makes things worse. Focus on your own life instead!",
+  },
+  {
+    id: 8,
+    title: 'The Panda Eyes',
+    poem: "Number eight shows your panda eyes,\nYou stay awake until sunrise.\nYou watch your shows and never sleep,\nSoon doctor bills will make you weep!",
+    insight:
+      "The human body isn't a machine, my child. I know you have work to finish or a series to binge, but enough sleep is the best medicine. If you keep pushing it, the money you earn will just turn into doctor bills. Turn off the screen and go to sleep!",
+  },
+  {
+    id: 9,
+    title: 'The Favored One',
+    poem: "Number nine brings a lucky break,\nThe boss will help for goodness' sake.\nBut don't get lazy, don't get slow,\nOr out the door you'll quickly go!",
+    insight:
+      "Good opportunities are coming because you have older people supporting you, my child. But remember, luck is nothing without your own effort. When you get the chance, work hard and stay humble. That's how success stays with you for a long time!",
+  },
+  {
+    id: 10,
+    title: 'The Patient Gardener',
+    poem: "Number ten tells you not to cry,\nYour grand success is drawing nigh.\nYou cannot force a tree to grow,\nJust give it time and take it slow!",
+    insight:
+      "The things you're hoping for won't happen instantly like pushing a button, my child. It takes patience. Keep watering and tending to your goals, and don't rush things too much. When the right season comes, the success will definitely be worth the wait!",
+  },
+  {
+    id: 11,
+    title: 'The Caffeine Addict',
+    poem: "Number eleven shows your coffee cup,\nIt takes three shots to wake you up.\nYou spend your paycheck on caffeine,\nAnd still feel like a tired machine!",
+    insight:
+      "You can't fix exhaustion with seven-dollar iced coffees, my child! If you're constantly tired, maybe it's time to actually go to bed early instead of watching another true-crime documentary. Drink some water, save your money, and get some real sleep!",
+  },
+  {
+    id: 12,
+    title: 'The DIY Disaster',
+    poem: "Number twelve brings a weekend plan,\nTo build a shelf like a handy man.\nYou threw the manual on the floor,\nAnd now it blocks your bedroom door!",
+    insight:
+      "Confidence is great, my child, but instructions exist for a reason! Don't be too stubborn to ask for help or read the manual. Sometimes, trying to do everything yourself just leaves you with a wobbly table and missing screws. Put your pride aside and do it right!",
+  },
+  {
+    id: 13,
+    title: 'The Toxic Ex',
+    poem: "Number thirteen warns of late-night texts,\nFrom very toxic, crazy exes.\nThey say they've changed and miss your face,\nJust block the number, leave no trace!",
+    insight:
+      "Stop reading old chapters hoping for a different ending, my child. If they were a walking red flag back then, they still are now. Don't let a moment of loneliness make you reply to that text. Go eat a snack and go to sleep—you'll thank me in the morning!",
+  },
+  {
+    id: 14,
+    title: 'The Subscription Trap',
+    poem: "Number fourteen sees your streaming bills,\nFor movies, shows, and spooky thrills.\nYou pay for five, but watch just one,\nThe same old sitcom just for fun!",
+    insight:
+      "You are paying fifty dollars a month just to re-watch a show from ten years ago, my child! Cancel those subscriptions you never use. Small leaks sink great ships. Be smart with your money so you have it when you actually need it!",
+  },
+  {
+    id: 15,
+    title: 'The Crystal Manifestor',
+    poem: "Number fifteen sees your crystal stones,\nYou blame the planets in your bones.\n\"It's retrograde!\" you cry and weep,\nBut you just overslept your sleep!",
+    insight:
+      "You can't blame all your life choices on the stars, my child. Mercury being in retrograde didn't make you late for work; hitting snooze five times did! Take accountability for your actions. Manifesting only works if you actually get up and put in the effort!",
+  },
+  {
+    id: 16,
+    title: 'The Golden Opportunity',
+    poem: "Number sixteen says you're on the rise,\nPrepare yourself for a big surprise!\nThe boss finally sees your brilliant spark,\nYou knocked that project out of the park!",
+    insight:
+      "Good news in your career is coming, my child! All those late nights and hard work are finally paying off. Step into the spotlight and claim your reward. Just stay humble and keep doing your best—your future is looking brighter than ever!",
+  },
+  {
+    id: 17,
+    title: 'The Forgotten Cash',
+    poem: "Number seventeen is bright and funny,\nYou are about to stumble onto money!\nDeep in the pocket of an old winter coat,\nYou'll find a crisp, green hundred-dollar note!",
+    insight:
+      "Financial luck is on your side, my child! Whether it's finding forgotten cash in the laundry, winning a small prize, or getting a surprise refund, extra money is heading your way. Treat yourself to something nice, you completely deserve it!",
+  },
+  {
+    id: 18,
+    title: 'The Sweet Romance',
+    poem: "Number eighteen points to love and grace,\nA giant smile will cross your face!\nSomeone who loves your quirky little ways,\nWill bring pure magic to your upcoming days!",
+    insight:
+      "Your love life is about to blossom, my child! Whether you are single and about to meet someone who truly gets you, or your current relationship is leveling up, your heart will be full. You deserve to be treated like royalty, so enjoy every romantic second of it!",
+  },
+  {
+    id: 19,
+    title: 'The Sudden Getaway',
+    poem: "Number nineteen tells you: pack your bags!\nGrab your passport and your luggage tags.\nA lucky trip is suddenly drawing near,\nWith ocean waves and skies so bright and clear!",
+    insight:
+      "It's time for a well-deserved break, my child! The universe is handing you a wonderful chance to travel, relax, and maybe even get a lucky free upgrade! Say yes to the adventure. You've been working way too hard, now go enjoy the sunshine and recharge your beautiful soul!",
+  },
+  {
+    id: 20,
+    title: 'The Glowing Health',
+    poem: "Number twenty says you're looking fine,\nYour skin is clear and starts to shine!\nNo random backaches, not a single sneeze,\nYou'll breeze through life with total ease!",
+    insight:
+      "Your health and energy are at their absolute peak right now, my child! You're going to feel like you can conquer the world without even needing an afternoon nap. Use this fantastic energy to do things you love. Keep taking good care of yourself—that healthy glow looks gorgeous on you!",
+  },
+  {
+    id: 21,
+    title: 'The Tuesday Trap',
+    poem: "Number twenty-one says you wait for the day,\nWhen all of your troubles will vanish away.\nYou wait for the weekend to finally live,\nBut today has a beautiful moment to give!",
+    insight:
+      "Stop treating your weekdays like a waiting room for the weekend, my child! Life is happening right now, even on a boring Tuesday afternoon. If you keep waiting for everything to be perfectly stress-free before you start enjoying life, you'll be waiting forever. Wear your best outfit and use the fancy plates today!",
+  },
+  {
+    id: 22,
+    title: 'The Burnt Pie',
+    poem: "Number twenty-two shows a burnt apple pie,\nYou ruined the crust and you started to cry.\nBut nobody learns if they don't make a mess,\nYour very next try will be a success!",
+    insight:
+      "Don't be so terrified of failing that you never even try, my child! Every master was once a beginner who burned the pie a few times. Mistakes aren't the opposite of success; they are simply part of the recipe. Forgive yourself for messing up, laugh it off, and try again tomorrow with a little more wisdom!",
+  },
+  {
+    id: 23,
+    title: 'The Scenic Route',
+    poem: "Number twenty-three says you drive the same street,\nYou stick to the map so your life is complete.\nBut magic is found when you wander away,\nGo take the long road and get lost for a day!",
+    insight:
+      "Comfort zones are cozy, my child, but nothing beautiful ever grows there! If you do the exact same thing every single day, you'll look back and realize you just lived the same year seventy times. Take a different route, try a weird hobby, or step into the unknown. A fully lived life requires a little bit of adventure!",
+  },
+  {
+    id: 24,
+    title: 'The Rearview Mirror',
+    poem: "Number twenty-four has you looking behind,\nAt chapters of sorrow stuck deep in your mind.\nThe rearview mirror is tiny and small,\nThe windshield ahead is the biggest of all!",
+    insight:
+      "You can't drive forward safely if you keep staring into the rearview mirror, my child! Stop obsessing over past mistakes or the opportunities you missed. What's done is done. Focus on the big, wide windshield right in front of you. Your best days are still on the road ahead, so keep moving forward!",
+  },
+  {
+    id: 25,
+    title: 'The Nosey Neighbor',
+    poem: "Number twenty-five warns of eyes that peek,\nA neighbor watching you every week.\nThey judge your lawn and your trash cans too,\nJust close the blinds and ignore the view!",
+    insight:
+      "Don't let petty people ruin your peace, my child! Someone might be judging how you manage your life, but it's your house and your rules. Let them worry about their own messy garage while you stay unbothered and perfectly happy inside your own home!",
+  },
+  {
+    id: 26,
+    title: 'The Career Climb',
+    poem: "Number twenty-six is about your grind,\nYou work so hard, but you feel behind.\nDon't pack your desk and decide to quit,\nYour breakthrough is coming in just a bit!",
+    insight:
+      "Your efforts are not invisible, my child. Sometimes it feels like you're just running on a treadmill, but you're actually climbing a mountain. Keep doing your best, stay professional, and the reward will come when the time is right. Don't give up on your goals just yet!",
+  },
+  {
+    id: 27,
+    title: 'The Flowing Wealth',
+    poem: "Number twenty-seven is about your gold,\nYou try to save it until you're old.\nBut money flows out like a running stream,\nStart budgeting now to protect your dream!",
+    insight:
+      "Wealth isn't just about how much you make, it's about how much you keep, my child! Stop letting your money slip through your fingers on things you don't really need. Build a solid foundation and start saving now, and your future self will thank you for the peace of mind!",
+  },
+  {
+    id: 28,
+    title: "The Heart's Mirror",
+    poem: "Number twenty-eight is about your heart,\nYou're waiting for true romance to start.\nBut before you look for a perfect pair,\nTreat your own soul with the utmost care!",
+    insight:
+      "You can't pour from an empty cup, my child. If you want a healthy and beautiful relationship, you have to start by loving yourself first. Know your worth, set your boundaries, and the right person will naturally gravitate toward your shining energy!",
+  },
+  {
+    id: 29,
+    title: "The Body's Temple",
+    poem: "Number twenty-nine is your physical state,\nYou carry the world and its heavy weight.\nYour shoulders are tense and your energy drops,\nTake time to rest before everything stops!",
+    insight:
+      "Your health is your truest wealth, my child. No job, deadline, or stress is worth burning yourself out until you crash. Listen to your body, eat nourishing food, and get some proper rest. Taking a break isn't being lazy; it's exactly what you need to keep going strong!",
+  },
+  {
+    id: 30,
+    title: 'The Unique Path',
+    poem: "Number thirty warns of a looking glass,\nYou stare at the others as they go past.\nYou think that they're winning the human race,\nBut life is a journey, so find your pace!",
+    insight:
+      "Stop comparing your Chapter 1 to someone else's Chapter 20, my child. Everyone is walking their own path and fighting battles you know nothing about. Focus on your own growth, celebrate your small wins, and trust your own timing. You are exactly where you need to be!",
+  },
+  {
+    id: 31,
+    title: 'The Winds of Change',
+    poem: "Number thirty-one brings a change in the wind,\nYou're scared of the place where the new road begins.\nThe chapters are turning, it's time to let go,\nEmbrace the new journey and go with the flow!",
+    insight:
+      "Change is the only constant in life, my child. Stop clinging to the past or stressing over how things \"used to be.\" New chapters might seem scary at first because they are unfamiliar, but they always bring new opportunities. Adapt, grow, and step forward with an open mind!",
+  },
+  {
+    id: 32,
+    title: 'The Inner Compass',
+    poem: "Number thirty-two says you're lost in a maze,\nYou ask everyone for advice nowadays.\nBut deep in your mind is the answer you seek,\nJust quiet the noise and let intuition speak!",
+    insight:
+      "Stop asking twenty different people for their opinions on your own life, my child! You already know what you need to do deep down in your gut. Trust your instincts and be confident in your choices. You are much wiser and stronger than you give yourself credit for!",
+  },
+  {
+    id: 33,
+    title: 'The Hidden Spark',
+    poem: "Number thirty-three shows a spark in your eye,\nA talent you're hiding and leaving to dry.\nDon't worry about being the best in the land,\nJust pick up the brush or the tools in your hand!",
+    insight:
+      "You are meant to do more than just work and pay bills, my child! Don't let your passions fade just because you think you aren't \"perfect\" at them. Paint poorly, sing off-key, or write messy stories. True joy is found in the doing, not just in winning a prize!",
+  },
+  {
+    id: 34,
+    title: 'The Social Circle',
+    poem: "Number thirty-four looks at friends that you keep,\nSome lift you up high, others put you to sleep.\nIt's quality, darling, not numbers that count,\nKeep only the gold in your social account!",
+    insight:
+      "You become like the people you surround yourself with, my child. If someone constantly drains your energy or brings unnecessary drama into your life, it's perfectly okay to create some distance. Surround yourself with people who clap for your success and support you in your struggles!",
+  },
+  {
+    id: 35,
+    title: 'The Daily Joy',
+    poem: "Number thirty-five says you're chasing the sun,\nYou think that you'll smile when the big prize is won.\nBut look at your coffee and look at the sky,\nThere's joy in the moments that keep passing by!",
+    insight:
+      "Happiness isn't a destination you arrive at someday, my child! If you wait until everything in your life is absolutely perfect to be happy, you'll be waiting forever. Start noticing the little good things every single day. A grateful heart naturally attracts more things to be grateful for!",
+  },
+  {
+    id: 36,
+    title: 'The Bucket List',
+    poem: "Number thirty-six says the clock's ticking fast,\nDon't let your best years become just the past.\nTake the big leap and go do what you crave,\nYou can't take your money right into the grave!",
+    insight:
+      "Don't wake up at eighty years old wishing you had lived more boldly, my child! Stop waiting for the \"perfect time\" to travel or try something new, because tomorrow is never promised. Buy the ticket, eat the cake, and take the risk. A life filled with \"oh well\" is so much better than a life filled with \"what if\"!",
+  },
+  {
+    id: 37,
+    title: 'The Simple Joys',
+    poem: "Number thirty-seven brings joy to your soul,\nYou're trying too hard to achieve every goal.\nBut look at the sunset and feel the warm breeze,\nTrue happiness lives in small moments like these!",
+    insight:
+      "You are running so fast chasing success that you're forgetting to actually live, my child. True happiness isn't locked inside a bank vault or a fancy job title. It's in the quiet mornings, a good cup of coffee, and laughing with people you love. Slow down, breathe, and enjoy the ride while you're on it!",
+  },
+  {
+    id: 38,
+    title: 'The Magic of Pages',
+    poem: "Number thirty-eight puts a book in your hand,\nTo travel in time to a faraway land.\nEach page that you turn is a lesson to learn,\nA spark in your mind that will suddenly burn!",
+    insight:
+      "Never stop reading and expanding your beautiful mind, my child! A single book can give you the wisdom of a whole lifetime. When you read, you get to live a thousand different lives and see the world through a thousand different eyes. Keep feeding your brain with good stories, and you'll never be bored or alone!",
+  },
+  {
+    id: 39,
+    title: 'The Drama-Free Life',
+    poem: "Number thirty-nine says to let it all go,\nThe anger and grudges that put on a show.\nYour time is too precious to waste being mad,\nJust focus on good things and never the bad!",
+    insight:
+      "Life is way too short to hold onto bitterness, my child! Don't spend your precious years arguing with fools or worrying about people who don't even matter in the grand scheme of things. Forgive, forget, and move on. You want to look back at a life filled with peace and laughter, not unnecessary drama!",
+  },
+  {
+    id: 40,
+    title: 'The Authentic Soul',
+    poem: "Number forty tells you to take off the mask,\nTo please everyone is an impossible task.\nLive for yourself, let your spirit run free,\nAnd you will be happy as happy can be!",
+    insight:
+      "Stop living your life to meet everyone else's expectations, my child! When you are sitting in a rocking chair in your old age, you won't care about what the neighbors thought of you. You will only care if you stayed true to yourself. Be brave, be wonderfully weird, be authentic, and write a story you'll be incredibly proud to tell!",
+  },
+];
+
+/** ชุดที่ใช้จริง — เลือกตามภาษาของแอป (thai/global) */
+export const SIAMSI: SiamsiStick[] = IS_GLOBAL ? SIAMSI_EN : SIAMSI_TH;
