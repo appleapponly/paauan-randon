@@ -22,6 +22,7 @@ import { pickOne } from '@/utils/random';
 import { paaUanPoses } from '@/theme/assets';
 import { colors } from '@/theme/colors';
 import { fonts, fontSize } from '@/theme/typography';
+import { t } from '@/i18n';
 
 const one = (v: string | string[] | undefined, fallback = '') =>
   (Array.isArray(v) ? v[0] : v) ?? fallback;
@@ -61,7 +62,7 @@ export default function TimerScreen() {
     1,
     hasQueue ? queue[qi]?.minutes ?? 25 : parseInt(one(params.minutes, '25'), 10) || 25
   );
-  const label = hasQueue ? queue[qi]?.label ?? 'โฟกัส' : one(params.label, 'โฟกัส');
+  const label = hasQueue ? queue[qi]?.label ?? t('โฟกัส', 'Focus') : one(params.label, t('โฟกัส', 'Focus'));
 
   const breakMin = useStudyStore((s) => s.breakMin);
 
@@ -69,7 +70,9 @@ export default function TimerScreen() {
   const [paused, setPaused] = useState(false);
   const [done, setDone] = useState(false);
   const [cheer, setCheer] = useState(() =>
-    mode === 'work' ? pickOne(studyEncourageLines) : 'พักผ่อนให้เต็มที่นะลูก เดี๋ยวกลับมาลุยต่อ'
+    mode === 'work'
+      ? pickOne(studyEncourageLines)
+      : t('พักผ่อนให้เต็มที่นะลูก เดี๋ยวกลับมาลุยต่อ', 'Rest up, sweetie — come back ready to go')
   );
 
   const tick = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -107,7 +110,7 @@ export default function TimerScreen() {
       setCheer(
         mode === 'work'
           ? pickOne(studyEncourageLines)
-          : 'พักสมองไป เดี๋ยวกลับมาจำได้ดีขึ้นเยอะเลย'
+          : t('พักสมองไป เดี๋ยวกลับมาจำได้ดีขึ้นเยอะเลย', "Rest that brain — you'll remember so much better after")
       );
     }, 12000);
     return () => {
@@ -135,7 +138,7 @@ export default function TimerScreen() {
       pathname: '/timer',
       params: {
         minutes: String(breakMin),
-        label: 'พักผ่อน',
+        label: t('พักผ่อน', 'Rest'),
         mode: 'break',
         session: String(session),
       },
@@ -150,11 +153,11 @@ export default function TimerScreen() {
       <Stack.Screen options={{ headerShown: false }} />
       <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
         <View style={styles.header}>
-          <Text style={styles.mode}>{mode === 'work' ? '🍅 โฟกัส' : '☕ พักผ่อน'}</Text>
+          <Text style={styles.mode}>{mode === 'work' ? t('🍅 โฟกัส', '🍅 Focus') : t('☕ พักผ่อน', '☕ Break')}</Text>
           {mode === 'work' && (
             <Text style={styles.session}>
-              เซสชันที่ {session}
-              {hasQueue ? ` · ภารกิจ ${qi + 1}/${queue.length}` : ''}
+              {t('เซสชันที่ ', 'Session ')}{session}
+              {hasQueue ? t(` · ภารกิจ ${qi + 1}/${queue.length}`, ` · task ${qi + 1}/${queue.length}`) : ''}
             </Text>
           )}
           <Text style={styles.label} numberOfLines={2}>
@@ -182,10 +185,10 @@ export default function TimerScreen() {
           {!done ? (
             <>
               <Pressable style={styles.ctrlBtn} onPress={() => setPaused((p) => !p)}>
-                <Text style={styles.ctrlText}>{paused ? '▶️ ไปต่อ' : '⏸️ หยุดชั่วคราว'}</Text>
+                <Text style={styles.ctrlText}>{paused ? t('▶️ ไปต่อ', '▶️ Resume') : t('⏸️ หยุดชั่วคราว', '⏸️ Pause')}</Text>
               </Pressable>
               <Pressable style={[styles.ctrlBtn, styles.ctrlGhost]} onPress={() => router.back()}>
-                <Text style={styles.ctrlText}>เลิก</Text>
+                <Text style={styles.ctrlText}>{t('เลิก', 'Quit')}</Text>
               </Pressable>
             </>
           ) : mode === 'work' ? (
@@ -193,21 +196,21 @@ export default function TimerScreen() {
               {hasNext ? (
                 <Pressable style={styles.ctrlBtn} onPress={goNext}>
                   <Text style={styles.ctrlText} numberOfLines={1}>
-                    ➡️ ภารกิจถัดไป: {queue[qi + 1].label}
+                    {t('➡️ ภารกิจถัดไป: ', '➡️ Next: ')}{queue[qi + 1].label}
                   </Text>
                 </Pressable>
               ) : (
                 <Pressable style={styles.ctrlBtn} onPress={startBreak}>
-                  <Text style={styles.ctrlText}>☕ เริ่มพัก {breakMin} นาที</Text>
+                  <Text style={styles.ctrlText}>{t(`☕ เริ่มพัก ${breakMin} นาที`, `☕ Break ${breakMin} min`)}</Text>
                 </Pressable>
               )}
               <Pressable style={[styles.ctrlBtn, styles.ctrlGhost]} onPress={() => router.back()}>
-                <Text style={styles.ctrlText}>เสร็จแล้ว กลับหน้าเรียน</Text>
+                <Text style={styles.ctrlText}>{t('เสร็จแล้ว กลับหน้าเรียน', 'Done — back to study')}</Text>
               </Pressable>
             </>
           ) : (
             <Pressable style={styles.ctrlBtn} onPress={() => router.back()}>
-              <Text style={styles.ctrlText}>🍅 กลับไปเรียนต่อ</Text>
+              <Text style={styles.ctrlText}>{t('🍅 กลับไปเรียนต่อ', '🍅 Back to studying')}</Text>
             </Pressable>
           )}
         </View>

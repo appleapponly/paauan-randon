@@ -15,6 +15,7 @@ import { CaptureCard } from '@/components/CaptureCard';
 import { ShareButton } from '@/components/ShareButton';
 import { colors } from '@/theme/colors';
 import { fonts, fontSize } from '@/theme/typography';
+import { t } from '@/i18n';
 
 export default function DailyFortuneScreen() {
   const cardRef = useRef<View>(null);
@@ -36,7 +37,7 @@ export default function DailyFortuneScreen() {
       <ScrollView contentContainerStyle={styles.content}>
         {fortune === null ? (
           <PaaUanBubble
-            text="อยากได้ข้อคิดดี ๆ วันนี้มั้ยลูก? กดให้ป้าหมอดูบอกเลยจ้า"
+            text={t('อยากได้ข้อคิดดี ๆ วันนี้มั้ยลูก? กดให้ป้าหมอดูบอกเลยจ้า', "Want a little wisdom today, sweetie? Tap and Auntie will share!")}
             mood="happy"
             pose="fortune"
           />
@@ -44,7 +45,7 @@ export default function DailyFortuneScreen() {
           <Animated.View key={round} entering={BounceIn.duration(600)}>
             <CaptureCard ref={cardRef} comment={comment} mood={mood} pose="fortune">
               <Text style={styles.emoji}>💡</Text>
-              <Text style={styles.label}>ข้อคิดวันนี้</Text>
+              <Text style={styles.label}>{t('ข้อคิดวันนี้', "Today's Wisdom")}</Text>
               <Text style={styles.fortune}>{fortune}</Text>
             </CaptureCard>
           </Animated.View>
@@ -53,7 +54,7 @@ export default function DailyFortuneScreen() {
         <View style={{ height: 20 }} />
 
         <BigButton
-          label={fortune === null ? 'ขอข้อคิดวันนี้!' : 'ขอข้อคิดใหม่'}
+          label={fortune === null ? t('ขอข้อคิดวันนี้!', "Today's wisdom!") : t('ขอข้อคิดใหม่', 'Another one')}
           onPress={draw}
           color={colors.wine}
         />

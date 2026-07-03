@@ -17,6 +17,7 @@ import { CaptureCard } from '@/components/CaptureCard';
 import { ShareButton } from '@/components/ShareButton';
 import { colors } from '@/theme/colors';
 import { fonts, fontSize } from '@/theme/typography';
+import { t } from '@/i18n';
 
 export default function BreakTimeScreen() {
   const router = useRouter();
@@ -24,7 +25,7 @@ export default function BreakTimeScreen() {
   const setBreakMin = useStudyStore((s) => s.setBreakMin);
 
   const cardRef = useRef<View>(null);
-  const [bubble, setBubble] = useState('เหนื่อยแล้วเหรอลูก? กดสุ่มเวลาพัก เดี๋ยวป้าจัดให้!');
+  const [bubble, setBubble] = useState(t('เหนื่อยแล้วเหรอลูก? กดสุ่มเวลาพัก เดี๋ยวป้าจัดให้!', 'Tired, sweetie? Tap for a random break and Auntie will sort it out!'));
   const [mood, setMood] = useState<PaaUanMood>('happy');
   const [activity, setActivity] = useState<string | null>(null);
   const [round, setRound] = useState(0);
@@ -45,7 +46,7 @@ export default function BreakTimeScreen() {
       pathname: '/timer',
       params: {
         minutes: String(breakMin),
-        label: activity ?? 'พักผ่อน',
+        label: activity ?? t('พักผ่อน', 'Rest'),
         mode: 'break',
         session: '1',
       },
@@ -64,23 +65,23 @@ export default function BreakTimeScreen() {
               comment={bubble}
               mood={mood}
               pose="fan"
-              watermark="พักผ่อนกับป้าอ้วน ☕"
+              watermark={t('พักผ่อนกับป้าอ้วน ☕', 'Take a break with Auntie ☕')}
             >
-              <Text style={styles.badge}>เวลาพัก</Text>
-              <Text style={styles.mins}>{breakMin} นาที</Text>
+              <Text style={styles.badge}>{t('เวลาพัก', 'Break time')}</Text>
+              <Text style={styles.mins}>{breakMin} {t('นาที', 'min')}</Text>
               <Text style={styles.activity}>{activity}</Text>
             </CaptureCard>
           </Animated.View>
         )}
 
         <BigButton
-          label={activity ? 'สุ่มใหม่' : 'สุ่มเวลาพัก!'}
+          label={activity ? t('สุ่มใหม่', 'Again') : t('สุ่มเวลาพัก!', 'Random break!')}
           color={colors.jade}
           onPress={roll}
         />
         {activity && <ShareButton targetRef={cardRef} />}
         {activity && (
-          <BigButton label={`เริ่มพัก ${breakMin} นาที ☕`} color={colors.ocean} onPress={startBreak} countAd={false} />
+          <BigButton label={t(`เริ่มพัก ${breakMin} นาที ☕`, `Start ${breakMin}-min break ☕`)} color={colors.ocean} onPress={startBreak} countAd={false} />
         )}
       </ScrollView>
     </SafeAreaView>

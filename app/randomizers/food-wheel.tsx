@@ -33,6 +33,7 @@ import { pickOne } from '@/utils/random';
 import { colors } from '@/theme/colors';
 import { fonts, fontSize } from '@/theme/typography';
 import { cartoonBox } from '@/theme/styles';
+import { t } from '@/i18n';
 
 // อิริยาบทป้าที่เหมาะกับ "การ์ดแชร์อาหาร" — เลือกหลายแบบให้ไม่ซ้ำซาก (เลี่ยงหน้าปฏิเสธ)
 const FOOD_CARD_POSES: PaaUanPose[] = ['cookHappy', 'satisfied', 'cookJump', 'happy'];
@@ -51,7 +52,7 @@ export default function FoodWheelScreen() {
   const wheelRef = useRef<SpinWheelHandle>(null);
   const [spinning, setSpinning] = useState(false);
   const [newItem, setNewItem] = useState('');
-  const [bubble, setBubble] = useState('กดหมุนวงล้อ เดี๋ยวป้าเลือกเมนูให้!');
+  const [bubble, setBubble] = useState(t('กดหมุนวงล้อ เดี๋ยวป้าเลือกเมนูให้!', 'Give the wheel a spin and Auntie will pick a dish!'));
   const [mood, setMood] = useState<PaaUanMood>('happy');
   const [result, setResult] = useState<string | null>(null);
   const [round, setRound] = useState(0);
@@ -105,7 +106,7 @@ export default function FoodWheelScreen() {
         {menu.length < 2 ? (
           <View style={styles.emptyBox}>
             <Text style={styles.emptyText}>
-              มีเมนูน้อยไป! ป้าหมุนให้ไม่ได้ เพิ่มเมนูอย่างน้อย 2 อย่างก่อนนะจ๊ะ
+              {t('มีเมนูน้อยไป! ป้าหมุนให้ไม่ได้ เพิ่มเมนูอย่างน้อย 2 อย่างก่อนนะจ๊ะ', "Too few dishes! Add at least 2 so Auntie can spin.")}
             </Text>
           </View>
         ) : (
@@ -115,7 +116,7 @@ export default function FoodWheelScreen() {
         )}
 
         <BigButton
-          label={spinning ? 'กำลังหมุน...' : 'หมุนเลย!'}
+          label={spinning ? t('กำลังหมุน...', 'Spinning...') : t('หมุนเลย!', 'Spin!')}
           onPress={handleSpin}
           disabled={spinning || menu.length < 2}
         />
@@ -128,7 +129,7 @@ export default function FoodWheelScreen() {
               comment={bubble}
               mood={mood}
               pose={cardPose}
-              watermark="แอปสุ่มอาหารจากใจป้าอ้วน ❤️"
+              watermark={t('แอปสุ่มอาหารจากใจป้าอ้วน ❤️', "What to Eat · Auntie's Random ❤️")}
             >
               <Text style={styles.resultEmoji}>{getFoodEmoji(result)}</Text>
               <Text style={styles.resultName}>{result}</Text>
@@ -140,12 +141,12 @@ export default function FoodWheelScreen() {
 
         {/* จัดการเมนู */}
         <View style={styles.manageBox}>
-          <Text style={styles.manageTitle}>เมนูในวงล้อ ({menu.length})</Text>
+          <Text style={styles.manageTitle}>{t('เมนูในวงล้อ', 'Dishes in the wheel')} ({menu.length})</Text>
 
           <View style={styles.addRow}>
             <TextInput
               style={styles.input}
-              placeholder="พิมพ์ชื่อเมนูใหม่..."
+              placeholder={t('พิมพ์ชื่อเมนูใหม่...', 'Type a new dish...')}
               placeholderTextColor={colors.muted}
               value={newItem}
               onChangeText={setNewItem}
@@ -153,7 +154,7 @@ export default function FoodWheelScreen() {
               returnKeyType="done"
             />
             <Pressable style={styles.addBtn} onPress={handleAdd}>
-              <Text style={styles.addBtnText}>เพิ่ม</Text>
+              <Text style={styles.addBtnText}>{t('เพิ่ม', 'Add')}</Text>
             </Pressable>
           </View>
 
@@ -168,7 +169,7 @@ export default function FoodWheelScreen() {
                     {preset ? (
                       <Text style={styles.chipX}>✕</Text>
                     ) : (
-                      <Text style={styles.chipDelete}>ลบ</Text>
+                      <Text style={styles.chipDelete}>{t('ลบ', 'Del')}</Text>
                     )}
                   </Pressable>
                 </View>
@@ -179,13 +180,13 @@ export default function FoodWheelScreen() {
 
         {/* คลังเมนูแนะนำ — เมนูที่ยังไม่อยู่ในวงล้อ แตะเพื่อย้ายเข้าวงล้อ */}
         <View style={styles.manageBox}>
-          <Text style={styles.manageTitle}>เมนูแนะนำ — แตะเพื่อย้ายเข้าวงล้อ</Text>
+          <Text style={styles.manageTitle}>{t('เมนูแนะนำ — แตะเพื่อย้ายเข้าวงล้อ', 'Suggestions — tap to add to the wheel')}</Text>
           <Text style={styles.suggestHint}>
-            แตะเมนูด้านล่างเพื่อย้ายเข้าวงล้อ · เมนูที่เอาออกจากวงล้อจะกลับมาอยู่ตรงนี้
+            {t('แตะเมนูด้านล่างเพื่อย้ายเข้าวงล้อ · เมนูที่เอาออกจากวงล้อจะกลับมาอยู่ตรงนี้', 'Tap a dish below to add it · dishes you remove come back here')}
           </Text>
           <View style={styles.chips}>
             {available.length === 0 ? (
-              <Text style={styles.suggestHint}>เมนูแนะนำอยู่ในวงล้อหมดแล้วจ้า 🎉</Text>
+              <Text style={styles.suggestHint}>{t('เมนูแนะนำอยู่ในวงล้อหมดแล้วจ้า 🎉', 'All suggestions are already in the wheel 🎉')}</Text>
             ) : (
               available.map((item) => (
                 <Pressable

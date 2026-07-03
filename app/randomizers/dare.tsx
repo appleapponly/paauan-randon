@@ -13,12 +13,20 @@ import { CaptureCard } from '@/components/CaptureCard';
 import { ShareButton } from '@/components/ShareButton';
 import { colors } from '@/theme/colors';
 import { fonts, fontSize } from '@/theme/typography';
+import { t } from '@/i18n';
 
-const INTROS = [
-  'รอบนี้ป้าสั่ง...',
-  'ทำตามนี้เลยลูก ห้ามเกี่ยง!',
-  'ป้าท้า! กล้าทำมั้ยล่ะ',
-];
+const INTROS = t<string[]>(
+  [
+    'รอบนี้ป้าสั่ง...',
+    'ทำตามนี้เลยลูก ห้ามเกี่ยง!',
+    'ป้าท้า! กล้าทำมั้ยล่ะ',
+  ],
+  [
+    "Auntie's orders this round...",
+    'Do this, no backing out, sweetie!',
+    'Auntie dares you! You brave enough?',
+  ]
+);
 
 export default function DareScreen() {
   const cardRef = useRef<View>(null);
@@ -36,7 +44,7 @@ export default function DareScreen() {
     <SafeAreaView style={styles.safe} edges={['bottom']}>
       <ScrollView contentContainerStyle={styles.content}>
         {dare === null ? (
-          <PaaUanBubble text="อยากสนุกใช่มั้ย? กดให้ป้าสั่งภารกิจเลย!" mood="sassy" />
+          <PaaUanBubble text={t('อยากสนุกใช่มั้ย? กดให้ป้าสั่งภารกิจเลย!', 'Want some fun? Tap for a dare from Auntie!')} mood="sassy" />
         ) : (
           <Animated.View key={round} entering={BounceIn.duration(600)}>
             <CaptureCard ref={cardRef} comment={intro} mood="sassy">
@@ -48,7 +56,7 @@ export default function DareScreen() {
 
         <View style={{ height: 18 }} />
 
-        <BigButton label={dare === null ? 'สุ่มภารกิจ!' : 'สุ่มใหม่'} onPress={roll} />
+        <BigButton label={dare === null ? t('สุ่มภารกิจ!', 'Dare me!') : t('สุ่มใหม่', 'Another one')} onPress={roll} />
 
         {dare !== null && <ShareButton targetRef={cardRef} />}
       </ScrollView>

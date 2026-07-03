@@ -15,6 +15,7 @@ import { CaptureCard } from '@/components/CaptureCard';
 import { ShareButton } from '@/components/ShareButton';
 import { colors } from '@/theme/colors';
 import { fonts, fontSize } from '@/theme/typography';
+import { t } from '@/i18n';
 
 interface Reading {
   luck: string;
@@ -24,9 +25,9 @@ interface Reading {
 
 // 3 หัวข้อที่จะโชว์ในการ์ด (สี + อิโมจิประจำหัวข้อ)
 const SECTIONS: { key: keyof Reading; label: string; emoji: string; color: string }[] = [
-  { key: 'luck', label: 'โชคดีวันนี้', emoji: '🍀', color: colors.jade },
-  { key: 'caution', label: 'สิ่งที่ต้องระวัง', emoji: '⚠️', color: colors.gold },
-  { key: 'mood', label: 'อารมณ์วันนี้', emoji: '🎭', color: colors.wine },
+  { key: 'luck', label: t('โชคดีวันนี้', "Today's Luck"), emoji: '🍀', color: colors.jade },
+  { key: 'caution', label: t('สิ่งที่ต้องระวัง', 'Watch Out For'), emoji: '⚠️', color: colors.gold },
+  { key: 'mood', label: t('อารมณ์วันนี้', "Today's Mood"), emoji: '🎭', color: colors.wine },
 ];
 
 export default function DailyHoroscopeScreen() {
@@ -53,14 +54,14 @@ export default function DailyHoroscopeScreen() {
       <ScrollView contentContainerStyle={styles.content}>
         {reading === null ? (
           <PaaUanBubble
-            text="อยากรู้ดวงวันนี้มั้ยลูก? กดให้ป้าหมอดูเปิดลูกแก้วเลยจ้า"
+            text={t('อยากรู้ดวงวันนี้มั้ยลูก? กดให้ป้าหมอดูเปิดลูกแก้วเลยจ้า', "Curious about today? Tap and let Auntie read her crystal ball!")}
             mood="happy"
             pose="fortune"
           />
         ) : (
           <Animated.View key={round} entering={BounceIn.duration(600)}>
             <CaptureCard ref={cardRef} comment={comment} mood={mood} pose="fortune">
-              <Text style={styles.title}>ดวงวันนี้ของหนู</Text>
+              <Text style={styles.title}>{t('ดวงวันนี้ของหนู', 'Your Day Ahead')}</Text>
               <View style={styles.sections}>
                 {SECTIONS.map((s) => (
                   <View key={s.key} style={[styles.section, { borderColor: s.color }]}>
@@ -78,7 +79,7 @@ export default function DailyHoroscopeScreen() {
         <View style={{ height: 8 }} />
 
         <BigButton
-          label={reading === null ? 'ดูดวงวันนี้!' : 'ดูดวงอีกครั้ง'}
+          label={reading === null ? t('ดูดวงวันนี้!', 'Read my day!') : t('ดูดวงอีกครั้ง', 'Read again')}
           onPress={draw}
           color={colors.wine}
         />

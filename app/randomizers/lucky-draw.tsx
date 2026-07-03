@@ -16,6 +16,7 @@ import { ShareButton } from '@/components/ShareButton';
 import { PinballDraw, PinballHandle } from '@/components/PinballDraw';
 import { colors } from '@/theme/colors';
 import { fonts, fontSize } from '@/theme/typography';
+import { t } from '@/i18n';
 
 export default function LuckyDrawScreen() {
   const names = useNamesStore((s) => s.names);
@@ -57,8 +58,8 @@ export default function LuckyDrawScreen() {
         <PaaUanBubble
           text={
             dropping
-              ? 'ลูกบอลกำลังกลิ้ง~ ลุ้นกันหน่อยจ้ะ!'
-              : 'ใส่รายชื่อให้ครบ เดี๋ยวป้าจับผู้โชคดีให้!'
+              ? t('ลูกบอลกำลังกลิ้ง~ ลุ้นกันหน่อยจ้ะ!', 'The ball is rolling~ fingers crossed!')
+              : t('ใส่รายชื่อให้ครบ เดี๋ยวป้าจับผู้โชคดีให้!', 'Add all the names and Auntie will draw a winner!')
           }
           mood={dropping ? 'teasing' : 'happy'}
         />
@@ -71,14 +72,14 @@ export default function LuckyDrawScreen() {
           <Animated.View key={round} entering={BounceIn.duration(600)}>
             <CaptureCard ref={cardRef} comment={comment} mood={mood} pose="clap">
               <Text style={styles.emoji}>🎉</Text>
-              <Text style={styles.label}>ผู้โชคดีคือ</Text>
+              <Text style={styles.label}>{t('ผู้โชคดีคือ', 'The winner is')}</Text>
               <Text style={styles.name}>{winner}</Text>
             </CaptureCard>
           </Animated.View>
         )}
 
         <BigButton
-          label={dropping ? 'กำลังสุ่ม...' : winner === null ? 'จับฉลาก!' : 'จับใหม่'}
+          label={dropping ? t('กำลังสุ่ม...', 'Drawing...') : winner === null ? t('จับฉลาก!', 'Draw!') : t('จับใหม่', 'Draw again')}
           onPress={draw}
           disabled={names.length < 2 || dropping}
         />
@@ -89,8 +90,8 @@ export default function LuckyDrawScreen() {
           names={names}
           onAdd={addName}
           onRemove={removeName}
-          label="รายชื่อผู้เข้าร่วม"
-          placeholder="ใส่ชื่อผู้เข้าร่วม..."
+          label={t('รายชื่อผู้เข้าร่วม', 'Participants')}
+          placeholder={t('ใส่ชื่อผู้เข้าร่วม...', 'Add a participant...')}
         />
       </ScrollView>
     </SafeAreaView>

@@ -16,6 +16,7 @@ import { ShareButton } from '@/components/ShareButton';
 import { PinballDraw, PinballHandle } from '@/components/PinballDraw';
 import { colors } from '@/theme/colors';
 import { fonts, fontSize } from '@/theme/typography';
+import { t } from '@/i18n';
 
 export default function WhoGetsItScreen() {
   const names = useNamesStore((s) => s.names);
@@ -57,8 +58,8 @@ export default function WhoGetsItScreen() {
         <PaaUanBubble
           text={
             dropping
-              ? 'ลูกบอลกำลังกลิ้งหาเหยื่อ~ 😈'
-              : 'ใครจะซวยรอบนี้น้า~ ใส่ชื่อมาให้ป้าจิ้ม!'
+              ? t('ลูกบอลกำลังกลิ้งหาเหยื่อ~ 😈', 'The ball is hunting for a victim~ 😈')
+              : t('ใครจะซวยรอบนี้น้า~ ใส่ชื่อมาให้ป้าจิ้ม!', "Who's unlucky this round~ add names and let Auntie pick!")
           }
           mood="sassy"
           pose={dropping ? undefined : 'shock'}
@@ -72,14 +73,14 @@ export default function WhoGetsItScreen() {
           <Animated.View key={round} entering={BounceIn.duration(600)}>
             <CaptureCard ref={cardRef} comment={comment} mood={mood} pose="shock">
               <Text style={styles.emoji}>😈</Text>
-              <Text style={styles.label}>ผู้โชคร้ายคือ</Text>
+              <Text style={styles.label}>{t('ผู้โชคร้ายคือ', 'The unlucky one is')}</Text>
               <Text style={styles.name}>{victim}</Text>
             </CaptureCard>
           </Animated.View>
         )}
 
         <BigButton
-          label={dropping ? 'กำลังสุ่ม...' : victim === null ? 'สุ่มผู้โชคร้าย!' : 'สุ่มใหม่'}
+          label={dropping ? t('กำลังสุ่ม...', 'Picking...') : victim === null ? t('สุ่มผู้โชคร้าย!', 'Pick a victim!') : t('สุ่มใหม่', 'Again')}
           onPress={draw}
           disabled={names.length < 2 || dropping}
         />
@@ -90,8 +91,8 @@ export default function WhoGetsItScreen() {
           names={names}
           onAdd={addName}
           onRemove={removeName}
-          label="รายชื่อผู้ร่วมชะตากรรม"
-          placeholder="ใส่ชื่อเพื่อน..."
+          label={t('รายชื่อผู้ร่วมชะตากรรม', 'Names in the pool')}
+          placeholder={t('ใส่ชื่อเพื่อน...', 'Add a friend...')}
         />
       </ScrollView>
     </SafeAreaView>

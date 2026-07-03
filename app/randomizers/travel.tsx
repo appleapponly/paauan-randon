@@ -14,6 +14,7 @@ import { CaptureCard } from '@/components/CaptureCard';
 import { ShareButton } from '@/components/ShareButton';
 import { colors } from '@/theme/colors';
 import { fonts, fontSize } from '@/theme/typography';
+import { t } from '@/i18n';
 
 export default function TravelScreen() {
   const cardRef = useRef<View>(null);
@@ -35,7 +36,7 @@ export default function TravelScreen() {
       <ScrollView contentContainerStyle={styles.content}>
         {spot === null ? (
           <PaaUanBubble
-            text="ว่างใช่มั้ยลูก? อยากไปเที่ยวไหน กดให้ป้าเลือกให้เลย!"
+            text={t('ว่างใช่มั้ยลูก? อยากไปเที่ยวไหน กดให้ป้าเลือกให้เลย!', 'Free time, sweetie? Tap and let Auntie pick your next trip!')}
             mood="happy"
             pose="point"
           />
@@ -43,7 +44,7 @@ export default function TravelScreen() {
           <Animated.View key={round} entering={BounceIn.duration(600)}>
             <CaptureCard ref={cardRef} comment={comment} mood={mood} pose="point">
               <Text style={styles.emoji}>{spot.emoji}</Text>
-              <Text style={styles.label}>ทริปหน้าไปที่นี่!</Text>
+              <Text style={styles.label}>{t('ทริปหน้าไปที่นี่!', 'Your next trip is here!')}</Text>
               <Text style={styles.name}>{spot.name}</Text>
             </CaptureCard>
           </Animated.View>
@@ -52,7 +53,7 @@ export default function TravelScreen() {
         <View style={{ height: 20 }} />
 
         <BigButton
-          label={spot === null ? 'สุ่มที่เที่ยว!' : 'สุ่มใหม่'}
+          label={spot === null ? t('สุ่มที่เที่ยว!', 'Pick a spot!') : t('สุ่มใหม่', 'Again')}
           onPress={draw}
           color={colors.jade}
         />

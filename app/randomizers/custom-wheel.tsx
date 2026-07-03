@@ -21,6 +21,7 @@ import { ShareButton } from '@/components/ShareButton';
 import { colors } from '@/theme/colors';
 import { fonts, fontSize } from '@/theme/typography';
 import { cartoonBox } from '@/theme/styles';
+import { t } from '@/i18n';
 
 export default function CustomWheelScreen() {
   const router = useRouter();
@@ -36,7 +37,7 @@ export default function CustomWheelScreen() {
   const cardRef = useRef<View>(null);
   const [spinning, setSpinning] = useState(false);
   const [newItem, setNewItem] = useState('');
-  const [bubble, setBubble] = useState('ใส่คำที่อยากสุ่ม เลือกสี แล้วกดหมุนได้เลยจ้ะ');
+  const [bubble, setBubble] = useState(t('ใส่คำที่อยากสุ่ม เลือกสี แล้วกดหมุนได้เลยจ้ะ', 'Add your options, pick colors, and give it a spin!'));
   const [mood, setMood] = useState<PaaUanMood>('happy');
   const [result, setResult] = useState<string | null>(null);
   const [round, setRound] = useState(0);
@@ -47,18 +48,20 @@ export default function CustomWheelScreen() {
       <SafeAreaView style={styles.safe} edges={['bottom']}>
         <ScrollView contentContainerStyle={styles.content}>
           <PaaUanBubble
-            text="วงล้อของฉันเป็นของขวัญให้หลานที่รักป้านะจ๊ะ ปลดล็อกแล้วใช้ฟรีไม่จำกัดเลย"
+            text={t('วงล้อของฉันเป็นของขวัญให้หลานที่รักป้านะจ๊ะ ปลดล็อกแล้วใช้ฟรีไม่จำกัดเลย', "My Wheel is a gift for those who love Auntie. Unlock it and use it free, forever!")}
             mood="happy"
           />
           <View style={styles.lockBox}>
             <Text style={styles.lockEmoji}>🎡🔒</Text>
-            <Text style={styles.lockTitle}>วงล้อของฉัน (เฉพาะสมาชิก Pro)</Text>
+            <Text style={styles.lockTitle}>{t('วงล้อของฉัน (เฉพาะสมาชิก Pro)', 'My Wheel (Pro members only)')}</Text>
             <Text style={styles.lockText}>
-              ปลดล็อกแล้วสร้างวงล้อเองได้เต็มที่ — ใส่คำอะไรก็ได้ เลือกสีเองได้
-              แถมปิดโฆษณาทั้งแอปด้วยจ้ะ
+              {t(
+                'ปลดล็อกแล้วสร้างวงล้อเองได้เต็มที่ — ใส่คำอะไรก็ได้ เลือกสีเองได้ แถมปิดโฆษณาทั้งแอปด้วยจ้ะ',
+                'Unlock to build your own wheel — any options, your own colors — plus no ads across the whole app!'
+              )}
             </Text>
             <Pressable style={styles.unlockBtn} onPress={() => router.push('/pro' as never)}>
-              <Text style={styles.unlockBtnText}>❤️ ปลดล็อกกับหลานรักป้า</Text>
+              <Text style={styles.unlockBtnText}>{t('❤️ ปลดล็อกกับหลานรักป้า', '❤️ Unlock with Love Auntie')}</Text>
             </Pressable>
           </View>
         </ScrollView>
@@ -102,7 +105,7 @@ export default function CustomWheelScreen() {
         {items.length < 2 ? (
           <View style={styles.emptyBox}>
             <Text style={styles.emptyText}>
-              ใส่คำอย่างน้อย 2 คำก่อนนะจ๊ะ ป้าถึงจะหมุนให้ได้
+              {t('ใส่คำอย่างน้อย 2 คำก่อนนะจ๊ะ ป้าถึงจะหมุนให้ได้', 'Add at least 2 options so Auntie can spin!')}
             </Text>
           </View>
         ) : (
@@ -119,7 +122,7 @@ export default function CustomWheelScreen() {
         )}
 
         <BigButton
-          label={spinning ? 'กำลังหมุน...' : 'หมุนเลย!'}
+          label={spinning ? t('กำลังหมุน...', 'Spinning...') : t('หมุนเลย!', 'Spin!')}
           onPress={handleSpin}
           disabled={spinning || items.length < 2}
         />
@@ -131,7 +134,7 @@ export default function CustomWheelScreen() {
               comment={bubble}
               mood={mood}
               pose="knit"
-              watermark="วงล้อของฉัน · ป้าอ้วนสุ่มให้ ❤️"
+              watermark={t('วงล้อของฉัน · ป้าอ้วนสุ่มให้ ❤️', "My Wheel · Auntie's Random ❤️")}
             >
               <Text style={styles.resultName}>{result}</Text>
             </CaptureCard>
@@ -142,7 +145,7 @@ export default function CustomWheelScreen() {
 
         {/* เลือกสีของวงล้อ */}
         <View style={styles.manageBox}>
-          <Text style={styles.manageTitle}>เลือกสีวงล้อ (แตะเปิด/ปิด)</Text>
+          <Text style={styles.manageTitle}>{t('เลือกสีวงล้อ (แตะเปิด/ปิด)', 'Wheel colors (tap to toggle)')}</Text>
           <View style={styles.swatchRow}>
             {WHEEL_PALETTE.map((c) => {
               const on = wheelColors.includes(c);
@@ -161,16 +164,16 @@ export default function CustomWheelScreen() {
               );
             })}
           </View>
-          <Text style={styles.hint}>เลือกได้หลายสี (อย่างน้อย 2 สี) ป้าจะสลับสีให้เอง</Text>
+          <Text style={styles.hint}>{t('เลือกได้หลายสี (อย่างน้อย 2 สี) ป้าจะสลับสีให้เอง', 'Pick several colors (at least 2) — Auntie alternates them')}</Text>
         </View>
 
         {/* จัดการคำในวงล้อ */}
         <View style={styles.manageBox}>
-          <Text style={styles.manageTitle}>คำในวงล้อ ({items.length})</Text>
+          <Text style={styles.manageTitle}>{t('คำในวงล้อ', 'Options')} ({items.length})</Text>
           <View style={styles.addRow}>
             <TextInput
               style={styles.input}
-              placeholder="พิมพ์คำที่จะสุ่ม..."
+              placeholder={t('พิมพ์คำที่จะสุ่ม...', 'Type an option...')}
               placeholderTextColor={colors.muted}
               value={newItem}
               onChangeText={setNewItem}
@@ -178,7 +181,7 @@ export default function CustomWheelScreen() {
               returnKeyType="done"
             />
             <Pressable style={styles.addBtn} onPress={handleAdd}>
-              <Text style={styles.addBtnText}>เพิ่ม</Text>
+              <Text style={styles.addBtnText}>{t('เพิ่ม', 'Add')}</Text>
             </Pressable>
           </View>
 
@@ -187,7 +190,7 @@ export default function CustomWheelScreen() {
               <View key={item} style={styles.chip}>
                 <Text style={styles.chipText}>{item}</Text>
                 <Pressable onPress={() => removeItem(item)} hitSlop={8}>
-                  <Text style={styles.chipDelete}>ลบ</Text>
+                  <Text style={styles.chipDelete}>{t('ลบ', 'Del')}</Text>
                 </Pressable>
               </View>
             ))}

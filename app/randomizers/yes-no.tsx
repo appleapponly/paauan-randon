@@ -13,6 +13,7 @@ import { CaptureCard } from '@/components/CaptureCard';
 import { ShareButton } from '@/components/ShareButton';
 import { colors } from '@/theme/colors';
 import { fonts, fontSize } from '@/theme/typography';
+import { t } from '@/i18n';
 
 export default function YesNoScreen() {
   const cardRef = useRef<View>(null);
@@ -34,7 +35,7 @@ export default function YesNoScreen() {
     <SafeAreaView style={styles.safe} edges={['bottom']}>
       <ScrollView contentContainerStyle={styles.content}>
         {answer === null ? (
-          <PaaUanBubble text="มีอะไรอยากถามป้า? กดปุ่มเลยจ้า" mood="happy" pose="ponder" />
+          <PaaUanBubble text={t('มีอะไรอยากถามป้า? กดปุ่มเลยจ้า', 'Got a question for Auntie? Tap the button!')} mood="happy" pose="ponder" />
         ) : (
           <Animated.View key={round} entering={BounceIn.duration(600)}>
             <CaptureCard
@@ -50,7 +51,7 @@ export default function YesNoScreen() {
                   { color: answer === 'yes' ? colors.jade : colors.pink },
                 ]}
               >
-                {answer === 'yes' ? 'ใช่!' : 'ไม่ใช่!'}
+                {answer === 'yes' ? t('ใช่!', 'Yes!') : t('ไม่ใช่!', 'No!')}
               </Text>
             </CaptureCard>
           </Animated.View>
@@ -58,7 +59,7 @@ export default function YesNoScreen() {
 
         <View style={{ height: 20 }} />
 
-        <BigButton label={answer === null ? 'ถามป้าเลย!' : 'ถามใหม่'} onPress={ask} />
+        <BigButton label={answer === null ? t('ถามป้าเลย!', 'Ask Auntie!') : t('ถามใหม่', 'Ask again')} onPress={ask} />
 
         {answer !== null && <ShareButton targetRef={cardRef} />}
       </ScrollView>

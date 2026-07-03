@@ -21,14 +21,18 @@ import { ShareButton } from '@/components/ShareButton';
 import { colors } from '@/theme/colors';
 import { fonts, fontSize } from '@/theme/typography';
 import { cartoonBox } from '@/theme/styles';
+import { t } from '@/i18n';
 
 type Phase = 'idle' | 'flipping' | 'result';
+
+const HEADS = t('หัว', 'Heads');
+const TAILS = t('ก้อย', 'Tails');
 
 export default function CoinScreen() {
   const cardRef = useRef<View>(null);
   const [phase, setPhase] = useState<Phase>('idle');
-  const [result, setResult] = useState<'หัว' | 'ก้อย' | null>(null);
-  const [bubble, setBubble] = useState('กดโยนเหรียญให้ป้าเสี่ยงทายสิจ๊ะ');
+  const [result, setResult] = useState<string | null>(null);
+  const [bubble, setBubble] = useState(t('กดโยนเหรียญให้ป้าเสี่ยงทายสิจ๊ะ', 'Tap to toss and let Auntie call it!'));
   const [mood, setMood] = useState<PaaUanMood>('happy');
 
   const flip = useSharedValue(0);
@@ -53,7 +57,7 @@ export default function CoinScreen() {
   }
 
   function finishToss() {
-    const picked = pickOne<'หัว' | 'ก้อย'>(['หัว', 'ก้อย']);
+    const picked = pickOne<string>([HEADS, TAILS]);
     const line = pickLine(coinLines, picked);
     setResult(picked);
     setBubble(line.text);
@@ -83,7 +87,13 @@ export default function CoinScreen() {
         <View style={{ height: 16 }} />
 
         <BigButton
-          label={phase === 'flipping' ? 'กำลังโยน...' : phase === 'result' ? 'โยนอีกครั้ง' : 'โยนเลย!'}
+          label={
+            phase === 'flipping'
+              ? t('กำลังโยน...', 'Tossing...')
+              : phase === 'result'
+                ? t('โยนอีกครั้ง', 'Toss again')
+                : t('โยนเลย!', 'Toss it!')
+          }
           onPress={toss}
           disabled={phase === 'flipping'}
         />

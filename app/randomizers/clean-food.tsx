@@ -16,6 +16,7 @@ import { ShareButton } from '@/components/ShareButton';
 import { colors } from '@/theme/colors';
 import { fonts, fontSize } from '@/theme/typography';
 import { cartoonBox } from '@/theme/styles';
+import { t } from '@/i18n';
 
 const WHEEL_COLORS = [colors.jade, colors.orange, colors.gold, colors.blue];
 
@@ -30,7 +31,7 @@ export default function CleanFoodScreen() {
   const cardRef = useRef<View>(null);
   const [spinning, setSpinning] = useState(false);
   const [newItem, setNewItem] = useState('');
-  const [bubble, setBubble] = useState('กดหมุนวงล้อ เดี๋ยวป้าเลือกเมนูคลีนให้!');
+  const [bubble, setBubble] = useState(t('กดหมุนวงล้อ เดี๋ยวป้าเลือกเมนูคลีนให้!', 'Spin the wheel and Auntie will pick a clean meal!'));
   const [mood, setMood] = useState<PaaUanMood>('happy');
   const [result, setResult] = useState<string | null>(null);
   const [round, setRound] = useState(0);
@@ -70,7 +71,7 @@ export default function CleanFoodScreen() {
         {menu.length < 2 ? (
           <View style={styles.emptyBox}>
             <Text style={styles.emptyText}>
-              มีเมนูน้อยไป! เพิ่มเมนูคลีนอย่างน้อย 2 อย่างก่อนนะจ๊ะ
+              {t('มีเมนูน้อยไป! เพิ่มเมนูคลีนอย่างน้อย 2 อย่างก่อนนะจ๊ะ', 'Too few meals! Add at least 2 clean meals first.')}
             </Text>
           </View>
         ) : (
@@ -87,7 +88,7 @@ export default function CleanFoodScreen() {
         )}
 
         <BigButton
-          label={spinning ? 'กำลังหมุน...' : 'หมุนเลย!'}
+          label={spinning ? t('กำลังหมุน...', 'Spinning...') : t('หมุนเลย!', 'Spin!')}
           color={colors.jade}
           onPress={handleSpin}
           disabled={spinning || menu.length < 2}
@@ -100,7 +101,7 @@ export default function CleanFoodScreen() {
               comment={bubble}
               mood={mood}
               pose="veggie"
-              watermark="กินคลีนกับป้าอ้วน 🥗❤️"
+              watermark={t('กินคลีนกับป้าอ้วน 🥗❤️', "Clean Eats · Auntie's Random 🥗❤️")}
             >
               <Text style={styles.resultEmoji}>{getCleanEmoji(result)}</Text>
               <Text style={styles.resultName}>{result}</Text>
@@ -112,11 +113,11 @@ export default function CleanFoodScreen() {
 
         {/* จัดการเมนู */}
         <View style={styles.manageBox}>
-          <Text style={styles.manageTitle}>เมนูในวงล้อ ({menu.length})</Text>
+          <Text style={styles.manageTitle}>{t('เมนูในวงล้อ', 'Meals in the wheel')} ({menu.length})</Text>
           <View style={styles.addRow}>
             <TextInput
               style={styles.input}
-              placeholder="พิมพ์ชื่อเมนูคลีนใหม่..."
+              placeholder={t('พิมพ์ชื่อเมนูคลีนใหม่...', 'Type a new clean meal...')}
               placeholderTextColor={colors.muted}
               value={newItem}
               onChangeText={setNewItem}
@@ -124,7 +125,7 @@ export default function CleanFoodScreen() {
               returnKeyType="done"
             />
             <Pressable style={styles.addBtn} onPress={handleAdd}>
-              <Text style={styles.addBtnText}>เพิ่ม</Text>
+              <Text style={styles.addBtnText}>{t('เพิ่ม', 'Add')}</Text>
             </Pressable>
           </View>
           <View style={styles.chips}>
@@ -141,10 +142,10 @@ export default function CleanFoodScreen() {
 
         {/* คลังเมนูแนะนำ */}
         <View style={styles.manageBox}>
-          <Text style={styles.manageTitle}>เมนูแนะนำ — แตะเพื่อย้ายเข้าวงล้อ</Text>
+          <Text style={styles.manageTitle}>{t('เมนูแนะนำ — แตะเพื่อย้ายเข้าวงล้อ', 'Suggestions — tap to add to the wheel')}</Text>
           <View style={styles.chips}>
             {available.length === 0 ? (
-              <Text style={styles.hint}>เมนูแนะนำอยู่ในวงล้อหมดแล้วจ้า 🎉</Text>
+              <Text style={styles.hint}>{t('เมนูแนะนำอยู่ในวงล้อหมดแล้วจ้า 🎉', 'All suggestions are already in the wheel 🎉')}</Text>
             ) : (
               available.map((item) => (
                 <Pressable key={item} onPress={() => addItem(item)} style={styles.suggestChip}>

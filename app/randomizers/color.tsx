@@ -15,6 +15,7 @@ import { ShareButton } from '@/components/ShareButton';
 import { colors } from '@/theme/colors';
 import { fonts, fontSize } from '@/theme/typography';
 import { cartoonBox } from '@/theme/styles';
+import { t } from '@/i18n';
 
 function randomHex(): string {
   const n = randomInt(0, 0xffffff);
@@ -40,14 +41,14 @@ export default function ColorScreen() {
   async function copy() {
     if (!hex) return;
     await Clipboard.setStringAsync(hex);
-    Alert.alert('คัดลอกแล้ว', `${hex} อยู่ในคลิปบอร์ดแล้วจ้า`);
+    Alert.alert(t('คัดลอกแล้ว', 'Copied'), t(`${hex} อยู่ในคลิปบอร์ดแล้วจ้า`, `${hex} is on your clipboard!`));
   }
 
   return (
     <SafeAreaView style={styles.safe} edges={['bottom']}>
       <ScrollView contentContainerStyle={styles.content}>
         {hex === null ? (
-          <PaaUanBubble text="กดสุ่มสี เดี๋ยวป้าจัดสีสวย ๆ ให้" mood="happy" />
+          <PaaUanBubble text={t('กดสุ่มสี เดี๋ยวป้าจัดสีสวย ๆ ให้', "Tap for a random color — Auntie's got a pretty one!")} mood="happy" />
         ) : (
           <Animated.View key={round} entering={BounceIn.duration(600)}>
             <CaptureCard ref={cardRef} comment={comment} mood={mood}>
@@ -59,13 +60,13 @@ export default function ColorScreen() {
 
         {hex !== null && (
           <Pressable style={styles.copyBtn} onPress={copy}>
-            <Text style={styles.copyText}>📋 คัดลอก {hex}</Text>
+            <Text style={styles.copyText}>{t('📋 คัดลอก ', '📋 Copy ')}{hex}</Text>
           </Pressable>
         )}
 
         <View style={{ height: 6 }} />
 
-        <BigButton label={hex === null ? 'สุ่มสีเลย!' : 'สุ่มใหม่'} onPress={roll} />
+        <BigButton label={hex === null ? t('สุ่มสีเลย!', 'Random color!') : t('สุ่มใหม่', 'Again')} onPress={roll} />
 
         {hex !== null && <ShareButton targetRef={cardRef} />}
       </ScrollView>

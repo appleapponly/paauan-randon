@@ -20,6 +20,7 @@ import { CaptureCard } from '@/components/CaptureCard';
 import { ShareButton } from '@/components/ShareButton';
 import { colors } from '@/theme/colors';
 import { fonts, fontSize } from '@/theme/typography';
+import { t } from '@/i18n';
 
 type Look = Record<string, OutfitOption>;
 
@@ -49,7 +50,7 @@ export default function OutfitScreen() {
       <ScrollView contentContainerStyle={styles.content}>
         {look === null && (
           <PaaUanBubble
-            text="วันนี้จะแต่งตัวยังไงดี? เลือกเพศแล้วให้ป้าจัดลุคให้เลย!"
+            text={t('วันนี้จะแต่งตัวยังไงดี? เลือกเพศแล้วให้ป้าจัดลุคให้เลย!', "What to wear today? Pick a style and let Auntie dress you!")}
             mood="happy"
             pose="fashion"
           />
@@ -67,7 +68,7 @@ export default function OutfitScreen() {
               <Text
                 style={[styles.genderText, gender === g && styles.genderTextOn]}
               >
-                {g === 'female' ? 'หญิง' : 'ชาย'}
+                {g === 'female' ? t('หญิง', 'Women') : t('ชาย', 'Men')}
               </Text>
             </Pressable>
           ))}
@@ -78,7 +79,9 @@ export default function OutfitScreen() {
           <Animated.View key={round} entering={BounceIn.duration(600)}>
             <CaptureCard ref={cardRef} comment={comment} mood={mood} pose="fashion">
               <Text style={styles.lookTitle}>
-                ลุค{gender === 'female' ? 'สาว' : 'หนุ่ม'}วันนี้
+                {gender === 'female'
+                  ? t('ลุคสาววันนี้', "Today's Look for Her")
+                  : t('ลุคหนุ่มวันนี้', "Today's Look for Him")}
               </Text>
               <View style={styles.lookList}>
                 {OUTFIT_SLOTS.map((slot) => (
@@ -98,7 +101,7 @@ export default function OutfitScreen() {
         <View style={{ height: 8 }} />
 
         <BigButton
-          label={look === null ? 'สุ่มแต่งตัว!' : 'สุ่มลุคใหม่'}
+          label={look === null ? t('สุ่มแต่งตัว!', 'Style me!') : t('สุ่มลุคใหม่', 'New look')}
           onPress={rollOutfit}
           color={colors.jade}
         />

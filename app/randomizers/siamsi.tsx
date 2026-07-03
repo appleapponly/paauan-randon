@@ -16,6 +16,7 @@ import { SiamsiTube } from '@/components/SiamsiTube';
 import { pickOne } from '@/utils/random';
 import { colors } from '@/theme/colors';
 import { fonts, fontSize } from '@/theme/typography';
+import { t } from '@/i18n';
 
 type Phase = 'idle' | 'shaking' | 'result';
 const TUBE = 130;
@@ -85,8 +86,8 @@ export default function SiamsiScreen() {
           <PaaUanBubble
             text={
               phase === 'shaking'
-                ? 'เขย่า ๆ ขอให้ได้ใบดี ๆ นะลูก...'
-                : 'ตั้งจิตอธิษฐานแล้วกดเขย่าเซียมซีกับป้าเลยจ้ะ'
+                ? t('เขย่า ๆ ขอให้ได้ใบดี ๆ นะลูก...', 'Shake, shake... may you get a lucky one!')
+                : t('ตั้งจิตอธิษฐานแล้วกดเขย่าเซียมซีกับป้าเลยจ้ะ', 'Make a wish, then shake the fortune sticks with Auntie!')
             }
             mood="thinking"
             pose="fortune"
@@ -122,12 +123,12 @@ export default function SiamsiScreen() {
               ref={cardRef}
               comment={stick.insight}
               pose="fortune"
-              watermark="เซียมซีป้าอ้วน 🥠"
+              watermark={t('เซียมซีป้าอ้วน 🥠', "Auntie's Fortune Sticks 🥠")}
             >
               {/* ใบเซียมซี (นอกกล่องคำพูด) */}
               <View style={styles.slip}>
                 <View style={styles.slipBadge}>
-                  <Text style={styles.slipBadgeText}>ใบที่ {stick.id}</Text>
+                  <Text style={styles.slipBadgeText}>{t('ใบที่ ', 'No. ')}{stick.id}</Text>
                 </View>
                 <Text style={styles.slipTitle}>{stick.title}</Text>
                 <View style={styles.slipDivider} />
@@ -154,10 +155,10 @@ export default function SiamsiScreen() {
         <BigButton
           label={
             phase === 'shaking'
-              ? 'กำลังเขย่า...'
+              ? t('กำลังเขย่า...', 'Shaking...')
               : phase === 'result'
-                ? 'เขย่าใหม่'
-                : 'เขย่าเซียมซี!'
+                ? t('เขย่าใหม่', 'Shake again')
+                : t('เขย่าเซียมซี!', 'Shake the sticks!')
           }
           onPress={shake}
           color={colors.siam}

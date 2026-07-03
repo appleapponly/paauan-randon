@@ -15,11 +15,12 @@ import { BigButton } from '@/components/BigButton';
 import { colors } from '@/theme/colors';
 import { fonts, fontSize } from '@/theme/typography';
 import { cartoonBox } from '@/theme/styles';
+import { t } from '@/i18n';
 
 export default function CharadesScreen() {
   const [word, setWord] = useState<string | null>(null);
   const [revealed, setRevealed] = useState(false);
-  const [bubble, setBubble] = useState('พร้อมเล่นใบ้คำมั้ย? กดสุ่มคำเลย!');
+  const [bubble, setBubble] = useState(t('พร้อมเล่นใบ้คำมั้ย? กดสุ่มคำเลย!', 'Ready for charades? Tap for a word!'));
   const [mood, setMood] = useState<PaaUanMood>('happy');
   const [round, setRound] = useState(0);
 
@@ -46,7 +47,7 @@ export default function CharadesScreen() {
               {revealed ? (
                 <Text style={styles.word}>{word}</Text>
               ) : (
-                <Text style={styles.hidden}>👀 แตะเพื่อดูคำ</Text>
+                <Text style={styles.hidden}>{t('👀 แตะเพื่อดูคำ', '👀 Tap to see the word')}</Text>
               )}
             </Pressable>
           </Animated.View>
@@ -54,7 +55,7 @@ export default function CharadesScreen() {
 
         <View style={{ flex: 1 }} />
 
-        <BigButton label={word === null ? 'สุ่มคำ!' : 'คำต่อไป'} onPress={nextWord} />
+        <BigButton label={word === null ? t('สุ่มคำ!', 'Random word!') : t('คำต่อไป', 'Next word')} onPress={nextWord} />
       </ScrollView>
     </SafeAreaView>
   );

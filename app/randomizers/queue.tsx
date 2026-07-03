@@ -15,6 +15,7 @@ import { CaptureCard } from '@/components/CaptureCard';
 import { ShareButton } from '@/components/ShareButton';
 import { colors } from '@/theme/colors';
 import { fonts, fontSize } from '@/theme/typography';
+import { t } from '@/i18n';
 
 export default function QueueScreen() {
   const names = useNamesStore((s) => s.names);
@@ -40,7 +41,7 @@ export default function QueueScreen() {
     <SafeAreaView style={styles.safe} edges={['bottom']}>
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         {order === null ? (
-          <PaaUanBubble text="ใส่ชื่อ เดี๋ยวป้าจัดคิวให้ ใครก่อนใครหลัง!" mood="happy" />
+          <PaaUanBubble text={t('ใส่ชื่อ เดี๋ยวป้าจัดคิวให้ ใครก่อนใครหลัง!', 'Add names and Auntie will sort out who goes first!')} mood="happy" />
         ) : (
           <Animated.View key={round} entering={BounceIn.duration(600)}>
             <CaptureCard ref={cardRef} comment={comment} mood={mood} pose="clap">
@@ -59,14 +60,14 @@ export default function QueueScreen() {
         )}
 
         <BigButton
-          label={order === null ? 'สุ่มลำดับ!' : 'สุ่มใหม่'}
+          label={order === null ? t('สุ่มลำดับ!', 'Shuffle order!') : t('สุ่มใหม่', 'Again')}
           onPress={draw}
           disabled={names.length < 2}
         />
 
         {order !== null && <ShareButton targetRef={cardRef} />}
 
-        <NameListEditor names={names} onAdd={addName} onRemove={removeName} label="รายชื่อในคิว" />
+        <NameListEditor names={names} onAdd={addName} onRemove={removeName} label={t('รายชื่อในคิว', 'Names in the queue')} />
       </ScrollView>
     </SafeAreaView>
   );

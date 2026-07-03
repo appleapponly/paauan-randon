@@ -13,6 +13,7 @@ import { CaptureCard } from '@/components/CaptureCard';
 import { ShareButton } from '@/components/ShareButton';
 import { colors } from '@/theme/colors';
 import { fonts, fontSize } from '@/theme/typography';
+import { t } from '@/i18n';
 
 export default function NumberScreen() {
   const cardRef = useRef<View>(null);
@@ -39,19 +40,19 @@ export default function NumberScreen() {
     <SafeAreaView style={styles.safe} edges={['bottom']}>
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         {result === null ? (
-          <PaaUanBubble text="ใส่ช่วงตัวเลข แล้วให้ป้าสุ่มให้จ้า" mood="happy" />
+          <PaaUanBubble text={t('ใส่ช่วงตัวเลข แล้วให้ป้าสุ่มให้จ้า', 'Set a range and let Auntie roll a number!')} mood="happy" />
         ) : (
           <Animated.View key={round} entering={BounceIn.duration(600)}>
             <CaptureCard ref={cardRef} comment={comment} mood={mood}>
               <Text style={styles.number}>{result}</Text>
-              <Text style={styles.range}>จากช่วง {min} – {max}</Text>
+              <Text style={styles.range}>{t('จากช่วง ', 'from ')}{min} – {max}</Text>
             </CaptureCard>
           </Animated.View>
         )}
 
         <View style={styles.rangeRow}>
           <View style={styles.field}>
-            <Text style={styles.label}>ต่ำสุด</Text>
+            <Text style={styles.label}>{t('ต่ำสุด', 'Min')}</Text>
             <TextInput
               style={styles.input}
               keyboardType="number-pad"
@@ -60,7 +61,7 @@ export default function NumberScreen() {
             />
           </View>
           <View style={styles.field}>
-            <Text style={styles.label}>สูงสุด</Text>
+            <Text style={styles.label}>{t('สูงสุด', 'Max')}</Text>
             <TextInput
               style={styles.input}
               keyboardType="number-pad"
@@ -70,7 +71,7 @@ export default function NumberScreen() {
           </View>
         </View>
 
-        <BigButton label={result === null ? 'สุ่มเลย!' : 'สุ่มใหม่'} onPress={roll} />
+        <BigButton label={result === null ? t('สุ่มเลย!', 'Roll it!') : t('สุ่มใหม่', 'Again')} onPress={roll} />
 
         {result !== null && <ShareButton targetRef={cardRef} />}
       </ScrollView>

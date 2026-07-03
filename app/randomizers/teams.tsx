@@ -15,6 +15,7 @@ import { CaptureCard } from '@/components/CaptureCard';
 import { ShareButton } from '@/components/ShareButton';
 import { colors } from '@/theme/colors';
 import { fonts, fontSize } from '@/theme/typography';
+import { t } from '@/i18n';
 
 const TEAM_COLORS = [colors.pink, colors.gold, colors.jade, colors.blue, colors.purple];
 
@@ -46,7 +47,7 @@ export default function TeamsScreen() {
     <SafeAreaView style={styles.safe} edges={['bottom']}>
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         {teams === null ? (
-          <PaaUanBubble text="ใส่ชื่อ เลือกจำนวนทีม เดี๋ยวป้าแบ่งให้!" mood="happy" />
+          <PaaUanBubble text={t('ใส่ชื่อ เลือกจำนวนทีม เดี๋ยวป้าแบ่งให้!', 'Add names, pick the number of teams, and Auntie will split them!')} mood="happy" />
         ) : (
           <Animated.View key={round} entering={BounceIn.duration(600)}>
             <CaptureCard ref={cardRef} comment={comment} mood={mood} pose="clap">
@@ -57,7 +58,7 @@ export default function TeamsScreen() {
                     style={[styles.team, { borderColor: colors.ink, backgroundColor: colors.white }]}
                   >
                     <View style={[styles.teamHead, { backgroundColor: TEAM_COLORS[i % TEAM_COLORS.length] }]}>
-                      <Text style={styles.teamHeadText}>ทีม {i + 1}</Text>
+                      <Text style={styles.teamHeadText}>{t('ทีม ', 'Team ')}{i + 1}</Text>
                     </View>
                     <Text style={styles.teamMembers}>{team.join(', ')}</Text>
                   </View>
@@ -69,7 +70,7 @@ export default function TeamsScreen() {
 
         {/* เลือกจำนวนทีม */}
         <View style={styles.counterRow}>
-          <Text style={styles.counterLabel}>จำนวนทีม</Text>
+          <Text style={styles.counterLabel}>{t('จำนวนทีม', 'Number of teams')}</Text>
           <View style={styles.counter}>
             <Pressable style={styles.counterBtn} onPress={() => setTeamCount((c) => Math.max(2, c - 1))}>
               <Text style={styles.counterBtnText}>−</Text>
@@ -82,14 +83,14 @@ export default function TeamsScreen() {
         </View>
 
         <BigButton
-          label={teams === null ? 'แบ่งทีมเลย!' : 'แบ่งใหม่'}
+          label={teams === null ? t('แบ่งทีมเลย!', 'Split teams!') : t('แบ่งใหม่', 'Reshuffle')}
           onPress={split}
           disabled={names.length < teamCount}
         />
 
         {teams !== null && <ShareButton targetRef={cardRef} />}
 
-        <NameListEditor names={names} onAdd={addName} onRemove={removeName} label="รายชื่อสมาชิก" />
+        <NameListEditor names={names} onAdd={addName} onRemove={removeName} label={t('รายชื่อสมาชิก', 'Member names')} />
       </ScrollView>
     </SafeAreaView>
   );

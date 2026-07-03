@@ -25,6 +25,7 @@ import { ShareButton } from '@/components/ShareButton';
 import { colors } from '@/theme/colors';
 import { fonts, fontSize } from '@/theme/typography';
 import { cartoonBox } from '@/theme/styles';
+import { t } from '@/i18n';
 
 interface Mission {
   ex: Exercise;
@@ -53,7 +54,7 @@ export default function ExerciseScreen() {
   const cardRef = useRef<View>(null);
   const pending = useRef<Mission[]>([]);
   const [running, setRunning] = useState(false);
-  const [bubble, setBubble] = useState('เลือกท่าที่ชอบ แล้วกดปล่อยงูเลือกโปรแกรมให้เลยจ้ะ!');
+  const [bubble, setBubble] = useState(t('เลือกท่าที่ชอบ แล้วกดปล่อยงูเลือกโปรแกรมให้เลยจ้ะ!', 'Pick your moves and release the snake to build your workout!'));
   const [mood, setMood] = useState<PaaUanMood>('happy');
   const [missions, setMissions] = useState<Mission[] | null>(null);
   const [round, setRound] = useState(0);
@@ -108,7 +109,7 @@ export default function ExerciseScreen() {
         {pool.length < 2 ? (
           <View style={styles.emptyBox}>
             <Text style={styles.emptyText}>
-              เลือกท่าอย่างน้อย 2 ท่าก่อนนะจ๊ะ ป้าถึงจะปล่อยงูให้ได้
+              {t('เลือกท่าอย่างน้อย 2 ท่าก่อนนะจ๊ะ ป้าถึงจะปล่อยงูให้ได้', 'Pick at least 2 moves so Auntie can release the snake.')}
             </Text>
           </View>
         ) : (
@@ -116,7 +117,7 @@ export default function ExerciseScreen() {
         )}
 
         <BigButton
-          label={running ? 'งูกำลังเลื้อย... 🐍' : 'ปล่อยงูเลย! 🐍'}
+          label={running ? t('งูกำลังเลื้อย... 🐍', 'Snake slithering... 🐍') : t('ปล่อยงูเลย! 🐍', 'Release the snake! 🐍')}
           color={colors.orange}
           onPress={handleRoll}
           disabled={running || pool.length < 2}
@@ -129,9 +130,9 @@ export default function ExerciseScreen() {
               comment={bubble}
               mood={mood}
               pose="coach"
-              watermark="โปรแกรมสุขภาพจากป้าอ้วน 💪"
+              watermark={t('โปรแกรมสุขภาพจากป้าอ้วน 💪', "Workout · Auntie's Random 💪")}
             >
-              <Text style={styles.missionBadge}>โปรแกรมวันนี้ ({missions.length} ท่า)</Text>
+              <Text style={styles.missionBadge}>{t('โปรแกรมวันนี้', "Today's workout")} ({missions.length} {t('ท่า', 'moves')})</Text>
               <View style={styles.missionList}>
                 {missions.map((m, i) => (
                   <View key={i} style={styles.missionRow}>
@@ -143,7 +144,7 @@ export default function ExerciseScreen() {
                           {m.amount} {m.unit}
                         </Text>
                       </Text>
-                      {m.ex.howto && <Text style={styles.missionHowto}>ป้าบอก: {m.ex.howto}</Text>}
+                      {m.ex.howto && <Text style={styles.missionHowto}>{t('ป้าบอก: ', 'How-to: ')}{m.ex.howto}</Text>}
                     </View>
                   </View>
                 ))}
@@ -156,8 +157,8 @@ export default function ExerciseScreen() {
 
         {/* เลือกท่า จัดกลุ่มตามโหมด */}
         <View style={styles.manageBox}>
-          <Text style={styles.manageTitle}>เลือกท่าออกกำลังกาย ({pool.length})</Text>
-          <Text style={styles.hint}>แตะเพื่อเปิด/ปิดท่าในกระดาน (สุ่มออกมา 3 ท่าต่อครั้ง)</Text>
+          <Text style={styles.manageTitle}>{t('เลือกท่าออกกำลังกาย', 'Choose your moves')} ({pool.length})</Text>
+          <Text style={styles.hint}>{t('แตะเพื่อเปิด/ปิดท่าในกระดาน (สุ่มออกมา 3 ท่าต่อครั้ง)', 'Tap to toggle moves (3 are picked each round)')}</Text>
 
           {MODE_ORDER.map((mode) => {
             const items = all.filter((e) => e.mode === mode);
@@ -180,7 +181,7 @@ export default function ExerciseScreen() {
                         </Text>
                         {isCustom && (
                           <Pressable onPress={() => removeCustom(ex.id)} hitSlop={8}>
-                            <Text style={styles.chipDelete}>ลบ</Text>
+                            <Text style={styles.chipDelete}>{t('ลบ', 'Del')}</Text>
                           </Pressable>
                         )}
                       </Pressable>
@@ -194,7 +195,7 @@ export default function ExerciseScreen() {
           <View style={styles.addRow}>
             <TextInput
               style={styles.input}
-              placeholder="เพิ่มท่าของตัวเอง (นับเป็นนาที)..."
+              placeholder={t('เพิ่มท่าของตัวเอง (นับเป็นนาที)...', 'Add your own move (counted in minutes)...')}
               placeholderTextColor={colors.muted}
               value={newItem}
               onChangeText={setNewItem}
@@ -202,7 +203,7 @@ export default function ExerciseScreen() {
               returnKeyType="done"
             />
             <Pressable style={styles.addBtn} onPress={handleAdd}>
-              <Text style={styles.addBtnText}>เพิ่ม</Text>
+              <Text style={styles.addBtnText}>{t('เพิ่ม', 'Add')}</Text>
             </Pressable>
           </View>
         </View>

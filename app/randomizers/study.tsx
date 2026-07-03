@@ -19,6 +19,7 @@ import { ShareButton } from '@/components/ShareButton';
 import { colors } from '@/theme/colors';
 import { fonts, fontSize } from '@/theme/typography';
 import { cartoonBox } from '@/theme/styles';
+import { t } from '@/i18n';
 
 interface Mission {
   task: StudyTask;
@@ -57,7 +58,7 @@ export default function StudyScreen() {
   const ladderRef = useRef<LadderHandle>(null);
   const cardRef = useRef<View>(null);
   const pending = useRef<Mission[]>([]);
-  const [bubble, setBubble] = useState('กดสุ่ม เดี๋ยวบันไดวิบวับเลือกภารกิจให้ 2 อย่าง!');
+  const [bubble, setBubble] = useState(t('กดสุ่ม เดี๋ยวบันไดวิบวับเลือกภารกิจให้ 2 อย่าง!', 'Tap and the ladder will pick 2 study missions for you!'));
   const [mood, setMood] = useState<PaaUanMood>('happy');
   const [running, setRunning] = useState(false);
   const [missions, setMissions] = useState<Mission[] | null>(null);
@@ -139,7 +140,7 @@ export default function StudyScreen() {
 
         {pool.length < 2 ? (
           <View style={styles.emptyBox}>
-            <Text style={styles.emptyText}>เลือกภารกิจอย่างน้อย 2 อย่างก่อนนะจ๊ะ</Text>
+            <Text style={styles.emptyText}>{t('เลือกภารกิจอย่างน้อย 2 อย่างก่อนนะจ๊ะ', 'Pick at least 2 missions first.')}</Text>
           </View>
         ) : (
           options.length > 0 && (
@@ -148,7 +149,7 @@ export default function StudyScreen() {
         )}
 
         <BigButton
-          label={running ? 'บันไดกำลังไล่... 🪜' : missions ? 'สุ่มใหม่' : 'สุ่มภารกิจ!'}
+          label={running ? t('บันไดกำลังไล่... 🪜', 'Tracing the ladder... 🪜') : missions ? t('สุ่มใหม่', 'Again') : t('สุ่มภารกิจ!', 'Pick missions!')}
           color={colors.ocean}
           onPress={roll}
           disabled={running || pool.length < 2}
@@ -161,9 +162,9 @@ export default function StudyScreen() {
               comment={bubble}
               mood={mood}
               pose="studyWrite"
-              watermark="ตั้งใจเรียนกับป้าอ้วน 📚"
+              watermark={t('ตั้งใจเรียนกับป้าอ้วน 📚', "Study · Auntie's Random 📚")}
             >
-              <Text style={styles.missionBadge}>ภารกิจการเรียน ({missions.length} อย่าง)</Text>
+              <Text style={styles.missionBadge}>{t('ภารกิจการเรียน', 'Study missions')} ({missions.length})</Text>
               <View style={styles.missionList}>
                 {missions.map((m, i) => (
                   <View key={i} style={styles.missionRow}>
@@ -183,7 +184,7 @@ export default function StudyScreen() {
         {/* ตั้งเวลาแต่ละภารกิจ + เริ่มโฟกัส */}
         {missions && !running && (
           <View style={styles.timeBox}>
-            <Text style={styles.manageTitle}>ตั้งเวลาแต่ละภารกิจ 🍅</Text>
+            <Text style={styles.manageTitle}>{t('ตั้งเวลาแต่ละภารกิจ 🍅', 'Set time per mission 🍅')}</Text>
             {missions.map((m, i) => (
               <View key={i} style={styles.timeRow}>
                 <Text style={styles.timeLabel} numberOfLines={1}>
@@ -193,37 +194,37 @@ export default function StudyScreen() {
                   <Pressable style={styles.stepBtn} onPress={() => setTime(i, -5)}>
                     <Text style={styles.stepText}>−</Text>
                   </Pressable>
-                  <Text style={styles.timeValue}>{times[i] ?? workMin} น.</Text>
+                  <Text style={styles.timeValue}>{times[i] ?? workMin} {t('น.', 'min')}</Text>
                   <Pressable style={styles.stepBtn} onPress={() => setTime(i, 5)}>
                     <Text style={styles.stepText}>＋</Text>
                   </Pressable>
                 </View>
               </View>
             ))}
-            <BigButton label="เริ่มโฟกัส 🍅" color={colors.ocean} onPress={startFocus} countAd={false} />
+            <BigButton label={t('เริ่มโฟกัส 🍅', 'Start focus 🍅')} color={colors.ocean} onPress={startFocus} countAd={false} />
           </View>
         )}
 
         {/* เลือกภารกิจ */}
         <View style={styles.manageBox}>
-          <Text style={styles.manageTitle}>เลือกภารกิจการเรียน ({pool.length})</Text>
-          <Text style={styles.hint}>แตะเพื่อเปิด/ปิด (สุ่มออกมา 2 อย่างต่อครั้ง)</Text>
+          <Text style={styles.manageTitle}>{t('เลือกภารกิจการเรียน', 'Choose study missions')} ({pool.length})</Text>
+          <Text style={styles.hint}>{t('แตะเพื่อเปิด/ปิด (สุ่มออกมา 2 อย่างต่อครั้ง)', 'Tap to toggle (2 are picked each round)')}</Text>
           <View style={styles.chips}>
-            {all.map((t) => {
-              const on = selectedIds.includes(t.id);
-              const isCustom = t.id.startsWith('custom-');
+            {all.map((task) => {
+              const on = selectedIds.includes(task.id);
+              const isCustom = task.id.startsWith('custom-');
               return (
                 <Pressable
-                  key={t.id}
-                  onPress={() => toggle(t.id)}
+                  key={task.id}
+                  onPress={() => toggle(task.id)}
                   style={[styles.chip, on && styles.chipOn]}
                 >
                   <Text style={[styles.chipText, on && styles.chipTextOn]}>
-                    {t.emoji} {t.text}
+                    {task.emoji} {task.text}
                   </Text>
                   {isCustom && (
-                    <Pressable onPress={() => removeCustom(t.id)} hitSlop={8}>
-                      <Text style={styles.chipDelete}>ลบ</Text>
+                    <Pressable onPress={() => removeCustom(task.id)} hitSlop={8}>
+                      <Text style={styles.chipDelete}>{t('ลบ', 'Del')}</Text>
                     </Pressable>
                   )}
                 </Pressable>
@@ -233,7 +234,7 @@ export default function StudyScreen() {
           <View style={styles.addRow}>
             <TextInput
               style={styles.input}
-              placeholder="เพิ่มภารกิจของตัวเอง..."
+              placeholder={t('เพิ่มภารกิจของตัวเอง...', 'Add your own mission...')}
               placeholderTextColor={colors.muted}
               value={newItem}
               onChangeText={setNewItem}
@@ -241,7 +242,7 @@ export default function StudyScreen() {
               returnKeyType="done"
             />
             <Pressable style={styles.addBtn} onPress={handleAdd}>
-              <Text style={styles.addBtnText}>เพิ่ม</Text>
+              <Text style={styles.addBtnText}>{t('เพิ่ม', 'Add')}</Text>
             </Pressable>
           </View>
         </View>

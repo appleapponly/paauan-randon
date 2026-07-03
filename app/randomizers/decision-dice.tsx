@@ -27,13 +27,14 @@ import { ShareButton } from '@/components/ShareButton';
 import { colors } from '@/theme/colors';
 import { fonts, fontSize } from '@/theme/typography';
 import { cartoonBox } from '@/theme/styles';
+import { t } from '@/i18n';
 
 type Phase = 'idle' | 'rolling' | 'result';
 
 export default function DecisionDiceScreen() {
   const [phase, setPhase] = useState<Phase>('idle');
   const [result, setResult] = useState<DiceVerdict | null>(null);
-  const [bubble, setBubble] = useState('กดปุ่มให้ป้าทอยเต๋าตัดสินใจให้สิจ๊ะ');
+  const [bubble, setBubble] = useState(t('กดปุ่มให้ป้าทอยเต๋าตัดสินใจให้สิจ๊ะ', 'Tap the button and let Auntie roll for you!'));
   const [mood, setMood] = useState<PaaUanMood>('happy');
   const cardRef = useRef<View>(null);
 
@@ -105,7 +106,7 @@ export default function DecisionDiceScreen() {
 
         {/* ปุ่มทอย */}
         <BigButton
-          label={phase === 'result' ? 'ทอยอีกครั้ง' : 'ทอยเลย!'}
+          label={phase === 'result' ? t('ทอยอีกครั้ง', 'Roll again') : t('ทอยเลย!', 'Roll it!')}
           onPress={roll}
           disabled={phase === 'rolling'}
         />
