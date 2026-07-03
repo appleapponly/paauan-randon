@@ -13,7 +13,7 @@
  */
 import { Alert, Linking } from 'react-native';
 import Constants from 'expo-constants';
-import { t } from '@/i18n';
+import { t, IS_GLOBAL } from '@/i18n';
 
 // เวอร์ชันปัจจุบันของแอป — ดึงจาก app.json (expo.version) อัตโนมัติ
 const APP_VERSION: string =
@@ -22,9 +22,9 @@ const APP_VERSION: string =
 // ที่อยู่ version.json (repo เดียวใช้ร่วมทั้ง 2 แอป)
 const VERSION_URL =
   'https://raw.githubusercontent.com/appleapponly/paauan-randon/master/version.json';
-// ลิงก์ Play Store — อิง package ของแอปที่กำลังรัน (แอปไทย/แอป global คนละ listing)
+// ลิงก์ Play Store — อิง variant (คนละ listing/package) ไม่พึ่ง Constants ตอน runtime
 const PLAY_URL = `https://play.google.com/store/apps/details?id=${
-  Constants.expoConfig?.android?.package ?? 'com.paauan.randon'
+  IS_GLOBAL ? 'com.paauan.auntie' : 'com.paauan.randon'
 }`;
 
 /** เทียบ semver: คืน 1 ถ้า a>b, -1 ถ้า a<b, 0 ถ้าเท่ากัน */
