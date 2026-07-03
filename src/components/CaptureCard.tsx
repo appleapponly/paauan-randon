@@ -13,6 +13,7 @@ import { forwardRef, ReactNode } from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
 import { paaUanPoses, paaUanByMood, type PaaUanPose } from '@/theme/assets';
 import { colors } from '@/theme/colors';
+import { t } from '@/i18n';
 import { fonts, fontSize } from '@/theme/typography';
 import { cartoonBox } from '@/theme/styles';
 import type { PaaUanMood } from '@/data/paaUanLines';
@@ -45,7 +46,7 @@ const CardInner = forwardRef<View, Props & { withHeader: boolean }>(
       comment,
       mood = 'happy',
       pose,
-      watermark = 'สุ่มจากใจป้าอ้วน 👵❤️',
+      watermark = t('สุ่มจากใจป้าอ้วน 👵❤️', 'From Auntie with love 👵❤️'),
       withHeader,
       children,
     },

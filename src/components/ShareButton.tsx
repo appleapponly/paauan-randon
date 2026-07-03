@@ -8,6 +8,7 @@ import { captureRef } from 'react-native-view-shot';
 import * as Sharing from 'expo-sharing';
 import { BigButton } from './BigButton';
 import { colors } from '@/theme/colors';
+import { t } from '@/i18n';
 
 interface Props {
   /** ref ของ View ที่จะแคป (ชี้ไปที่ CaptureCard) */
@@ -25,15 +26,21 @@ export function ShareButton({ targetRef }: Props) {
       const uri = await captureRef(targetRef, { format: 'png', quality: 1 });
 
       if (!(await Sharing.isAvailableAsync())) {
-        Alert.alert('แชร์ไม่ได้', 'เครื่องนี้ยังแชร์ไฟล์ไม่ได้จ้า');
+        Alert.alert(
+          t('แชร์ไม่ได้', 'Sharing unavailable'),
+          t('เครื่องนี้ยังแชร์ไฟล์ไม่ได้จ้า', "This device can't share files, hon")
+        );
         return;
       }
       await Sharing.shareAsync(uri, {
         mimeType: 'image/png',
-        dialogTitle: 'แชร์ผลจากป้าอ้วน',
+        dialogTitle: t('แชร์ผลจากป้าอ้วน', "Share Auntie's pick"),
       });
     } catch (e) {
-      Alert.alert('อุ๊ย', 'แชร์ไม่สำเร็จ ลองใหม่อีกทีนะลูก');
+      Alert.alert(
+        t('อุ๊ย', 'Oops'),
+        t('แชร์ไม่สำเร็จ ลองใหม่อีกทีนะลูก', 'Sharing failed — give it another try, sweetie')
+      );
     } finally {
       setBusy(false);
     }
@@ -41,7 +48,7 @@ export function ShareButton({ targetRef }: Props) {
 
   return (
     <BigButton
-      label={busy ? 'กำลังทำรูป...' : '📤 แชร์ผลให้เพื่อน'}
+      label={busy ? t('กำลังทำรูป...', 'Making the picture...') : t('📤 แชร์ผลให้เพื่อน', '📤 Share with friends')}
       onPress={handleShare}
       color={colors.jade}
       disabled={busy}

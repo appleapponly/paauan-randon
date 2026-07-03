@@ -7,6 +7,7 @@ import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { colors } from '@/theme/colors';
 import { fonts, fontSize } from '@/theme/typography';
 import { cartoonBox } from '@/theme/styles';
+import { t } from '@/i18n';
 
 interface Props {
   names: string[];
@@ -20,8 +21,8 @@ export function NameListEditor({
   names,
   onAdd,
   onRemove,
-  label = 'รายชื่อ',
-  placeholder = 'พิมพ์ชื่อ...',
+  label = t('รายชื่อ', 'Names'),
+  placeholder = t('พิมพ์ชื่อ...', 'Type a name...'),
 }: Props) {
   const [text, setText] = useState('');
 
@@ -47,12 +48,14 @@ export function NameListEditor({
           returnKeyType="done"
         />
         <Pressable style={styles.addBtn} onPress={handleAdd}>
-          <Text style={styles.addBtnText}>เพิ่ม</Text>
+          <Text style={styles.addBtnText}>{t('เพิ่ม', 'Add')}</Text>
         </Pressable>
       </View>
 
       {names.length === 0 ? (
-        <Text style={styles.empty}>ยังไม่มีชื่อ ใส่ชื่อเพื่อน ๆ ก่อนนะจ๊ะ</Text>
+        <Text style={styles.empty}>
+          {t('ยังไม่มีชื่อ ใส่ชื่อเพื่อน ๆ ก่อนนะจ๊ะ', 'No names yet — add your friends first, sweetie!')}
+        </Text>
       ) : (
         <View style={styles.chips}>
           {names.map((name) => (

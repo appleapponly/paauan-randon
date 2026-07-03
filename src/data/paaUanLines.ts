@@ -55,22 +55,39 @@ export const spinningLines: PaaUanLine[] = t<PaaUanLine[]>(
  * ตอนได้ผล "กินอะไรดี" — มี {result} ให้แทนชื่อเมนู
  * ป้าจะคอมเมนต์เมนูแบบกวน ๆ
  */
-export const foodResultLines: PaaUanLine[] = [
-  { text: 'เอา {result} ไปเลย! ป้าฟันธงแล้ว ห้ามเปลี่ยน', mood: 'sassy' },
-  { text: 'วันนี้ชะตาบอกว่า {result} จ้า กินซะดี ๆ', mood: 'happy' },
-  { text: '{result} ไง! จะไปคิดอะไรให้ปวดหัว', mood: 'teasing' },
-  { text: 'ป้าว่า {result} นี่แหละเหมาะกับหน้าลูกที่สุด', mood: 'teasing' },
-  { text: 'ได้ {result} แล้วอย่าบ่นนะ ป้าเตือนแล้ว', mood: 'sassy' },
-  { text: 'โอ้โห {result}! เลือกได้ดีนะดวงวันนี้', mood: 'happy' },
-  { text: '{result} อีกแล้ว? ป้าก็ว่าจะอ้วนเหมือนป้าพอดี', mood: 'teasing' },
-  // เพิ่มคำกลาง ๆ ให้เมนูที่ผู้ใช้พิมพ์เองมีคอมเมนต์หลากหลายขึ้น
-  { text: '{result} ก็ดีนะ ป้าว่ากินร้อน ๆ อร่อยกว่าเยอะ', mood: 'happy' },
-  { text: 'เอาเป็น {result} ก็ได้จ้า อย่ากินเยอะนักล่ะเดี๋ยวอิ่มไม่ไหว', mood: 'teasing' },
-  { text: 'วันนี้ {result} จ้า สั่งมาแล้วกินให้หมดด้วยนะลูก', mood: 'sassy' },
-  { text: '{result} เลย! เลือกแล้วก็อย่าเปลี่ยนใจ ป้าเมื่อยปาก', mood: 'sassy' },
-  { text: 'ป้ายกให้ {result} จานนี้แหละ ถูกใจป้าพอดี', mood: 'happy' },
-  { text: 'ดวงชี้ {result} จ้า กินเสร็จอย่าลืมดื่มน้ำเยอะ ๆ นะ', mood: 'thinking' },
-];
+export const foodResultLines: PaaUanLine[] = t<PaaUanLine[]>(
+  [
+    { text: 'เอา {result} ไปเลย! ป้าฟันธงแล้ว ห้ามเปลี่ยน', mood: 'sassy' },
+    { text: 'วันนี้ชะตาบอกว่า {result} จ้า กินซะดี ๆ', mood: 'happy' },
+    { text: '{result} ไง! จะไปคิดอะไรให้ปวดหัว', mood: 'teasing' },
+    { text: 'ป้าว่า {result} นี่แหละเหมาะกับหน้าลูกที่สุด', mood: 'teasing' },
+    { text: 'ได้ {result} แล้วอย่าบ่นนะ ป้าเตือนแล้ว', mood: 'sassy' },
+    { text: 'โอ้โห {result}! เลือกได้ดีนะดวงวันนี้', mood: 'happy' },
+    { text: '{result} อีกแล้ว? ป้าก็ว่าจะอ้วนเหมือนป้าพอดี', mood: 'teasing' },
+    // เพิ่มคำกลาง ๆ ให้เมนูที่ผู้ใช้พิมพ์เองมีคอมเมนต์หลากหลายขึ้น
+    { text: '{result} ก็ดีนะ ป้าว่ากินร้อน ๆ อร่อยกว่าเยอะ', mood: 'happy' },
+    { text: 'เอาเป็น {result} ก็ได้จ้า อย่ากินเยอะนักล่ะเดี๋ยวอิ่มไม่ไหว', mood: 'teasing' },
+    { text: 'วันนี้ {result} จ้า สั่งมาแล้วกินให้หมดด้วยนะลูก', mood: 'sassy' },
+    { text: '{result} เลย! เลือกแล้วก็อย่าเปลี่ยนใจ ป้าเมื่อยปาก', mood: 'sassy' },
+    { text: 'ป้ายกให้ {result} จานนี้แหละ ถูกใจป้าพอดี', mood: 'happy' },
+    { text: 'ดวงชี้ {result} จ้า กินเสร็จอย่าลืมดื่มน้ำเยอะ ๆ นะ', mood: 'thinking' },
+  ],
+  [
+    { text: "{result} — that's final! Auntie has spoken, no take-backs", mood: 'sassy' },
+    { text: 'Destiny says {result} today, hon. Enjoy every bite!', mood: 'happy' },
+    { text: '{result}, obviously! Why give yourself a headache?', mood: 'teasing' },
+    { text: 'Auntie thinks {result} suits you perfectly 😏', mood: 'teasing' },
+    { text: "You got {result} — no complaining now, I warned you!", mood: 'sassy' },
+    { text: 'Ooh, {result}! Lucky pick today, sweetie!', mood: 'happy' },
+    { text: "{result} again? Careful, you'll end up round like Auntie", mood: 'teasing' },
+    { text: '{result} sounds lovely — best served hot, trust me', mood: 'happy' },
+    { text: "{result} it is! Easy on the portions now, sugar", mood: 'teasing' },
+    { text: "Today it's {result}, sweetie. Clean your plate for Auntie!", mood: 'sassy' },
+    { text: "{result} — final answer! Auntie's lips are getting tired", mood: 'sassy' },
+    { text: 'Auntie approves of {result}. Excellent taste!', mood: 'happy' },
+    { text: 'The stars point to {result}. Drink plenty of water after, hon', mood: 'thinking' },
+  ]
+);
 
 /**
  * 🍽️ คำพูดเจาะจง "รายเมนู" — ป้าคอมเมนต์รายละเอียดอาหารแต่ละอย่าง
@@ -253,119 +270,231 @@ export function pickFoodLine(item: string): PaaUanLine {
 }
 
 /** ตอนตอบ "ใช่" (ใช่/ไม่ใช่) */
-export const yesLines: PaaUanLine[] = [
-  { text: 'ใช่สิจ๊ะ! ป้าว่าเอาเลย ไม่ต้องคิดมาก', mood: 'happy' },
-  { text: 'ใช่! ฟ้าส่งสัญญาณมาแล้ว ลุยโลด', mood: 'sassy' },
-  { text: 'เออ ใช่ ๆ ป้าก็ว่างั้นแหละ', mood: 'teasing' },
-];
+export const yesLines: PaaUanLine[] = t<PaaUanLine[]>(
+  [
+    { text: 'ใช่สิจ๊ะ! ป้าว่าเอาเลย ไม่ต้องคิดมาก', mood: 'happy' },
+    { text: 'ใช่! ฟ้าส่งสัญญาณมาแล้ว ลุยโลด', mood: 'sassy' },
+    { text: 'เออ ใช่ ๆ ป้าก็ว่างั้นแหละ', mood: 'teasing' },
+  ],
+  [
+    { text: "Yes, sweetie! Go for it — don't overthink", mood: 'happy' },
+    { text: 'Yes! The universe just gave you a green light. Go!', mood: 'sassy' },
+    { text: "Mm-hmm, yes. That's what Auntie would do too", mood: 'teasing' },
+  ]
+);
 
 /** ตอนตอบ "ไม่ใช่" (ใช่/ไม่ใช่) */
-export const noLines: PaaUanLine[] = [
-  { text: 'ไม่ใช่จ้า อย่าเพิ่งเลยลูก ป้าเตือนแล้วนะ', mood: 'thinking' },
-  { text: 'ไม่! ป้าส่ายหัวให้เลย เก็บไว้ก่อน', mood: 'sassy' },
-  { text: 'ไม่ใช่หรอก เชื่อป้าเถอะ', mood: 'teasing' },
-];
+export const noLines: PaaUanLine[] = t<PaaUanLine[]>(
+  [
+    { text: 'ไม่ใช่จ้า อย่าเพิ่งเลยลูก ป้าเตือนแล้วนะ', mood: 'thinking' },
+    { text: 'ไม่! ป้าส่ายหัวให้เลย เก็บไว้ก่อน', mood: 'sassy' },
+    { text: 'ไม่ใช่หรอก เชื่อป้าเถอะ', mood: 'teasing' },
+  ],
+  [
+    { text: "No, darlin'. Not just yet — Auntie's warning you", mood: 'thinking' },
+    { text: "Nope! Auntie's shaking her head. Save it for later", mood: 'sassy' },
+    { text: 'Not this one, hon. Trust your Auntie', mood: 'teasing' },
+  ]
+);
 
 /** ตอนโยนเหรียญได้ "หัว" / "ก้อย" — ใช้ {result} */
-export const coinLines: PaaUanLine[] = [
-  { text: 'ออก {result}! ป้าเห็นกับตา ไม่มีโกง', mood: 'happy' },
-  { text: '{result} จ้า ดวงใครดวงมันนะลูก', mood: 'teasing' },
-  { text: 'เหรียญบอก {result} แล้ว อย่ามาต่อรองกับป้า', mood: 'sassy' },
-];
+export const coinLines: PaaUanLine[] = t<PaaUanLine[]>(
+  [
+    { text: 'ออก {result}! ป้าเห็นกับตา ไม่มีโกง', mood: 'happy' },
+    { text: '{result} จ้า ดวงใครดวงมันนะลูก', mood: 'teasing' },
+    { text: 'เหรียญบอก {result} แล้ว อย่ามาต่อรองกับป้า', mood: 'sassy' },
+  ],
+  [
+    { text: "It's {result}! Auntie saw it with her own eyes — no cheating", mood: 'happy' },
+    { text: "{result}, sugar. Luck's luck, fair and square", mood: 'teasing' },
+    { text: 'The coin says {result}. No arguing with Auntie!', mood: 'sassy' },
+  ]
+);
 
 /** ใครโดน — สุ่มผู้โชคร้าย ใช้ {result} เป็นชื่อคน */
-export const victimLines: PaaUanLine[] = [
-  { text: 'ซวยไป {result}! รอบนี้เธอนั่นแหละ 😂', mood: 'sassy' },
-  { text: 'ป้าจิ้มแล้วนะ... {result} จ่ายเลยจ้า', mood: 'teasing' },
-  { text: 'โถ่ {result} ทำใจนะลูก ดวงมันพาไป', mood: 'teasing' },
-  { text: 'งานนี้ {result} หนีไม่พ้น ป้าฟันธง!', mood: 'sassy' },
-];
+export const victimLines: PaaUanLine[] = t<PaaUanLine[]>(
+  [
+    { text: 'ซวยไป {result}! รอบนี้เธอนั่นแหละ 😂', mood: 'sassy' },
+    { text: 'ป้าจิ้มแล้วนะ... {result} จ่ายเลยจ้า', mood: 'teasing' },
+    { text: 'โถ่ {result} ทำใจนะลูก ดวงมันพาไป', mood: 'teasing' },
+    { text: 'งานนี้ {result} หนีไม่พ้น ป้าฟันธง!', mood: 'sassy' },
+  ],
+  [
+    { text: "Tough luck, {result}! You're it this time 😂", mood: 'sassy' },
+    { text: "Auntie's finger has spoken... {result}, pay up!", mood: 'teasing' },
+    { text: 'Aww, {result}, bless your heart. Fate picked you', mood: 'teasing' },
+    { text: 'No escape, {result} — Auntie has spoken!', mood: 'sassy' },
+  ]
+);
 
 /** จับฉลาก — ผู้โชคดี ใช้ {result} */
-export const luckyLines: PaaUanLine[] = [
-  { text: 'ยินดีด้วย {result}! โชคเข้าข้างสุด ๆ 🎉', mood: 'happy' },
-  { text: 'ผู้โชคดีคือ {result} จ้า ปรบมือหน่อย!', mood: 'happy' },
-  { text: '{result} ดวงดีจริง ป้าอิจฉาเลย', mood: 'teasing' },
-];
+export const luckyLines: PaaUanLine[] = t<PaaUanLine[]>(
+  [
+    { text: 'ยินดีด้วย {result}! โชคเข้าข้างสุด ๆ 🎉', mood: 'happy' },
+    { text: 'ผู้โชคดีคือ {result} จ้า ปรบมือหน่อย!', mood: 'happy' },
+    { text: '{result} ดวงดีจริง ป้าอิจฉาเลย', mood: 'teasing' },
+  ],
+  [
+    { text: 'Congratulations, {result}! Lady Luck loves you today 🎉', mood: 'happy' },
+    { text: 'And the winner is {result}! Round of applause!', mood: 'happy' },
+    { text: "{result}, you lucky thing — Auntie's a little jealous", mood: 'teasing' },
+  ]
+);
 
 /** สุ่มตัวเลข — ใช้ {result} */
-export const numberLines: PaaUanLine[] = [
-  { text: 'ได้เลข {result} จ้า เอาไปใช้ให้คุ้มนะ', mood: 'happy' },
-  { text: '{result}! ป้าว่าเลขนี้แหละเฮง', mood: 'sassy' },
-  { text: 'ฟ้าให้มา {result} อย่าเอาไปแทงหวยล่ะ 😏', mood: 'teasing' },
-];
+export const numberLines: PaaUanLine[] = t<PaaUanLine[]>(
+  [
+    { text: 'ได้เลข {result} จ้า เอาไปใช้ให้คุ้มนะ', mood: 'happy' },
+    { text: '{result}! ป้าว่าเลขนี้แหละเฮง', mood: 'sassy' },
+    { text: 'ฟ้าให้มา {result} อย่าเอาไปแทงหวยล่ะ 😏', mood: 'teasing' },
+  ],
+  [
+    { text: 'Your number is {result}, hon. Use it well!', mood: 'happy' },
+    { text: "{result}! Auntie's got a good feeling about this one", mood: 'sassy' },
+    { text: "The heavens sent {result}. Don't bet the house on it 😏", mood: 'teasing' },
+  ]
+);
 
 /** สุ่มสี — ใช้ {result} เป็นรหัสสี */
-export const colorLines: PaaUanLine[] = [
-  { text: 'สีนี้สวยนะ {result} ป้าชอบ!', mood: 'happy' },
-  { text: 'ได้ {result} จ้า เอาไปแต่งให้สวยเลย', mood: 'happy' },
-  { text: 'อืม {result}... ป้าว่าเข้ากับลูกดีนะ', mood: 'teasing' },
-];
+export const colorLines: PaaUanLine[] = t<PaaUanLine[]>(
+  [
+    { text: 'สีนี้สวยนะ {result} ป้าชอบ!', mood: 'happy' },
+    { text: 'ได้ {result} จ้า เอาไปแต่งให้สวยเลย', mood: 'happy' },
+    { text: 'อืม {result}... ป้าว่าเข้ากับลูกดีนะ', mood: 'teasing' },
+  ],
+  [
+    { text: 'Ooh, {result} — what a pretty color! Auntie loves it', mood: 'happy' },
+    { text: '{result} for you, sugar. Go make something beautiful', mood: 'happy' },
+    { text: 'Hmm, {result}... you know, it really suits you', mood: 'teasing' },
+  ]
+);
 
 /** แบ่งทีม / สุ่มคิว — คำพูดทั่วไป (ไม่มี {result}) */
-export const groupLines: PaaUanLine[] = [
-  { text: 'จัดให้เรียบร้อยแล้วจ้า ยุติธรรมสุด ๆ', mood: 'happy' },
-  { text: 'ป้าแบ่งให้แล้ว ใครไม่พอใจมาเถียงกับป้า 😤', mood: 'sassy' },
-  { text: 'เสร็จแล้วลูก ดวงจัดสรรมาเองนะ', mood: 'teasing' },
-];
+export const groupLines: PaaUanLine[] = t<PaaUanLine[]>(
+  [
+    { text: 'จัดให้เรียบร้อยแล้วจ้า ยุติธรรมสุด ๆ', mood: 'happy' },
+    { text: 'ป้าแบ่งให้แล้ว ใครไม่พอใจมาเถียงกับป้า 😤', mood: 'sassy' },
+    { text: 'เสร็จแล้วลูก ดวงจัดสรรมาเองนะ', mood: 'teasing' },
+  ],
+  [
+    { text: 'All sorted, sweetie! Fair and square', mood: 'happy' },
+    { text: 'Auntie did the splitting — complaints go to Auntie 😤', mood: 'sassy' },
+    { text: 'Done, hon! Destiny did the sorting, not me', mood: 'teasing' },
+  ]
+);
 
 /** ใบ้คำ — ป้าแซวตอนเปิดคำ */
-export const charadesLines: PaaUanLine[] = [
-  { text: 'คำนี้ง่ายจะตาย ใบ้ให้เพื่อนเร็ว!', mood: 'sassy' },
-  { text: 'เอ้า ดูคำแล้วอย่าพูดออกมานะ เดี๋ยวโกง', mood: 'teasing' },
-  { text: 'คำนี้ป้ายังทายถูกเลย สู้ ๆ จ้า', mood: 'happy' },
-];
+export const charadesLines: PaaUanLine[] = t<PaaUanLine[]>(
+  [
+    { text: 'คำนี้ง่ายจะตาย ใบ้ให้เพื่อนเร็ว!', mood: 'sassy' },
+    { text: 'เอ้า ดูคำแล้วอย่าพูดออกมานะ เดี๋ยวโกง', mood: 'teasing' },
+    { text: 'คำนี้ป้ายังทายถูกเลย สู้ ๆ จ้า', mood: 'happy' },
+  ],
+  [
+    { text: "This one's easy — get acting, quick!", mood: 'sassy' },
+    { text: 'Look at the word but zip those lips! No cheating', mood: 'teasing' },
+    { text: "Even Auntie could guess this one. You've got this!", mood: 'happy' },
+  ]
+);
 
 /** สุ่มที่เที่ยว — ป้าคอมเมนต์ปลายทางที่สุ่มได้ */
-export const travelLines: PaaUanLine[] = [
-  { text: 'ไปเที่ยวซะลูก! ทำงานมาเหนื่อยแล้ว ชาร์จแบตหน่อย', mood: 'happy' },
-  { text: 'ที่นี่แหละ! ป้าฟันธง เก็บกระเป๋าได้เลยจ้า', mood: 'sassy' },
-  { text: 'สวยนะที่นี่ ไปแล้วถ่ายรูปมาฝากป้าด้วยล่ะ', mood: 'teasing' },
-  { text: 'จองที่พักเลย อย่ามัวลังเล เดี๋ยวคนเต็มก่อน', mood: 'sassy' },
-  { text: 'ไปเที่ยวก็ดี แต่ขับรถดี ๆ ระวังตัวด้วยนะลูก', mood: 'thinking' },
-  { text: 'โอ้โห ที่นี่! ป้าก็อยากไปด้วยอ่ะ พาป้าไปมั้ย', mood: 'teasing' },
-];
+export const travelLines: PaaUanLine[] = t<PaaUanLine[]>(
+  [
+    { text: 'ไปเที่ยวซะลูก! ทำงานมาเหนื่อยแล้ว ชาร์จแบตหน่อย', mood: 'happy' },
+    { text: 'ที่นี่แหละ! ป้าฟันธง เก็บกระเป๋าได้เลยจ้า', mood: 'sassy' },
+    { text: 'สวยนะที่นี่ ไปแล้วถ่ายรูปมาฝากป้าด้วยล่ะ', mood: 'teasing' },
+    { text: 'จองที่พักเลย อย่ามัวลังเล เดี๋ยวคนเต็มก่อน', mood: 'sassy' },
+    { text: 'ไปเที่ยวก็ดี แต่ขับรถดี ๆ ระวังตัวด้วยนะลูก', mood: 'thinking' },
+    { text: 'โอ้โห ที่นี่! ป้าก็อยากไปด้วยอ่ะ พาป้าไปมั้ย', mood: 'teasing' },
+  ],
+  [
+    { text: "Go take that trip, sweetie! You've earned a recharge", mood: 'happy' },
+    { text: "This is the place! Auntie's certain — go pack your bags!", mood: 'sassy' },
+    { text: 'Ooh, lovely spot. Take lots of pictures for Auntie!', mood: 'teasing' },
+    { text: 'Book it now, hon — the good rooms fill up fast!', mood: 'sassy' },
+    { text: 'Have fun out there, and travel safe for Auntie, alright?', mood: 'thinking' },
+    { text: 'Oh my, THIS place! Can Auntie come too?', mood: 'teasing' },
+  ]
+);
 
 /** สุ่มแต่งตัว — ป้าคอมเมนต์ลุคที่สุ่มได้ */
-export const outfitLines: PaaUanLine[] = [
-  { text: 'ลุคนี้เริ่ดอยู่นะลูก ใส่ออกไปเดี๋ยวมีคนเหลียวมอง', mood: 'happy' },
-  { text: 'จัดเซ็ตนี้ไปเลย! ป้าว่าเข้ากันสุด ๆ มั่นใจไว้นะ', mood: 'happy' },
-  { text: 'แต่งตามนี้รับรองไม่ซ้ำใคร กล้า ๆ หน่อยลูก', mood: 'sassy' },
-  { text: 'โอ๊ย ลุคนี้ปังมาก! ถ่ายรูปลง story ได้เลยจ้า', mood: 'teasing' },
-  { text: 'ป้าเลือกให้แล้ว ห้ามเปลี่ยนนะ ใส่ไปสวยหล่อแน่นอน', mood: 'sassy' },
-  { text: 'ดูดีนะเนี่ย ป้าว่าวันนี้หนูจะเป็นดาวเด่นเลยล่ะ', mood: 'happy' },
-];
+export const outfitLines: PaaUanLine[] = t<PaaUanLine[]>(
+  [
+    { text: 'ลุคนี้เริ่ดอยู่นะลูก ใส่ออกไปเดี๋ยวมีคนเหลียวมอง', mood: 'happy' },
+    { text: 'จัดเซ็ตนี้ไปเลย! ป้าว่าเข้ากันสุด ๆ มั่นใจไว้นะ', mood: 'happy' },
+    { text: 'แต่งตามนี้รับรองไม่ซ้ำใคร กล้า ๆ หน่อยลูก', mood: 'sassy' },
+    { text: 'โอ๊ย ลุคนี้ปังมาก! ถ่ายรูปลง story ได้เลยจ้า', mood: 'teasing' },
+    { text: 'ป้าเลือกให้แล้ว ห้ามเปลี่ยนนะ ใส่ไปสวยหล่อแน่นอน', mood: 'sassy' },
+    { text: 'ดูดีนะเนี่ย ป้าว่าวันนี้หนูจะเป็นดาวเด่นเลยล่ะ', mood: 'happy' },
+  ],
+  [
+    { text: "Now that's a look, sweetie! Heads will turn", mood: 'happy' },
+    { text: 'Wear this set — it all goes together beautifully. Own it!', mood: 'happy' },
+    { text: 'This look is one of a kind. Be bold, hon!', mood: 'sassy' },
+    { text: "Ooh, gorgeous! That's story-worthy right there", mood: 'teasing' },
+    { text: "Auntie picked it, so no changing! You'll look fabulous", mood: 'sassy' },
+    { text: "Looking good! You're going to be the star today, sugar", mood: 'happy' },
+  ]
+);
 
 /** ดวงประจำวัน (3 อย่าง) — คำพูดป้าหมอดูตอนเปิดดวงรวม */
-export const horoscopeLines: PaaUanLine[] = [
-  { text: 'ป้าเปิดลูกแก้วดูดวงวันนี้ให้แล้วจ้า', mood: 'happy' },
-  { text: 'นั่งลงก่อนลูก เดี๋ยวป้าทำนายดวงให้', mood: 'thinking' },
-  { text: 'ดวงวันนี้ออกมาแบบนี้ ฟังหูไว้หูนะ', mood: 'teasing' },
-  { text: 'ฟ้าลิขิตมาแล้ว เอาไปปรับใช้ให้เป็นนะจ๊ะ', mood: 'thinking' },
-  { text: 'ดูดวงเสร็จแล้ว ที่เหลือก็อยู่ที่ตัวหนูเองนะ', mood: 'happy' },
-];
+export const horoscopeLines: PaaUanLine[] = t<PaaUanLine[]>(
+  [
+    { text: 'ป้าเปิดลูกแก้วดูดวงวันนี้ให้แล้วจ้า', mood: 'happy' },
+    { text: 'นั่งลงก่อนลูก เดี๋ยวป้าทำนายดวงให้', mood: 'thinking' },
+    { text: 'ดวงวันนี้ออกมาแบบนี้ ฟังหูไว้หูนะ', mood: 'teasing' },
+    { text: 'ฟ้าลิขิตมาแล้ว เอาไปปรับใช้ให้เป็นนะจ๊ะ', mood: 'thinking' },
+    { text: 'ดูดวงเสร็จแล้ว ที่เหลือก็อยู่ที่ตัวหนูเองนะ', mood: 'happy' },
+  ],
+  [
+    { text: 'Auntie gazed into the crystal ball just for you', mood: 'happy' },
+    { text: "Sit down, sweetie — Auntie's reading your stars", mood: 'thinking' },
+    { text: "Here's today's fortune. Take it with a grain of salt, hon", mood: 'teasing' },
+    { text: "The heavens have spoken. Use it wisely, darlin'", mood: 'thinking' },
+    { text: "Reading's done! The rest is up to you, sugar", mood: 'happy' },
+  ]
+);
 
 /** ข้อคิดประจำวัน — คำพูดป้า "เกริ่นนำ" ก่อนเฉลยข้อคิด (ตัวข้อคิดอยู่ใน dailyFortune.ts) */
-export const fortuneLines: PaaUanLine[] = [
-  { text: 'ฟังข้อคิดจากป้าวันนี้ให้ดีนะลูก', mood: 'happy' },
-  { text: 'ดวงวันนี้ป้าจัดให้ จำไว้ใช้ทั้งวันเลย', mood: 'happy' },
-  { text: 'ป้าเปิดดวงให้แล้ว เอาไปคิดดูนะจ๊ะ', mood: 'thinking' },
-  { text: 'วันนี้ฟ้าฝากข้อคิดนี้มาให้หนู', mood: 'thinking' },
-  { text: 'เก็บคำนี้ไว้ในใจ แล้ววันนี้จะดีเอง', mood: 'happy' },
-];
+export const fortuneLines: PaaUanLine[] = t<PaaUanLine[]>(
+  [
+    { text: 'ฟังข้อคิดจากป้าวันนี้ให้ดีนะลูก', mood: 'happy' },
+    { text: 'ดวงวันนี้ป้าจัดให้ จำไว้ใช้ทั้งวันเลย', mood: 'happy' },
+    { text: 'ป้าเปิดดวงให้แล้ว เอาไปคิดดูนะจ๊ะ', mood: 'thinking' },
+    { text: 'วันนี้ฟ้าฝากข้อคิดนี้มาให้หนู', mood: 'thinking' },
+    { text: 'เก็บคำนี้ไว้ในใจ แล้ววันนี้จะดีเอง', mood: 'happy' },
+  ],
+  [
+    { text: "Listen close to today's little wisdom, sweetie", mood: 'happy' },
+    { text: "Auntie's daily pearl — keep it with you all day", mood: 'happy' },
+    { text: "Here's your thought for today, hon. Chew on it a while", mood: 'thinking' },
+    { text: 'The sky sent this little thought just for you', mood: 'thinking' },
+    { text: 'Keep these words in your heart and today will shine', mood: 'happy' },
+  ]
+);
 
 /**
  * วงล้อของฉัน (custom) — ผู้ใช้ใส่คำอะไรก็ได้ (อาจเป็นเรื่องจริงจัง)
  * ป้าจึงพูด "กลาง ๆ" ไม่กวน ไม่ตัดสิน แค่บอกผลให้ชัด ใช้ {result}
  */
-export const customWheelLines: PaaUanLine[] = [
-  { text: 'วงล้อหยุดที่ "{result}" จ้ะ', mood: 'happy' },
-  { text: 'ได้ "{result}" นะลูก', mood: 'happy' },
-  { text: 'ป้าหมุนให้แล้ว ออกมาเป็น "{result}" จ้า', mood: 'happy' },
-  { text: 'ผลออกมาคือ "{result}"', mood: 'thinking' },
-  { text: '"{result}" จ้ะ เอาไปตัดสินใจได้เลย', mood: 'happy' },
-  { text: 'ฟ้าเลือก "{result}" ให้แล้วนะลูก', mood: 'thinking' },
-];
+export const customWheelLines: PaaUanLine[] = t<PaaUanLine[]>(
+  [
+    { text: 'วงล้อหยุดที่ "{result}" จ้ะ', mood: 'happy' },
+    { text: 'ได้ "{result}" นะลูก', mood: 'happy' },
+    { text: 'ป้าหมุนให้แล้ว ออกมาเป็น "{result}" จ้า', mood: 'happy' },
+    { text: 'ผลออกมาคือ "{result}"', mood: 'thinking' },
+    { text: '"{result}" จ้ะ เอาไปตัดสินใจได้เลย', mood: 'happy' },
+    { text: 'ฟ้าเลือก "{result}" ให้แล้วนะลูก', mood: 'thinking' },
+  ],
+  [
+    { text: 'The wheel stopped at "{result}", sweetie', mood: 'happy' },
+    { text: 'You got "{result}", hon', mood: 'happy' },
+    { text: 'Auntie gave it a spin — it landed on "{result}"', mood: 'happy' },
+    { text: 'The result is "{result}"', mood: 'thinking' },
+    { text: '"{result}" — there you have it. Decision time!', mood: 'happy' },
+    { text: 'Fate picked "{result}" for you, darlin\'', mood: 'thinking' },
+  ]
+);
 
 /**
  * ดึงคำพูดแบบสุ่ม 1 อัน แล้วแทนค่า {result} ให้เรียบร้อย
