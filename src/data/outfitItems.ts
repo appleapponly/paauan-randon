@@ -1,9 +1,12 @@
 /**
  * 👗 สุ่มการแต่งตัว — คลังเสื้อผ้า/เครื่องประดับ แยกชาย-หญิง
  * เลือกเพศแล้วกดสุ่ม จะได้ เสื้อ + ท่อนล่าง(กางเกง/กระโปรง) + รองเท้า + เครื่องประดับ อย่างละ 1
+ * แอปไทย/global สลับชุดด้วย t
  *
  * เพิ่มไอเท็มใหม่: เติมเข้าไปในอาเรย์ของเพศ/หมวดที่ต้องการได้เลย
  */
+import { t } from '@/i18n';
+
 export interface OutfitOption {
   emoji: string;
   name: string;
@@ -20,13 +23,13 @@ export interface OutfitSet {
 
 /** ช่อง (หมวด) ที่จะสุ่ม + ป้ายกำกับบนหน้าจอ */
 export const OUTFIT_SLOTS: { key: keyof OutfitSet; label: string; emoji: string }[] = [
-  { key: 'top', label: 'เสื้อ', emoji: '👕' },
-  { key: 'bottom', label: 'ท่อนล่าง', emoji: '👖' },
-  { key: 'shoes', label: 'รองเท้า', emoji: '👟' },
-  { key: 'accessory', label: 'เครื่องประดับ', emoji: '🕶️' },
+  { key: 'top', label: t('เสื้อ', 'Top'), emoji: '👕' },
+  { key: 'bottom', label: t('ท่อนล่าง', 'Bottom'), emoji: '👖' },
+  { key: 'shoes', label: t('รองเท้า', 'Shoes'), emoji: '👟' },
+  { key: 'accessory', label: t('เครื่องประดับ', 'Accessory'), emoji: '🕶️' },
 ];
 
-export const OUTFITS: Record<Gender, OutfitSet> = {
+const OUTFITS_TH: Record<Gender, OutfitSet> = {
   male: {
     top: [
       { emoji: '👕', name: 'เสื้อยืดสีขาว' },
@@ -117,3 +120,97 @@ export const OUTFITS: Record<Gender, OutfitSet> = {
     ],
   },
 };
+
+const OUTFITS_EN: Record<Gender, OutfitSet> = {
+  male: {
+    top: [
+      { emoji: '👕', name: 'White T-shirt' },
+      { emoji: '👔', name: 'Plaid Flannel Shirt' },
+      { emoji: '👕', name: 'Polo Shirt' },
+      { emoji: '🌺', name: 'Hawaiian Shirt' },
+      { emoji: '🧥', name: 'Gray Hoodie' },
+      { emoji: '🧶', name: 'Knit Sweater' },
+      { emoji: '👕', name: 'Black Tank Top' },
+      { emoji: '👔', name: 'Denim Shirt' },
+      { emoji: '⚽', name: 'Soccer Jersey' },
+      { emoji: '👕', name: 'Oversized Tee' },
+    ],
+    bottom: [
+      { emoji: '👖', name: 'Blue Jeans' },
+      { emoji: '🩳', name: 'Shorts' },
+      { emoji: '👖', name: 'Black Slacks' },
+      { emoji: '🩳', name: 'Joggers' },
+      { emoji: '👖', name: 'Cargo Pants' },
+      { emoji: '🩳', name: 'Patterned Shorts' },
+      { emoji: '👖', name: 'Khaki Chinos' },
+      { emoji: '👖', name: 'Ripped Jeans' },
+    ],
+    shoes: [
+      { emoji: '👟', name: 'Sneakers' },
+      { emoji: '👞', name: 'Brown Leather Shoes' },
+      { emoji: '🩴', name: 'Flip-flops' },
+      { emoji: '🥾', name: 'Leather Boots' },
+      { emoji: '👟', name: 'Running Shoes' },
+      { emoji: '👟', name: 'Skate Shoes' },
+      { emoji: '👞', name: 'Suede Loafers' },
+    ],
+    accessory: [
+      { emoji: '🕶️', name: 'Sunglasses' },
+      { emoji: '🧢', name: 'Baseball Cap' },
+      { emoji: '⌚', name: 'Wristwatch' },
+      { emoji: '📿', name: 'Necklace' },
+      { emoji: '👒', name: 'Bucket Hat' },
+      { emoji: '🎒', name: 'Backpack' },
+      { emoji: '💍', name: 'Cool Ring' },
+      { emoji: '🙅', name: 'No Accessories' },
+    ],
+  },
+  female: {
+    top: [
+      { emoji: '👚', name: 'Crop Top' },
+      { emoji: '👚', name: 'Pastel Button-up' },
+      { emoji: '🌸', name: 'Floral Blouse' },
+      { emoji: '👚', name: 'Puff-sleeve Top' },
+      { emoji: '🧶', name: 'Knit Sweater' },
+      { emoji: '👕', name: 'Oversized Tee' },
+      { emoji: '👚', name: 'Camisole' },
+      { emoji: '🧥', name: 'Cardigan' },
+      { emoji: '👔', name: 'Denim Shirt' },
+      { emoji: '👚', name: 'Sheer Tank Top' },
+    ],
+    bottom: [
+      { emoji: '👗', name: 'Flared Skirt' },
+      { emoji: '👖', name: 'Denim Skirt' },
+      { emoji: '👖', name: 'Blue Jeans' },
+      { emoji: '👗', name: 'Pleated Skirt' },
+      { emoji: '👖', name: 'Wide-leg Pants' },
+      { emoji: '🌼', name: 'Long Floral Skirt' },
+      { emoji: '🩳', name: 'Shorts' },
+      { emoji: '🩱', name: 'Leggings' },
+      { emoji: '👗', name: 'A-line Skirt' },
+      { emoji: '👖', name: 'Cream Slacks' },
+    ],
+    shoes: [
+      { emoji: '👟', name: 'Sneakers' },
+      { emoji: '👠', name: 'High Heels' },
+      { emoji: '🩴', name: 'Flip-flops' },
+      { emoji: '🥿', name: 'Ballet Flats' },
+      { emoji: '🥾', name: 'Knee-high Boots' },
+      { emoji: '👠', name: 'Wedges' },
+      { emoji: '🩴', name: 'Slide Sandals' },
+      { emoji: '👟', name: 'Pastel Sneakers' },
+    ],
+    accessory: [
+      { emoji: '🕶️', name: 'Sunglasses' },
+      { emoji: '👒', name: 'Wide-brim Hat' },
+      { emoji: '💎', name: 'Chandelier Earrings' },
+      { emoji: '📿', name: 'Dainty Necklace' },
+      { emoji: '👜', name: 'Shoulder Bag' },
+      { emoji: '🎀', name: 'Headband' },
+      { emoji: '💍', name: 'Bracelet' },
+      { emoji: '🙅', name: 'No Accessories' },
+    ],
+  },
+};
+
+export const OUTFITS: Record<Gender, OutfitSet> = t(OUTFITS_TH, OUTFITS_EN);

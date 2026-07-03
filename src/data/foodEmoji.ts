@@ -55,9 +55,61 @@ const FOOD_EMOJI: Record<string, string> = {
   กุ้งทอดครีมสลัด: '🍤',
 };
 
+// อิโมจิเมนูสากล (แอป global — key ตรงกับ foodMenu.ts ชุดอังกฤษ)
+const FOOD_EMOJI_EN: Record<string, string> = {
+  Pizza: '🍕',
+  'Burger & Fries': '🍔',
+  'Spaghetti Bolognese': '🍝',
+  Sushi: '🍣',
+  Tacos: '🌮',
+  'Fried Chicken': '🍗',
+  'Caesar Salad': '🥗',
+  'Grilled Cheese Sandwich': '🥪',
+  'Pad Thai': '🍤',
+  Ramen: '🍜',
+  Steak: '🥩',
+  'BBQ Ribs': '🍖',
+  Burrito: '🌯',
+  'Mac & Cheese': '🧀',
+  'Fish and Chips': '🍟',
+  Pancakes: '🥞',
+  'Club Sandwich': '🥪',
+  'Fried Rice': '🍚',
+  'Tomato Soup': '🍅',
+  'Hot Dog': '🌭',
+  // เมนูแนะนำ
+  Lasagna: '🍝',
+  Pho: '🍜',
+  Dumplings: '🥟',
+  'Korean BBQ': '🍖',
+  'Poke Bowl': '🍚',
+  Quesadilla: '🫓',
+  'Chicken Wings': '🍗',
+  'Meatball Sub': '🥖',
+  'Greek Salad': '🥗',
+  'Curry Rice': '🍛',
+  Bibimbap: '🍚',
+  'Falafel Wrap': '🌯',
+  'Clam Chowder': '🥣',
+  'Chicken Pot Pie': '🥧',
+  'Shrimp Scampi': '🍤',
+  Gyros: '🥙',
+  Waffles: '🧇',
+  Omelette: '🍳',
+  'Instant Noodles': '🍜',
+  'Grilled Salmon': '🐟',
+  Nachos: '🧀',
+  'Chili Con Carne': '🌶️',
+  'Tuna Melt': '🥪',
+  'Pulled Pork Sandwich': '🥪',
+  'Avocado Toast': '🥑',
+  'Onion Rings': '🧅',
+  'Corn Dog': '🌭',
+};
+
 /** รูปกลาง ๆ ใช้กับเมนูที่ผู้ใช้พิมพ์เอง */
 export const DEFAULT_FOOD_EMOJI = '🍽️';
 
 export function getFoodEmoji(name: string): string {
-  return FOOD_EMOJI[name] ?? DEFAULT_FOOD_EMOJI;
+  return FOOD_EMOJI[name] ?? FOOD_EMOJI_EN[name] ?? DEFAULT_FOOD_EMOJI;
 }
