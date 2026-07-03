@@ -3,14 +3,13 @@
  * - Hero ชมพู: ชื่อแอป + บับเบิลทักทาย + รูปป้าชี้นิ้วล้นกรอบมุมขวาล่าง
  * - แต่ละหมวด: ป้ายพิลล์สีประจำหมวด + ตารางการ์ด 2 คอลัมน์ (อิโมจิใหญ่)
  */
-import { useMemo, useRef, useState } from 'react';
+import { useMemo, useRef } from 'react';
 import { Alert, Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { CATEGORIES } from '@/data/categories';
 import { openingLines, pickLine } from '@/data/paaUanLines';
 import { RandomizerCard } from '@/components/RandomizerCard';
-import { RubikBoard } from '@/components/RubikBoard';
 import { SiamsiTube } from '@/components/SiamsiTube';
 import { AdBanner } from '@/ads/AdBanner';
 import { useProStore } from '@/store/useProStore';
@@ -56,16 +55,12 @@ export default function HomeScreen() {
   // สุ่มคำทักทายครั้งเดียวตอนเปิดหน้า (useMemo กันสุ่มใหม่ทุกครั้งที่ render)
   const greeting = useMemo(() => pickLine(openingLines), []);
 
-  // นิ้วแตะรูบิคอยู่ → ล็อกไม่ให้จอเลื่อน (จะได้บิดแนวตั้งได้ ไม่แย่งกับ ScrollView)
-  const [scrollEnabled, setScrollEnabled] = useState(true);
-
   return (
     <View style={styles.root}>
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
-        scrollEnabled={scrollEnabled}
       >
         {/* ===== Hero ชมพู ===== */}
         <SafeAreaView edges={['top']} style={styles.hero}>
@@ -82,22 +77,6 @@ export default function HomeScreen() {
 
         {/* ===== หมวดต่าง ๆ ===== */}
         <View style={styles.body}>
-          {/* 🧩 รูบิคทางลัด — บิดเลือกหน้าสุ่มโปรดมาเก็บไว้ (จำตำแหน่งแม้ปิดแอป) */}
-          <View style={styles.rubikSection}>
-            <View style={[styles.catPill, { backgroundColor: colors.ink }]}>
-              <Text style={[styles.catPillText, { color: colors.white }]}>
-                {t('🧩 รูบิคของฉัน', '🧩 My Cube')}
-              </Text>
-            </View>
-            <RubikBoard onTouchingChange={(touching) => setScrollEnabled(!touching)} />
-            <Text style={styles.rubikHint}>
-              {t(
-                'ปัดขึ้นลง-ซ้ายขวาเพื่อบิดเปลี่ยนหน้า · แตะหน้าไหนก็ได้ (รวมด้านบน/ขวา) เพื่อเข้าสุ่ม',
-                'Swipe any direction to twist · tap any face (top/right too) to open'
-              )}
-            </Text>
-          </View>
-
           {CATEGORIES.map((cat, ci) => (
             <View key={cat.id}>
               <View style={styles.category}>
@@ -274,17 +253,6 @@ const styles = StyleSheet.create({
   },
   homeBanner: {
     marginBottom: 18,
-  },
-  rubikSection: {
-    marginBottom: 18,
-    gap: 4,
-  },
-  rubikHint: {
-    fontFamily: fonts.regular,
-    fontSize: fontSize.xs,
-    color: colors.muted,
-    textAlign: 'center',
-    marginTop: 8,
   },
   proBtn: {
     backgroundColor: colors.wine,
