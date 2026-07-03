@@ -10,6 +10,7 @@ import { useProStore } from '@/store/useProStore';
 import { PRO_SKUS, PRO_FALLBACK_PRICE } from '@/ads/adConfig';
 import { paaUanPoses } from '@/theme/assets';
 import { colors } from '@/theme/colors';
+import { t } from '@/i18n';
 import { fonts, fontSize } from '@/theme/typography';
 import { cartoonBox } from '@/theme/styles';
 
@@ -25,16 +26,20 @@ export default function ProScreen() {
       <ScrollView contentContainerStyle={styles.content}>
         <Image source={paaUanPoses.point} style={styles.paa} resizeMode="contain" />
 
-        <Text style={styles.title}>หลานรักป้า ❤️</Text>
+        <Text style={styles.title}>{t('หลานรักป้า ❤️', 'Love Auntie ❤️')}</Text>
         <Text style={styles.subtitle}>
-          ป้าทำแอปนี้แจกฟรีจากใจ ถ้าหลานสนับสนุนป้านิดหน่อย
-          ป้าจะ <Text style={styles.bold}>ปิดโฆษณาให้ทั้งแอป</Text> เลยจ้ะ
+          {t('ป้าทำแอปนี้แจกฟรีจากใจ ถ้าหลานสนับสนุนป้านิดหน่อย ป้าจะ ', 'Auntie made this app free with love. Support her a little and she will ')}
+          <Text style={styles.bold}>{t('ปิดโฆษณาให้ทั้งแอป', 'remove all ads')}</Text>
+          {t(' เลยจ้ะ', ' for you, sweetie!')}
         </Text>
 
         {isPro ? (
           <View style={styles.proBox}>
             <Text style={styles.proBoxText}>
-              หลานเป็นสมาชิก Pro แล้วจ้ะ ❤️{'\n'}ขอบใจที่รักป้านะ ไม่มีโฆษณากวนใจอีกแล้ว
+              {t(
+                'หลานเป็นสมาชิก Pro แล้วจ้ะ ❤️\nขอบใจที่รักป้านะ ไม่มีโฆษณากวนใจอีกแล้ว',
+                "You're a Pro member! ❤️\nThanks for loving Auntie — no more ads in your way"
+              )}
             </Text>
           </View>
         ) : (
@@ -42,28 +47,37 @@ export default function ProScreen() {
             {/* รายปี — คุ้มสุด */}
             <Pressable style={[styles.plan, styles.planBest]} onPress={() => buy(PRO_SKUS.yearly)}>
               <View style={styles.bestTag}>
-                <Text style={styles.bestTagText}>คุ้มสุด</Text>
+                <Text style={styles.bestTagText}>{t('คุ้มสุด', 'Best value')}</Text>
               </View>
-              <Text style={styles.planName}>รายปี</Text>
+              <Text style={styles.planName}>{t('รายปี', 'Yearly')}</Text>
               <Text style={styles.planPrice}>{yearly}</Text>
-              <Text style={styles.planNote}>ตกเดือนละ ~4 บาท ถูกกว่าค่าขนมป้าอีก!</Text>
+              <Text style={styles.planNote}>
+                {t('ตกเดือนละ ~4 บาท ถูกกว่าค่าขนมป้าอีก!', "Pennies a month — cheaper than Auntie's snacks!")}
+              </Text>
             </Pressable>
 
             {/* รายเดือน */}
             <Pressable style={styles.plan} onPress={() => buy(PRO_SKUS.monthly)}>
-              <Text style={styles.planName}>รายเดือน</Text>
+              <Text style={styles.planName}>{t('รายเดือน', 'Monthly')}</Text>
               <Text style={styles.planPrice}>{monthly}</Text>
-              <Text style={styles.planNote}>จ่ายทีละเดือน ยกเลิกเมื่อไรก็ได้</Text>
+              <Text style={styles.planNote}>
+                {t('จ่ายทีละเดือน ยกเลิกเมื่อไรก็ได้', 'Pay month by month, cancel anytime')}
+              </Text>
             </Pressable>
 
             <Pressable style={styles.restore} onPress={restore}>
-              <Text style={styles.restoreText}>เคยซื้อแล้ว? กดกู้คืนสิทธิ์</Text>
+              <Text style={styles.restoreText}>
+                {t('เคยซื้อแล้ว? กดกู้คืนสิทธิ์', 'Already purchased? Restore it here')}
+              </Text>
             </Pressable>
           </>
         )}
 
         <Text style={styles.fine}>
-          เป็นการสมัครสมาชิกแบบต่ออายุอัตโนมัติผ่าน Google Play ยกเลิกได้ตลอดเวลาในแอป Play Store
+          {t(
+            'เป็นการสมัครสมาชิกแบบต่ออายุอัตโนมัติผ่าน Google Play ยกเลิกได้ตลอดเวลาในแอป Play Store',
+            'Auto-renewing subscription via Google Play. Cancel anytime in the Play Store app.'
+          )}
         </Text>
       </ScrollView>
     </SafeAreaView>

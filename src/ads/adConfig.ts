@@ -7,6 +7,7 @@
  */
 import { Platform } from 'react-native';
 import { TestIds } from 'react-native-google-mobile-ads';
+import { t } from '@/i18n';
 
 // ⚠️ ตอนทดสอบ (internal testing) ให้ true เสมอ = เห็นโฆษณา test ไม่ผิดนโยบาย
 //    เมื่อพร้อมปล่อย production จริง → เปลี่ยนเป็น false เพื่อใช้ ad unit จริงด้านล่าง
@@ -37,9 +38,10 @@ export const PRO_SKUS = {
 export const PRO_SKU_LIST = [PRO_SKUS.yearly, PRO_SKUS.monthly];
 
 // ราคา "สำรอง" ไว้โชว์ตอนยังดึงราคาจริงจาก Play ไม่ได้ (เน็ตล่ม / ยังไม่สร้างสินค้า)
+// ราคาจริงมาจาก Play เสมอ — อันนี้แค่กันช่องว่าง (แอป global ต้องตั้งราคาใน Play Console ของแอปนั้น)
 export const PRO_FALLBACK_PRICE = {
-  yearly: '฿49 / ปี',
-  monthly: '฿7 / เดือน',
+  yearly: t('฿49 / ปี', '$4.99 / yr'),
+  monthly: t('฿7 / เดือน', '$0.99 / mo'),
 };
 
 // 🎲 จำนวนครั้งที่กดปุ่มสุ่มก่อนเด้ง interstitial — สุ่มในช่วง 2-4 ครั้ง

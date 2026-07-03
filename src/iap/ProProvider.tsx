@@ -14,6 +14,7 @@ import { Alert } from 'react-native';
 import { useIAP } from 'expo-iap';
 import { PRO_SKU_LIST, PRO_SKUS } from '@/ads/adConfig';
 import { useProStore } from '@/store/useProStore';
+import { t } from '@/i18n';
 
 interface ProContextValue {
   /** ราคาที่โชว์ได้จริงจาก Play (sku → ราคา) ถ้าว่าง = ยังดึงไม่ได้ */
@@ -54,8 +55,8 @@ export function ProProvider({ children }: { children: React.ReactNode }) {
       if (e?.code !== 'user-cancelled') {
         // โชว์ code จริงจาก Play เพื่อวินิจฉัยได้ (เช่น item-unavailable, developer-error)
         Alert.alert(
-          'ซื้อไม่สำเร็จ',
-          `${e?.message ?? 'ลองใหม่อีกครั้งนะลูก'} 🙏\n(code: ${e?.code ?? '-'})`
+          t('ซื้อไม่สำเร็จ', 'Purchase failed'),
+          `${e?.message ?? t('ลองใหม่อีกครั้งนะลูก', 'Give it another try, sweetie')} 🙏\n(code: ${e?.code ?? '-'})`
         );
       }
     },
@@ -131,12 +132,15 @@ export function ProProvider({ children }: { children: React.ReactNode }) {
         // ถ้ายังโหลดสินค้าไม่ได้ → ซื้อไม่ได้แน่นอน บอกสาเหตุที่พบบ่อยแทนปล่อยให้ Play เด้ง error งง ๆ
         if (!sub) {
           Alert.alert(
-            'สินค้ายังไม่พร้อมขาย',
-            'ป้ายังดึงราคาจาก Play ไม่ได้ ลองเช็ค:\n' +
-              '• ติดตั้งแอปผ่าน "ลิงก์ tester" ของ Play เท่านั้น (ไม่ใช่ลง APK เอง)\n' +
-              '• บัญชี Google ในเครื่องต้องเป็น License tester\n' +
-              '• ถ้าเพิ่งสร้าง/Activate สินค้า รอ Play ประมวลผล 2-3 ชม.\n' +
-              '• Base plan ต้องขึ้นสถานะ Active'
+            t('สินค้ายังไม่พร้อมขาย', 'Product not available yet'),
+            t(
+              'ป้ายังดึงราคาจาก Play ไม่ได้ ลองเช็ค:\n' +
+                '• ติดตั้งแอปผ่าน "ลิงก์ tester" ของ Play เท่านั้น (ไม่ใช่ลง APK เอง)\n' +
+                '• บัญชี Google ในเครื่องต้องเป็น License tester\n' +
+                '• ถ้าเพิ่งสร้าง/Activate สินค้า รอ Play ประมวลผล 2-3 ชม.\n' +
+                '• Base plan ต้องขึ้นสถานะ Active',
+              "Auntie couldn't load prices from Google Play. Please check your connection and try again in a moment."
+            )
           );
           return;
         }
@@ -157,8 +161,8 @@ export function ProProvider({ children }: { children: React.ReactNode }) {
       } catch (e: any) {
         if (e?.code !== 'user-cancelled') {
           Alert.alert(
-            'ซื้อไม่สำเร็จ',
-            `${e?.message ?? 'ลองใหม่อีกครั้งนะลูก'} 🙏\n(code: ${e?.code ?? '-'})`
+            t('ซื้อไม่สำเร็จ', 'Purchase failed'),
+            `${e?.message ?? t('ลองใหม่อีกครั้งนะลูก', 'Give it another try, sweetie')} 🙏\n(code: ${e?.code ?? '-'})`
           );
         }
       }
@@ -172,11 +176,16 @@ export function ProProvider({ children }: { children: React.ReactNode }) {
       const active = await hasActiveSubscriptions(PRO_SKU_LIST);
       setPro(active);
       Alert.alert(
-        active ? 'กู้คืนสำเร็จ' : 'ไม่พบการสมัคร',
-        active ? 'ปลดโฆษณาให้แล้วจ้ะ ขอบใจที่รักป้า ❤️' : 'ยังไม่พบสมาชิก Pro บนบัญชีนี้นะลูก'
+        active ? t('กู้คืนสำเร็จ', 'Restored!') : t('ไม่พบการสมัคร', 'No subscription found'),
+        active
+          ? t('ปลดโฆษณาให้แล้วจ้ะ ขอบใจที่รักป้า ❤️', 'Ads are gone! Thanks for loving Auntie ❤️')
+          : t('ยังไม่พบสมาชิก Pro บนบัญชีนี้นะลูก', "No Pro membership on this account yet, hon")
       );
     } catch {
-      Alert.alert('กู้คืนไม่ได้', 'เช็คอินเทอร์เน็ตแล้วลองใหม่นะลูก');
+      Alert.alert(
+        t('กู้คืนไม่ได้', "Couldn't restore"),
+        t('เช็คอินเทอร์เน็ตแล้วลองใหม่นะลูก', 'Check your internet and try again, sweetie')
+      );
     }
   }, [getActiveSubscriptions, hasActiveSubscriptions, setPro]);
 
