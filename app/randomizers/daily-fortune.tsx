@@ -2,7 +2,7 @@
  * 💡 ข้อคิดประจำวัน — สุ่มข้อคิด/คำแนะนำดี ๆ ในการใช้ชีวิตประจำวัน
  * กดปุ่ม → ป้าหมอดูให้ข้อคิด 1 ข้อ + คอมเมนต์ป้า → แชร์ได้
  */
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { ScreenSafe } from '@/components/ScreenSafe';
 import Animated, { BounceIn } from 'react-native-reanimated';
@@ -20,14 +20,11 @@ import { t } from '@/i18n';
 export default function DailyFortuneScreen() {
   const cardRef = useRef<View>(null);
   const scrollRef = useRef<ScrollView>(null);
+  const viewportH = useRef(0);
   const [fortune, setFortune] = useState<string | null>(null);
   const [comment, setComment] = useState('');
   const [mood, setMood] = useState<PaaUanMood>('happy');
   const [round, setRound] = useState(0);
-
-  useEffect(() => {
-    if (round > 0) scrollRef.current?.scrollToEnd({ animated: true });
-  }, [round]);
 
   function draw() {
     const line = pickLine(fortuneLines);
@@ -39,7 +36,11 @@ export default function DailyFortuneScreen() {
 
   return (
     <ScreenSafe style={styles.safe}>
-      <ScrollView ref={scrollRef} contentContainerStyle={styles.content}>
+      <ScrollView
+        ref={scrollRef}
+        contentContainerStyle={styles.content}
+        onLayout={(e) => { viewportH.current = e.nativeEvent.layout.height; }}
+      >
         {fortune === null ? (
           <PaaUanBubble
             text={t('อยากได้ข้อคิดดี ๆ วันนี้มั้ยลูก? กดให้ป้าหมอดูบอกเลยจ้า', "Want a little wisdom today, sweetie? Tap and Auntie will share!")}
@@ -64,7 +65,16 @@ export default function DailyFortuneScreen() {
           color={colors.wine}
         />
 
-        {fortune !== null && <ShareButton targetRef={cardRef} />}
+        <View
+          onLayout={(e) => {
+            if (fortune === null) return;
+            const { y, height } = e.nativeEvent.layout;
+            const target = y + height - viewportH.current;
+            if (target > 0) scrollRef.current?.scrollTo({ y: target, animated: true });
+          }}
+        >
+          {fortune !== null && <ShareButton targetRef={cardRef} />}
+        </View>
       </ScrollView>
     </ScreenSafe>
   );

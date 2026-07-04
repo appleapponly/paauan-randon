@@ -6,7 +6,7 @@
  *   idle  → กดปุ่ม → rolling (เต๋าหมุน + ป้าพูด "กำลังเขย่าดวง")
  *   rolling → จบอนิเมชัน → result (โชว์คำตัดสิน + ป้าคอมเมนต์)
  */
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { ScreenSafe } from '@/components/ScreenSafe';
 import Animated, {
@@ -38,10 +38,7 @@ export default function DecisionDiceScreen() {
   const [mood, setMood] = useState<PaaUanMood>('happy');
   const cardRef = useRef<View>(null);
   const scrollRef = useRef<ScrollView>(null);
-
-  useEffect(() => {
-    if (phase === 'result') scrollRef.current?.scrollToEnd({ animated: true });
-  }, [phase]);
+  const viewportH = useRef(0);
 
   const spin = useSharedValue(0); // องศาการหมุนของเต๋า
 
@@ -82,7 +79,11 @@ export default function DecisionDiceScreen() {
 
   return (
     <ScreenSafe style={styles.safe}>
-      <ScrollView ref={scrollRef} contentContainerStyle={styles.content}>
+      <ScrollView
+        ref={scrollRef}
+        contentContainerStyle={styles.content}
+        onLayout={(e) => { viewportH.current = e.nativeEvent.layout.height; }}
+      >
         {/* ป้าอ้วนพูดเปลี่ยนตามสถานการณ์ (ตอนได้ผลย้ายไปอยู่ในการ์ดแชร์) */}
         {phase !== 'result' && (
           <PaaUanBubble
@@ -116,7 +117,16 @@ export default function DecisionDiceScreen() {
           disabled={phase === 'rolling'}
         />
 
-        {result && <ShareButton targetRef={cardRef} />}
+        <View
+          onLayout={(e) => {
+            if (!result) return;
+            const { y, height } = e.nativeEvent.layout;
+            const target = y + height - viewportH.current;
+            if (target > 0) scrollRef.current?.scrollTo({ y: target, animated: true });
+          }}
+        >
+          {result && <ShareButton targetRef={cardRef} />}
+        </View>
       </ScrollView>
     </ScreenSafe>
   );

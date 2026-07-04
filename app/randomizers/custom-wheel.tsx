@@ -5,7 +5,7 @@
  * - หมุนแล้วป้าพูดผลแบบ "กลาง ๆ" (เพราะคำอาจเป็นเรื่องจริงจัง)
  * - คนยังไม่ Pro: โชว์หน้าล็อก + ปุ่มไปหน้า "หลานรักป้า"
  */
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { ScreenSafe } from '@/components/ScreenSafe';
 import { useRouter } from 'expo-router';
@@ -35,18 +35,12 @@ export default function CustomWheelScreen() {
 
   const wheelRef = useRef<SpinWheelHandle>(null);
   const cardRef = useRef<View>(null);
-  const scrollRef = useRef<ScrollView>(null);
-  const resultY = useRef(0);
   const [spinning, setSpinning] = useState(false);
   const [newItem, setNewItem] = useState('');
   const [bubble, setBubble] = useState(t('ใส่คำที่อยากสุ่ม เลือกสี แล้วกดหมุนได้เลยจ้ะ', 'Add your options, pick colors, and give it a spin!'));
   const [mood, setMood] = useState<PaaUanMood>('happy');
   const [result, setResult] = useState<string | null>(null);
   const [round, setRound] = useState(0);
-
-  useEffect(() => {
-    if (round > 0) scrollRef.current?.scrollTo({ y: resultY.current, animated: true });
-  }, [round]);
 
   // ===== คนยังไม่ Pro: หน้าล็อก =====
   if (!isPro) {
@@ -105,7 +99,7 @@ export default function CustomWheelScreen() {
 
   return (
     <ScreenSafe style={styles.safe}>
-      <ScrollView ref={scrollRef} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+      <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         <PaaUanBubble text={bubble} mood={mood} pose="knit" />
 
         {items.length < 2 ? (
@@ -134,11 +128,7 @@ export default function CustomWheelScreen() {
         />
 
         {result && !spinning && (
-          <Animated.View
-            key={round}
-            entering={BounceIn.duration(600)}
-            onLayout={(e) => { resultY.current = e.nativeEvent.layout.y; }}
-          >
+          <Animated.View key={round} entering={BounceIn.duration(600)}>
             <CaptureCard
               ref={cardRef}
               comment={bubble}

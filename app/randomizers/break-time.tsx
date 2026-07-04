@@ -2,7 +2,7 @@
  * ☕ สุ่มเวลาพัก — สุ่มเวลาพัก 5-15 นาที + กิจกรรมพัก แล้วเริ่มจับเวลาพักเต็มจอ
  * เหมาะเวลาทำอย่างอื่นมาแล้วอยากพักสั้น ๆ (ไม่ต้องมาจากหน้าเรียน)
  */
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { ScreenSafe } from '@/components/ScreenSafe';
 import { useRouter } from 'expo-router';
@@ -26,14 +26,11 @@ export default function BreakTimeScreen() {
 
   const cardRef = useRef<View>(null);
   const scrollRef = useRef<ScrollView>(null);
+  const viewportH = useRef(0);
   const [bubble, setBubble] = useState(t('เหนื่อยแล้วเหรอลูก? กดสุ่มเวลาพัก เดี๋ยวป้าจัดให้!', 'Tired, sweetie? Tap for a random break and Auntie will sort it out!'));
   const [mood, setMood] = useState<PaaUanMood>('happy');
   const [activity, setActivity] = useState<string | null>(null);
   const [round, setRound] = useState(0);
-
-  useEffect(() => {
-    if (round > 0) scrollRef.current?.scrollToEnd({ animated: true });
-  }, [round]);
 
   function roll() {
     const act = pickOne(BREAK_ACTIVITIES);
@@ -60,7 +57,11 @@ export default function BreakTimeScreen() {
 
   return (
     <ScreenSafe style={styles.safe}>
-      <ScrollView ref={scrollRef} contentContainerStyle={styles.content}>
+      <ScrollView
+        ref={scrollRef}
+        contentContainerStyle={styles.content}
+        onLayout={(e) => { viewportH.current = e.nativeEvent.layout.height; }}
+      >
         <PaaUanBubble text={bubble} mood={mood} pose={activity ? 'fan' : 'tea'} />
 
         {activity && (
@@ -85,9 +86,18 @@ export default function BreakTimeScreen() {
           onPress={roll}
         />
         {activity && <ShareButton targetRef={cardRef} />}
-        {activity && (
-          <BigButton label={t(`เริ่มพัก ${breakMin} นาที ☕`, `Start ${breakMin}-min break ☕`)} color={colors.ocean} onPress={startBreak} countAd={false} />
-        )}
+        <View
+          onLayout={(e) => {
+            if (!activity) return;
+            const { y, height } = e.nativeEvent.layout;
+            const target = y + height - viewportH.current;
+            if (target > 0) scrollRef.current?.scrollTo({ y: target, animated: true });
+          }}
+        >
+          {activity && (
+            <BigButton label={t(`เริ่มพัก ${breakMin} นาที ☕`, `Start ${breakMin}-min break ☕`)} color={colors.ocean} onPress={startBreak} countAd={false} />
+          )}
+        </View>
       </ScrollView>
     </ScreenSafe>
   );

@@ -1,7 +1,7 @@
 /**
  * 🧳 สุ่มที่เที่ยว — กดสุ่ม → ป้าเลือกที่เที่ยวให้ 1 ที่ + คอมเมนต์ → แชร์ได้
  */
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { ScreenSafe } from '@/components/ScreenSafe';
 import Animated, { BounceIn } from 'react-native-reanimated';
@@ -19,14 +19,11 @@ import { t } from '@/i18n';
 export default function TravelScreen() {
   const cardRef = useRef<View>(null);
   const scrollRef = useRef<ScrollView>(null);
+  const viewportH = useRef(0);
   const [spot, setSpot] = useState<TravelSpot | null>(null);
   const [comment, setComment] = useState('');
   const [mood, setMood] = useState<PaaUanMood>('happy');
   const [round, setRound] = useState(0);
-
-  useEffect(() => {
-    if (round > 0) scrollRef.current?.scrollToEnd({ animated: true });
-  }, [round]);
 
   function draw() {
     const line = pickLine(travelLines);
@@ -38,7 +35,11 @@ export default function TravelScreen() {
 
   return (
     <ScreenSafe style={styles.safe}>
-      <ScrollView ref={scrollRef} contentContainerStyle={styles.content}>
+      <ScrollView
+        ref={scrollRef}
+        contentContainerStyle={styles.content}
+        onLayout={(e) => { viewportH.current = e.nativeEvent.layout.height; }}
+      >
         {spot === null ? (
           <PaaUanBubble
             text={t('ว่างใช่มั้ยลูก? อยากไปเที่ยวไหน กดให้ป้าเลือกให้เลย!', 'Free time, sweetie? Tap and let Auntie pick your next trip!')}
@@ -63,7 +64,16 @@ export default function TravelScreen() {
           color={colors.jade}
         />
 
-        {spot !== null && <ShareButton targetRef={cardRef} />}
+        <View
+          onLayout={(e) => {
+            if (spot === null) return;
+            const { y, height } = e.nativeEvent.layout;
+            const target = y + height - viewportH.current;
+            if (target > 0) scrollRef.current?.scrollTo({ y: target, animated: true });
+          }}
+        >
+          {spot !== null && <ShareButton targetRef={cardRef} />}
+        </View>
       </ScrollView>
     </ScreenSafe>
   );

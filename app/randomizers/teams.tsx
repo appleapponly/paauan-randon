@@ -1,7 +1,7 @@
 /**
  * 👥 แบ่งทีม — ใส่รายชื่อ + จำนวนทีม แล้วแบ่งอัตโนมัติแบบสุ่มยุติธรรม
  */
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { ScreenSafe } from '@/components/ScreenSafe';
 import Animated, { BounceIn } from 'react-native-reanimated';
@@ -26,15 +26,12 @@ export default function TeamsScreen() {
 
   const cardRef = useRef<View>(null);
   const scrollRef = useRef<ScrollView>(null);
+  const viewportH = useRef(0);
   const [teamCount, setTeamCount] = useState(2);
   const [teams, setTeams] = useState<string[][] | null>(null);
   const [comment, setComment] = useState('');
   const [mood, setMood] = useState<PaaUanMood>('happy');
   const [round, setRound] = useState(0);
-
-  useEffect(() => {
-    if (round > 0) scrollRef.current?.scrollToEnd({ animated: true });
-  }, [round]);
 
   function split() {
     if (names.length < teamCount) return;
@@ -50,7 +47,12 @@ export default function TeamsScreen() {
 
   return (
     <ScreenSafe style={styles.safe}>
-      <ScrollView ref={scrollRef} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+      <ScrollView
+        ref={scrollRef}
+        contentContainerStyle={styles.content}
+        keyboardShouldPersistTaps="handled"
+        onLayout={(e) => { viewportH.current = e.nativeEvent.layout.height; }}
+      >
         {teams === null ? (
           <PaaUanBubble text={t('ใส่ชื่อ เลือกจำนวนทีม เดี๋ยวป้าแบ่งให้!', 'Add names, pick the number of teams, and Auntie will split them!')} mood="happy" />
         ) : (
@@ -93,7 +95,16 @@ export default function TeamsScreen() {
           disabled={names.length < teamCount}
         />
 
-        {teams !== null && <ShareButton targetRef={cardRef} />}
+        <View
+          onLayout={(e) => {
+            if (teams === null) return;
+            const { y, height } = e.nativeEvent.layout;
+            const target = y + height - viewportH.current;
+            if (target > 0) scrollRef.current?.scrollTo({ y: target, animated: true });
+          }}
+        >
+          {teams !== null && <ShareButton targetRef={cardRef} />}
+        </View>
 
         <NameListEditor names={names} onAdd={addName} onRemove={removeName} label={t('รายชื่อสมาชิก', 'Member names')} />
       </ScrollView>

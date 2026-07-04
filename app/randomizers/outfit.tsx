@@ -2,7 +2,7 @@
  * 👗 สุ่มแต่งตัว — เลือกเพศ (ชาย/หญิง) แล้วกดสุ่ม
  * ป้าจัดลุคให้: เสื้อ + ท่อนล่าง + รองเท้า + เครื่องประดับ อย่างละ 1 → แชร์ได้
  */
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { ScreenSafe } from '@/components/ScreenSafe';
 import Animated, { BounceIn } from 'react-native-reanimated';
@@ -27,15 +27,12 @@ type Look = Record<string, OutfitOption>;
 export default function OutfitScreen() {
   const cardRef = useRef<View>(null);
   const scrollRef = useRef<ScrollView>(null);
+  const viewportH = useRef(0);
   const [gender, setGender] = useState<Gender>('female');
   const [look, setLook] = useState<Look | null>(null);
   const [comment, setComment] = useState('');
   const [mood, setMood] = useState<PaaUanMood>('happy');
   const [round, setRound] = useState(0);
-
-  useEffect(() => {
-    if (round > 0) scrollRef.current?.scrollToEnd({ animated: true });
-  }, [round]);
 
   function rollOutfit() {
     const set = OUTFITS[gender];
@@ -52,7 +49,11 @@ export default function OutfitScreen() {
 
   return (
     <ScreenSafe style={styles.safe}>
-      <ScrollView ref={scrollRef} contentContainerStyle={styles.content}>
+      <ScrollView
+        ref={scrollRef}
+        contentContainerStyle={styles.content}
+        onLayout={(e) => { viewportH.current = e.nativeEvent.layout.height; }}
+      >
         {look === null && (
           <PaaUanBubble
             text={t('วันนี้จะแต่งตัวยังไงดี? เลือกเพศแล้วให้ป้าจัดลุคให้เลย!', "What to wear today? Pick a style and let Auntie dress you!")}
@@ -111,7 +112,16 @@ export default function OutfitScreen() {
           color={colors.jade}
         />
 
-        {look !== null && <ShareButton targetRef={cardRef} />}
+        <View
+          onLayout={(e) => {
+            if (look === null) return;
+            const { y, height } = e.nativeEvent.layout;
+            const target = y + height - viewportH.current;
+            if (target > 0) scrollRef.current?.scrollTo({ y: target, animated: true });
+          }}
+        >
+          {look !== null && <ShareButton targetRef={cardRef} />}
+        </View>
       </ScrollView>
     </ScreenSafe>
   );
