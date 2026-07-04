@@ -1,7 +1,7 @@
 /**
  * 🎨 สุ่มสี — สุ่มสีพร้อมรหัส HEX + ปุ่มคัดลอก
  */
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { ScreenSafe } from '@/components/ScreenSafe';
 import Animated, { BounceIn } from 'react-native-reanimated';
@@ -25,14 +25,11 @@ function randomHex(): string {
 export default function ColorScreen() {
   const cardRef = useRef<View>(null);
   const scrollRef = useRef<ScrollView>(null);
+  const viewportH = useRef(0);
   const [hex, setHex] = useState<string | null>(null);
   const [comment, setComment] = useState('');
   const [mood, setMood] = useState<PaaUanMood>('happy');
   const [round, setRound] = useState(0);
-
-  useEffect(() => {
-    if (round > 0) scrollRef.current?.scrollToEnd({ animated: true });
-  }, [round]);
 
   function roll() {
     const h = randomHex();
@@ -51,7 +48,11 @@ export default function ColorScreen() {
 
   return (
     <ScreenSafe style={styles.safe}>
-      <ScrollView ref={scrollRef} contentContainerStyle={styles.content}>
+      <ScrollView
+        ref={scrollRef}
+        contentContainerStyle={styles.content}
+        onLayout={(e) => { viewportH.current = e.nativeEvent.layout.height; }}
+      >
         {hex === null ? (
           <PaaUanBubble text={t('กดสุ่มสี เดี๋ยวป้าจัดสีสวย ๆ ให้', "Tap for a random color — Auntie's got a pretty one!")} mood="happy" />
         ) : (
@@ -73,7 +74,16 @@ export default function ColorScreen() {
 
         <BigButton label={hex === null ? t('สุ่มสีเลย!', 'Random color!') : t('สุ่มใหม่', 'Again')} onPress={roll} />
 
-        {hex !== null && <ShareButton targetRef={cardRef} />}
+        <View
+          onLayout={(e) => {
+            if (hex === null) return;
+            const { y, height } = e.nativeEvent.layout;
+            const target = y + height - viewportH.current;
+            if (target > 0) scrollRef.current?.scrollTo({ y: target, animated: true });
+          }}
+        >
+          {hex !== null && <ShareButton targetRef={cardRef} />}
+        </View>
       </ScrollView>
     </ScreenSafe>
   );

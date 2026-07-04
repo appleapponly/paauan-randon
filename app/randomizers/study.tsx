@@ -2,7 +2,7 @@
  * 📚 สุ่มการเรียน — บันไดวิบวับสุ่ม 2 ภารกิจไม่ซ้ำ (เรียง รับข้อมูล→ฝึก→สรุป)
  * ตั้งเวลา Pomodoro ได้ทีละภารกิจ → กดเริ่มโฟกัส เข้าจับเวลาทีละรายการต่อเนื่อง
  */
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { ScreenSafe } from '@/components/ScreenSafe';
 import { useRouter } from 'expo-router';
@@ -57,7 +57,6 @@ export default function StudyScreen() {
 
   const ladderRef = useRef<LadderHandle>(null);
   const cardRef = useRef<View>(null);
-  const scrollRef = useRef<ScrollView>(null);
   const pending = useRef<Mission[]>([]);
   const [bubble, setBubble] = useState(t('กดสุ่ม เดี๋ยวบันไดวิบวับเลือกภารกิจให้ 2 อย่าง!', 'Tap and the ladder will pick 2 study missions for you!'));
   const [mood, setMood] = useState<PaaUanMood>('happy');
@@ -67,10 +66,6 @@ export default function StudyScreen() {
   const [options, setOptions] = useState<string[]>([]);
   const [round, setRound] = useState(0);
   const [newItem, setNewItem] = useState('');
-
-  useEffect(() => {
-    if (round > 0) scrollRef.current?.scrollToEnd({ animated: true });
-  }, [round]);
 
   const all = useMemo(() => [...PRESET_STUDY_TASKS, ...custom], [custom]);
   const pool = useMemo(() => all.filter((t) => selectedIds.includes(t.id)), [all, selectedIds]);
@@ -140,7 +135,7 @@ export default function StudyScreen() {
 
   return (
     <ScreenSafe style={styles.safe}>
-      <ScrollView ref={scrollRef} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+      <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         <PaaUanBubble text={bubble} mood={mood} pose="studyRead" />
 
         {pool.length < 2 ? (

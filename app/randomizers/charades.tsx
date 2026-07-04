@@ -3,7 +3,7 @@
  * คนใบ้กดดูคำ (กดอีกทีเพื่อปิดไม่ให้คนทายเห็น) แล้วกด "คำต่อไป"
  * (เกมเล่นสด ไม่มีปุ่มแชร์ เพราะคำเปลี่ยนเร็ว)
  */
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { ScreenSafe } from '@/components/ScreenSafe';
 import Animated, { BounceIn } from 'react-native-reanimated';
@@ -19,15 +19,12 @@ import { t } from '@/i18n';
 
 export default function CharadesScreen() {
   const scrollRef = useRef<ScrollView>(null);
+  const viewportH = useRef(0);
   const [word, setWord] = useState<string | null>(null);
   const [revealed, setRevealed] = useState(false);
   const [bubble, setBubble] = useState(t('พร้อมเล่นใบ้คำมั้ย? กดสุ่มคำเลย!', 'Ready for charades? Tap for a word!'));
   const [mood, setMood] = useState<PaaUanMood>('happy');
   const [round, setRound] = useState(0);
-
-  useEffect(() => {
-    if (round > 0) scrollRef.current?.scrollToEnd({ animated: true });
-  }, [round]);
 
   function nextWord() {
     const line = pickLine(charadesLines);
@@ -40,7 +37,11 @@ export default function CharadesScreen() {
 
   return (
     <ScreenSafe style={styles.safe}>
-      <ScrollView ref={scrollRef} contentContainerStyle={styles.content}>
+      <ScrollView
+        ref={scrollRef}
+        contentContainerStyle={styles.content}
+        onLayout={(e) => { viewportH.current = e.nativeEvent.layout.height; }}
+      >
         <PaaUanBubble text={bubble} mood={mood} />
 
         {word !== null && (
@@ -60,7 +61,16 @@ export default function CharadesScreen() {
 
         <View style={{ flex: 1 }} />
 
-        <BigButton label={word === null ? t('สุ่มคำ!', 'Random word!') : t('คำต่อไป', 'Next word')} onPress={nextWord} />
+        <View
+          onLayout={(e) => {
+            if (word === null) return;
+            const { y, height } = e.nativeEvent.layout;
+            const target = y + height - viewportH.current;
+            if (target > 0) scrollRef.current?.scrollTo({ y: target, animated: true });
+          }}
+        >
+          <BigButton label={word === null ? t('สุ่มคำ!', 'Random word!') : t('คำต่อไป', 'Next word')} onPress={nextWord} />
+        </View>
       </ScrollView>
     </ScreenSafe>
   );

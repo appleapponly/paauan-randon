@@ -2,7 +2,7 @@
  * 🤷 ใช่ / ไม่ใช่ — ตอบคำถามด่วน
  * กดถาม → ป้าสุ่มตอบ ใช่/ไม่ใช่ (50:50) พร้อมคำพูดกวน ๆ → แชร์ผลได้
  */
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { ScreenSafe } from '@/components/ScreenSafe';
 import Animated, { BounceIn } from 'react-native-reanimated';
@@ -18,14 +18,11 @@ import { t } from '@/i18n';
 export default function YesNoScreen() {
   const cardRef = useRef<View>(null);
   const scrollRef = useRef<ScrollView>(null);
+  const viewportH = useRef(0);
   const [answer, setAnswer] = useState<'yes' | 'no' | null>(null);
   const [comment, setComment] = useState('');
   const [mood, setMood] = useState<PaaUanMood>('happy');
   const [round, setRound] = useState(0); // ใช้เป็น key ให้อนิเมชันเล่นใหม่ทุกครั้ง
-
-  useEffect(() => {
-    if (round > 0) scrollRef.current?.scrollToEnd({ animated: true });
-  }, [round]);
 
   function ask() {
     const isYes = Math.random() < 0.5;
@@ -38,7 +35,11 @@ export default function YesNoScreen() {
 
   return (
     <ScreenSafe style={styles.safe}>
-      <ScrollView ref={scrollRef} contentContainerStyle={styles.content}>
+      <ScrollView
+        ref={scrollRef}
+        contentContainerStyle={styles.content}
+        onLayout={(e) => { viewportH.current = e.nativeEvent.layout.height; }}
+      >
         {answer === null ? (
           <PaaUanBubble text={t('มีอะไรอยากถามป้า? กดปุ่มเลยจ้า', 'Got a question for Auntie? Tap the button!')} mood="happy" pose="ponder" />
         ) : (
@@ -66,7 +67,16 @@ export default function YesNoScreen() {
 
         <BigButton label={answer === null ? t('ถามป้าเลย!', 'Ask Auntie!') : t('ถามใหม่', 'Ask again')} onPress={ask} />
 
-        {answer !== null && <ShareButton targetRef={cardRef} />}
+        <View
+          onLayout={(e) => {
+            if (answer === null) return;
+            const { y, height } = e.nativeEvent.layout;
+            const target = y + height - viewportH.current;
+            if (target > 0) scrollRef.current?.scrollTo({ y: target, animated: true });
+          }}
+        >
+          {answer !== null && <ShareButton targetRef={cardRef} />}
+        </View>
       </ScrollView>
     </ScreenSafe>
   );

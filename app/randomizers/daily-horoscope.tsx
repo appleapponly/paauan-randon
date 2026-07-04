@@ -2,7 +2,7 @@
  * 🔮 ดวงประจำวัน — กดสุ่มทีเดียวได้ 3 อย่าง: โชคดีวันนี้ / สิ่งที่ต้องระวัง / อารมณ์วันนี้
  * ป้าหมอดูเปิดลูกแก้วทำนายให้ + แชร์ได้
  */
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { ScreenSafe } from '@/components/ScreenSafe';
 import Animated, { BounceIn } from 'react-native-reanimated';
@@ -33,14 +33,11 @@ const SECTIONS: { key: keyof Reading; label: string; emoji: string; color: strin
 export default function DailyHoroscopeScreen() {
   const cardRef = useRef<View>(null);
   const scrollRef = useRef<ScrollView>(null);
+  const viewportH = useRef(0);
   const [reading, setReading] = useState<Reading | null>(null);
   const [comment, setComment] = useState('');
   const [mood, setMood] = useState<PaaUanMood>('happy');
   const [round, setRound] = useState(0);
-
-  useEffect(() => {
-    if (round > 0) scrollRef.current?.scrollToEnd({ animated: true });
-  }, [round]);
 
   function draw() {
     const line = pickLine(horoscopeLines);
@@ -56,7 +53,11 @@ export default function DailyHoroscopeScreen() {
 
   return (
     <ScreenSafe style={styles.safe}>
-      <ScrollView ref={scrollRef} contentContainerStyle={styles.content}>
+      <ScrollView
+        ref={scrollRef}
+        contentContainerStyle={styles.content}
+        onLayout={(e) => { viewportH.current = e.nativeEvent.layout.height; }}
+      >
         {reading === null ? (
           <PaaUanBubble
             text={t('อยากรู้ดวงวันนี้มั้ยลูก? กดให้ป้าหมอดูเปิดลูกแก้วเลยจ้า', "Curious about today? Tap and let Auntie read her crystal ball!")}
@@ -89,7 +90,16 @@ export default function DailyHoroscopeScreen() {
           color={colors.wine}
         />
 
-        {reading !== null && <ShareButton targetRef={cardRef} />}
+        <View
+          onLayout={(e) => {
+            if (reading === null) return;
+            const { y, height } = e.nativeEvent.layout;
+            const target = y + height - viewportH.current;
+            if (target > 0) scrollRef.current?.scrollTo({ y: target, animated: true });
+          }}
+        >
+          {reading !== null && <ShareButton targetRef={cardRef} />}
+        </View>
       </ScrollView>
     </ScreenSafe>
   );

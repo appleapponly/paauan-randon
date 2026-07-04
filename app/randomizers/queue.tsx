@@ -1,7 +1,7 @@
 /**
  * 🔢 สุ่มลำดับคิว — เรียงว่าใครก่อนใครหลัง
  */
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { ScreenSafe } from '@/components/ScreenSafe';
 import Animated, { BounceIn } from 'react-native-reanimated';
@@ -24,14 +24,11 @@ export default function QueueScreen() {
 
   const cardRef = useRef<View>(null);
   const scrollRef = useRef<ScrollView>(null);
+  const viewportH = useRef(0);
   const [order, setOrder] = useState<string[] | null>(null);
   const [comment, setComment] = useState('');
   const [mood, setMood] = useState<PaaUanMood>('happy');
   const [round, setRound] = useState(0);
-
-  useEffect(() => {
-    if (round > 0) scrollRef.current?.scrollToEnd({ animated: true });
-  }, [round]);
 
   function draw() {
     if (names.length < 2) return;
@@ -44,7 +41,12 @@ export default function QueueScreen() {
 
   return (
     <ScreenSafe style={styles.safe}>
-      <ScrollView ref={scrollRef} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+      <ScrollView
+        ref={scrollRef}
+        contentContainerStyle={styles.content}
+        keyboardShouldPersistTaps="handled"
+        onLayout={(e) => { viewportH.current = e.nativeEvent.layout.height; }}
+      >
         {order === null ? (
           <PaaUanBubble text={t('ใส่ชื่อ เดี๋ยวป้าจัดคิวให้ ใครก่อนใครหลัง!', 'Add names and Auntie will sort out who goes first!')} mood="happy" />
         ) : (
@@ -70,7 +72,16 @@ export default function QueueScreen() {
           disabled={names.length < 2}
         />
 
-        {order !== null && <ShareButton targetRef={cardRef} />}
+        <View
+          onLayout={(e) => {
+            if (order === null) return;
+            const { y, height } = e.nativeEvent.layout;
+            const target = y + height - viewportH.current;
+            if (target > 0) scrollRef.current?.scrollTo({ y: target, animated: true });
+          }}
+        >
+          {order !== null && <ShareButton targetRef={cardRef} />}
+        </View>
 
         <NameListEditor names={names} onAdd={addName} onRemove={removeName} label={t('รายชื่อในคิว', 'Names in the queue')} />
       </ScrollView>

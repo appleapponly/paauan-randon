@@ -2,7 +2,7 @@
  * 😈 ใครโดน — สุ่มผู้โชคร้าย (เช่น คนจ่ายเงิน)
  * ใส่รายชื่อ → สุ่ม 1 คน → ป้าแซวผู้โชคร้าย → แชร์ได้
  */
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { ScreenSafe } from '@/components/ScreenSafe';
 import Animated, { BounceIn } from 'react-native-reanimated';
@@ -24,7 +24,6 @@ export default function WhoGetsItScreen() {
   const removeName = useNamesStore((s) => s.removeName);
 
   const cardRef = useRef<View>(null);
-  const scrollRef = useRef<ScrollView>(null);
   const pinballRef = useRef<PinballHandle>(null);
   const pendingIdx = useRef(0);
   const [victim, setVictim] = useState<string | null>(null);
@@ -32,10 +31,6 @@ export default function WhoGetsItScreen() {
   const [mood, setMood] = useState<PaaUanMood>('sassy');
   const [round, setRound] = useState(0);
   const [dropping, setDropping] = useState(false);
-
-  useEffect(() => {
-    if (round > 0) scrollRef.current?.scrollToEnd({ animated: true });
-  }, [round]);
 
   function draw() {
     if (names.length < 2 || dropping) return;
@@ -59,7 +54,7 @@ export default function WhoGetsItScreen() {
 
   return (
     <ScreenSafe style={styles.safe}>
-      <ScrollView ref={scrollRef} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+      <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         <PaaUanBubble
           text={
             dropping

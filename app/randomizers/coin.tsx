@@ -2,7 +2,7 @@
  * 🪙 หัว / ก้อย — โยนเหรียญ
  * กดโยน → เหรียญพลิกหมุน → ออกหัวหรือก้อย → ป้าคอมเมนต์ → แชร์ได้
  */
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { ScreenSafe } from '@/components/ScreenSafe';
 import Animated, {
@@ -31,14 +31,11 @@ const TAILS = t('ก้อย', 'Tails');
 export default function CoinScreen() {
   const cardRef = useRef<View>(null);
   const scrollRef = useRef<ScrollView>(null);
+  const viewportH = useRef(0);
   const [phase, setPhase] = useState<Phase>('idle');
   const [result, setResult] = useState<string | null>(null);
   const [bubble, setBubble] = useState(t('กดโยนเหรียญให้ป้าเสี่ยงทายสิจ๊ะ', 'Tap to toss and let Auntie call it!'));
   const [mood, setMood] = useState<PaaUanMood>('happy');
-
-  useEffect(() => {
-    if (phase === 'result') scrollRef.current?.scrollToEnd({ animated: true });
-  }, [phase]);
 
   const flip = useSharedValue(0);
   const coinStyle = useAnimatedStyle(() => ({
@@ -72,7 +69,11 @@ export default function CoinScreen() {
 
   return (
     <ScreenSafe style={styles.safe}>
-      <ScrollView ref={scrollRef} contentContainerStyle={styles.content}>
+      <ScrollView
+        ref={scrollRef}
+        contentContainerStyle={styles.content}
+        onLayout={(e) => { viewportH.current = e.nativeEvent.layout.height; }}
+      >
         {phase !== 'result' ? (
           <>
             <PaaUanBubble text={bubble} mood={mood} />
@@ -103,7 +104,16 @@ export default function CoinScreen() {
           disabled={phase === 'flipping'}
         />
 
-        {phase === 'result' && <ShareButton targetRef={cardRef} />}
+        <View
+          onLayout={(e) => {
+            if (phase !== 'result') return;
+            const { y, height } = e.nativeEvent.layout;
+            const target = y + height - viewportH.current;
+            if (target > 0) scrollRef.current?.scrollTo({ y: target, animated: true });
+          }}
+        >
+          {phase === 'result' && <ShareButton targetRef={cardRef} />}
+        </View>
       </ScrollView>
     </ScreenSafe>
   );

@@ -13,14 +13,17 @@ import { forwardRef, ReactNode } from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
 import { paaUanPoses, paaUanByMood, type PaaUanPose } from '@/theme/assets';
 import { colors } from '@/theme/colors';
-import { t } from '@/i18n';
+import { t, IS_GLOBAL } from '@/i18n';
 import { fonts, fontSize } from '@/theme/typography';
 import { cartoonBox } from '@/theme/styles';
 import type { PaaUanMood } from '@/data/paaUanLines';
 
 // หัวกระดาษแบรนด์ (ตัดขอบเหลืองว่างออกแล้ว เต็มความกว้าง คมชัด) — โผล่เฉพาะตอนแชร์
-const PATTERN = require('../../assets/images/pattern.png');
-const PATTERN_RATIO = 1774 / 565; // อัตราส่วนหัวกระดาษหลัง trim
+// global ("Auntie's Random") ใช้หัวกระดาษภาษาอังกฤษให้ตรงชื่อแอป · ไทยใช้ของเดิม
+const PATTERN = IS_GLOBAL
+  ? require('../../assets/images/pattern-en.png')
+  : require('../../assets/images/pattern.png');
+const PATTERN_RATIO = IS_GLOBAL ? 1401 / 484 : 1774 / 565; // อัตราส่วนหัวกระดาษหลัง trim (คนละไฟล์ อัตราส่วนไม่เท่ากัน)
 const PATTERN_W = 150; // ความกว้างหัวกระดาษบนใบแชร์ (พิกเซลตายตัว ≈ 31% ของการ์ด)
 // ขนาด "ใบสำหรับแชร์" จัตุรัสขั้นต่ำ (เนื้อหายาวเกินก็ยืดได้) — ซ่อนนอกจอ ตั้งใหญ่ได้
 const CAPTURE_SIZE = 480;

@@ -2,7 +2,7 @@
  * 🏃 สุ่มออกกำลังกาย — กระดานงูวิ่งวนลุ้น → สุ่ม 3 ท่าไม่ซ้ำ → การ์ดโปรแกรม (พร้อมวิธีทำ)
  * เลือกท่าเองได้ (จัดกลุ่มตามโหมด Cardio/Strength/HIIT + ⭐ ท่าของฉัน) + เพิ่มท่าเอง (นับเป็นนาที)
  */
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { ScreenSafe } from '@/components/ScreenSafe';
 import Animated, { BounceIn } from 'react-native-reanimated';
@@ -52,7 +52,6 @@ export default function ExerciseScreen() {
 
   const snakeRef = useRef<SnakeHandle>(null);
   const cardRef = useRef<View>(null);
-  const scrollRef = useRef<ScrollView>(null);
   const pending = useRef<Mission[]>([]);
   const [running, setRunning] = useState(false);
   const [bubble, setBubble] = useState(t('เลือกท่าที่ชอบ แล้วกดปล่อยงูเลือกโปรแกรมให้เลยจ้ะ!', 'Pick your moves and release the snake to build your workout!'));
@@ -60,10 +59,6 @@ export default function ExerciseScreen() {
   const [missions, setMissions] = useState<Mission[] | null>(null);
   const [round, setRound] = useState(0);
   const [newItem, setNewItem] = useState('');
-
-  useEffect(() => {
-    if (round > 0) scrollRef.current?.scrollToEnd({ animated: true });
-  }, [round]);
 
   const all = useMemo(() => [...PRESET_EXERCISES, ...custom], [custom]);
   const pool = useMemo(
@@ -108,7 +103,7 @@ export default function ExerciseScreen() {
 
   return (
     <ScreenSafe style={styles.safe}>
-      <ScrollView ref={scrollRef} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+      <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         <PaaUanBubble text={bubble} mood={mood} pose="coachPoint" />
 
         {pool.length < 2 ? (
