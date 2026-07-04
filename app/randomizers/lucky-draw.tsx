@@ -2,9 +2,9 @@
  * 🎁 จับฉลากรายชื่อ — สุ่มผู้โชคดี (เหมาะงานปีใหม่บริษัท จับของขวัญ)
  * ใส่รายชื่อ → จับ 1 คน → ป้าแสดงความยินดี → แชร์ได้
  */
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { ScreenSafe } from '@/components/ScreenSafe';
 import Animated, { BounceIn } from 'react-native-reanimated';
 import { useNamesStore } from '@/store/useNamesStore';
 import { luckyLines, pickLine, PaaUanMood } from '@/data/paaUanLines';
@@ -24,6 +24,7 @@ export default function LuckyDrawScreen() {
   const removeName = useNamesStore((s) => s.removeName);
 
   const cardRef = useRef<View>(null);
+  const scrollRef = useRef<ScrollView>(null);
   const pinballRef = useRef<PinballHandle>(null);
   const pendingIdx = useRef(0);
   const [winner, setWinner] = useState<string | null>(null);
@@ -31,6 +32,10 @@ export default function LuckyDrawScreen() {
   const [mood, setMood] = useState<PaaUanMood>('happy');
   const [round, setRound] = useState(0);
   const [dropping, setDropping] = useState(false);
+
+  useEffect(() => {
+    if (round > 0) scrollRef.current?.scrollToEnd({ animated: true });
+  }, [round]);
 
   function draw() {
     if (names.length < 2 || dropping) return;
@@ -53,8 +58,8 @@ export default function LuckyDrawScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.safe} edges={['bottom']}>
-      <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+    <ScreenSafe style={styles.safe}>
+      <ScrollView ref={scrollRef} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         <PaaUanBubble
           text={
             dropping
@@ -94,7 +99,7 @@ export default function LuckyDrawScreen() {
           placeholder={t('ใส่ชื่อผู้เข้าร่วม...', 'Add a participant...')}
         />
       </ScrollView>
-    </SafeAreaView>
+    </ScreenSafe>
   );
 }
 

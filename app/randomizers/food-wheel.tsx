@@ -3,7 +3,7 @@
  * - หมุนวงล้อ → ป้าอ้วนฟันธงเมนู (สุ่มคำพูดจาก foodResultLines แทนค่า {result})
  * - เพิ่ม/ลบเมนูเองได้ บันทึกลงเครื่องอัตโนมัติ (useFoodStore + AsyncStorage)
  */
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   Pressable,
   ScrollView,
@@ -12,7 +12,7 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { ScreenSafe } from '@/components/ScreenSafe';
 import { useFoodStore } from '@/store/useFoodStore';
 import { PRESET_FOOD_MENU } from '@/data/foodMenu';
 import { getFoodEmoji } from '@/data/foodEmoji';
@@ -59,6 +59,11 @@ export default function FoodWheelScreen() {
   // อิริยาบทป้าบนการ์ดแชร์ LINE — สุ่มเอาหลายแบบ (เฉพาะหน้าตาดีใจ/อิ่มเอม ไม่เอาหน้าปฏิเสธ)
   const [cardPose, setCardPose] = useState<PaaUanPose>('cookHappy');
   const cardRef = useRef<View>(null);
+  const scrollRef = useRef<ScrollView>(null);
+
+  useEffect(() => {
+    if (round > 0) scrollRef.current?.scrollToEnd({ animated: true });
+  }, [round]);
 
   function handleSpin() {
     if (menu.length < 2 || spinning) return;
@@ -91,8 +96,9 @@ export default function FoodWheelScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.safe} edges={['bottom']}>
+    <ScreenSafe style={styles.safe}>
       <ScrollView
+        ref={scrollRef}
         contentContainerStyle={styles.content}
         keyboardShouldPersistTaps="handled"
       >
@@ -201,7 +207,7 @@ export default function FoodWheelScreen() {
           </View>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </ScreenSafe>
   );
 }
 

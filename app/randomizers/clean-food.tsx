@@ -1,9 +1,9 @@
 /**
  * 🥗 สุ่มเมนูคลีน — วงล้อหมุนสุ่มเมนูสุขภาพ (โครงเดียวกับสุ่มอาหาร)
  */
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { ScreenSafe } from '@/components/ScreenSafe';
 import Animated, { BounceIn } from 'react-native-reanimated';
 import { useCleanFoodStore } from '@/store/useCleanFoodStore';
 import { PRESET_CLEAN_MENU, getCleanEmoji, cleanFoodLines } from '@/data/cleanFood';
@@ -29,12 +29,17 @@ export default function CleanFoodScreen() {
 
   const wheelRef = useRef<SpinWheelHandle>(null);
   const cardRef = useRef<View>(null);
+  const scrollRef = useRef<ScrollView>(null);
   const [spinning, setSpinning] = useState(false);
   const [newItem, setNewItem] = useState('');
   const [bubble, setBubble] = useState(t('กดหมุนวงล้อ เดี๋ยวป้าเลือกเมนูคลีนให้!', 'Spin the wheel and Auntie will pick a clean meal!'));
   const [mood, setMood] = useState<PaaUanMood>('happy');
   const [result, setResult] = useState<string | null>(null);
   const [round, setRound] = useState(0);
+
+  useEffect(() => {
+    if (round > 0) scrollRef.current?.scrollToEnd({ animated: true });
+  }, [round]);
 
   function handleSpin() {
     if (menu.length < 2 || spinning) return;
@@ -64,8 +69,8 @@ export default function CleanFoodScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.safe} edges={['bottom']}>
-      <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+    <ScreenSafe style={styles.safe}>
+      <ScrollView ref={scrollRef} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         <PaaUanBubble text={bubble} mood={mood} pose={result && !spinning ? 'veggie' : 'grocery'} />
 
         {menu.length < 2 ? (
@@ -156,7 +161,7 @@ export default function CleanFoodScreen() {
           </View>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </ScreenSafe>
   );
 }
 

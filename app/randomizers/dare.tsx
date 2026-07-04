@@ -1,9 +1,9 @@
 /**
  * 🌶️ สุ่มท้าทาย — สุ่มคำสั่งกวน ๆ สไตล์ป้าอ้วน
  */
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { ScreenSafe } from '@/components/ScreenSafe';
 import Animated, { BounceIn } from 'react-native-reanimated';
 import { DARE_CHALLENGES } from '@/data/dareChallenges';
 import { pickOne } from '@/utils/random';
@@ -30,9 +30,14 @@ const INTROS = t<string[]>(
 
 export default function DareScreen() {
   const cardRef = useRef<View>(null);
+  const scrollRef = useRef<ScrollView>(null);
   const [dare, setDare] = useState<string | null>(null);
   const [intro, setIntro] = useState('');
   const [round, setRound] = useState(0);
+
+  useEffect(() => {
+    if (round > 0) scrollRef.current?.scrollToEnd({ animated: true });
+  }, [round]);
 
   function roll() {
     setDare(pickOne(DARE_CHALLENGES));
@@ -41,8 +46,8 @@ export default function DareScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.safe} edges={['bottom']}>
-      <ScrollView contentContainerStyle={styles.content}>
+    <ScreenSafe style={styles.safe}>
+      <ScrollView ref={scrollRef} contentContainerStyle={styles.content}>
         {dare === null ? (
           <PaaUanBubble text={t('อยากสนุกใช่มั้ย? กดให้ป้าสั่งภารกิจเลย!', 'Want some fun? Tap for a dare from Auntie!')} mood="sassy" />
         ) : (
@@ -60,7 +65,7 @@ export default function DareScreen() {
 
         {dare !== null && <ShareButton targetRef={cardRef} />}
       </ScrollView>
-    </SafeAreaView>
+    </ScreenSafe>
   );
 }
 

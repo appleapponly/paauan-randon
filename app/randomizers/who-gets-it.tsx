@@ -2,9 +2,9 @@
  * 😈 ใครโดน — สุ่มผู้โชคร้าย (เช่น คนจ่ายเงิน)
  * ใส่รายชื่อ → สุ่ม 1 คน → ป้าแซวผู้โชคร้าย → แชร์ได้
  */
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { ScreenSafe } from '@/components/ScreenSafe';
 import Animated, { BounceIn } from 'react-native-reanimated';
 import { useNamesStore } from '@/store/useNamesStore';
 import { victimLines, pickLine, PaaUanMood } from '@/data/paaUanLines';
@@ -24,6 +24,7 @@ export default function WhoGetsItScreen() {
   const removeName = useNamesStore((s) => s.removeName);
 
   const cardRef = useRef<View>(null);
+  const scrollRef = useRef<ScrollView>(null);
   const pinballRef = useRef<PinballHandle>(null);
   const pendingIdx = useRef(0);
   const [victim, setVictim] = useState<string | null>(null);
@@ -31,6 +32,10 @@ export default function WhoGetsItScreen() {
   const [mood, setMood] = useState<PaaUanMood>('sassy');
   const [round, setRound] = useState(0);
   const [dropping, setDropping] = useState(false);
+
+  useEffect(() => {
+    if (round > 0) scrollRef.current?.scrollToEnd({ animated: true });
+  }, [round]);
 
   function draw() {
     if (names.length < 2 || dropping) return;
@@ -53,8 +58,8 @@ export default function WhoGetsItScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.safe} edges={['bottom']}>
-      <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+    <ScreenSafe style={styles.safe}>
+      <ScrollView ref={scrollRef} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         <PaaUanBubble
           text={
             dropping
@@ -95,7 +100,7 @@ export default function WhoGetsItScreen() {
           placeholder={t('ใส่ชื่อเพื่อน...', 'Add a friend...')}
         />
       </ScrollView>
-    </SafeAreaView>
+    </ScreenSafe>
   );
 }
 

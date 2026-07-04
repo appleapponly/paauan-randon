@@ -5,9 +5,9 @@
  * - หมุนแล้วป้าพูดผลแบบ "กลาง ๆ" (เพราะคำอาจเป็นเรื่องจริงจัง)
  * - คนยังไม่ Pro: โชว์หน้าล็อก + ปุ่มไปหน้า "หลานรักป้า"
  */
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { ScreenSafe } from '@/components/ScreenSafe';
 import { useRouter } from 'expo-router';
 import Animated, { BounceIn } from 'react-native-reanimated';
 import { useProStore } from '@/store/useProStore';
@@ -35,6 +35,8 @@ export default function CustomWheelScreen() {
 
   const wheelRef = useRef<SpinWheelHandle>(null);
   const cardRef = useRef<View>(null);
+  const scrollRef = useRef<ScrollView>(null);
+  const resultY = useRef(0);
   const [spinning, setSpinning] = useState(false);
   const [newItem, setNewItem] = useState('');
   const [bubble, setBubble] = useState(t('ใส่คำที่อยากสุ่ม เลือกสี แล้วกดหมุนได้เลยจ้ะ', 'Add your options, pick colors, and give it a spin!'));
@@ -42,10 +44,14 @@ export default function CustomWheelScreen() {
   const [result, setResult] = useState<string | null>(null);
   const [round, setRound] = useState(0);
 
+  useEffect(() => {
+    if (round > 0) scrollRef.current?.scrollTo({ y: resultY.current, animated: true });
+  }, [round]);
+
   // ===== คนยังไม่ Pro: หน้าล็อก =====
   if (!isPro) {
     return (
-      <SafeAreaView style={styles.safe} edges={['bottom']}>
+      <ScreenSafe style={styles.safe}>
         <ScrollView contentContainerStyle={styles.content}>
           <PaaUanBubble
             text={t('วงล้อของฉันเป็นของขวัญให้หลานที่รักป้านะจ๊ะ ปลดล็อกแล้วใช้ฟรีไม่จำกัดเลย', "My Wheel is a gift for those who love Auntie. Unlock it and use it free, forever!")}
@@ -65,7 +71,7 @@ export default function CustomWheelScreen() {
             </Pressable>
           </View>
         </ScrollView>
-      </SafeAreaView>
+      </ScreenSafe>
     );
   }
 
@@ -98,8 +104,8 @@ export default function CustomWheelScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.safe} edges={['bottom']}>
-      <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+    <ScreenSafe style={styles.safe}>
+      <ScrollView ref={scrollRef} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         <PaaUanBubble text={bubble} mood={mood} pose="knit" />
 
         {items.length < 2 ? (
@@ -128,7 +134,11 @@ export default function CustomWheelScreen() {
         />
 
         {result && !spinning && (
-          <Animated.View key={round} entering={BounceIn.duration(600)}>
+          <Animated.View
+            key={round}
+            entering={BounceIn.duration(600)}
+            onLayout={(e) => { resultY.current = e.nativeEvent.layout.y; }}
+          >
             <CaptureCard
               ref={cardRef}
               comment={bubble}
@@ -197,7 +207,7 @@ export default function CustomWheelScreen() {
           </View>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </ScreenSafe>
   );
 }
 

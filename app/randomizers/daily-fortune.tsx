@@ -2,9 +2,9 @@
  * 💡 ข้อคิดประจำวัน — สุ่มข้อคิด/คำแนะนำดี ๆ ในการใช้ชีวิตประจำวัน
  * กดปุ่ม → ป้าหมอดูให้ข้อคิด 1 ข้อ + คอมเมนต์ป้า → แชร์ได้
  */
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { ScreenSafe } from '@/components/ScreenSafe';
 import Animated, { BounceIn } from 'react-native-reanimated';
 import { DAILY_FORTUNE } from '@/data/dailyFortune';
 import { fortuneLines, pickLine, PaaUanMood } from '@/data/paaUanLines';
@@ -19,10 +19,15 @@ import { t } from '@/i18n';
 
 export default function DailyFortuneScreen() {
   const cardRef = useRef<View>(null);
+  const scrollRef = useRef<ScrollView>(null);
   const [fortune, setFortune] = useState<string | null>(null);
   const [comment, setComment] = useState('');
   const [mood, setMood] = useState<PaaUanMood>('happy');
   const [round, setRound] = useState(0);
+
+  useEffect(() => {
+    if (round > 0) scrollRef.current?.scrollToEnd({ animated: true });
+  }, [round]);
 
   function draw() {
     const line = pickLine(fortuneLines);
@@ -33,8 +38,8 @@ export default function DailyFortuneScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.safe} edges={['bottom']}>
-      <ScrollView contentContainerStyle={styles.content}>
+    <ScreenSafe style={styles.safe}>
+      <ScrollView ref={scrollRef} contentContainerStyle={styles.content}>
         {fortune === null ? (
           <PaaUanBubble
             text={t('อยากได้ข้อคิดดี ๆ วันนี้มั้ยลูก? กดให้ป้าหมอดูบอกเลยจ้า', "Want a little wisdom today, sweetie? Tap and Auntie will share!")}
@@ -61,7 +66,7 @@ export default function DailyFortuneScreen() {
 
         {fortune !== null && <ShareButton targetRef={cardRef} />}
       </ScrollView>
-    </SafeAreaView>
+    </ScreenSafe>
   );
 }
 

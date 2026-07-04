@@ -2,9 +2,9 @@
  * 👗 สุ่มแต่งตัว — เลือกเพศ (ชาย/หญิง) แล้วกดสุ่ม
  * ป้าจัดลุคให้: เสื้อ + ท่อนล่าง + รองเท้า + เครื่องประดับ อย่างละ 1 → แชร์ได้
  */
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { ScreenSafe } from '@/components/ScreenSafe';
 import Animated, { BounceIn } from 'react-native-reanimated';
 import {
   OUTFITS,
@@ -26,11 +26,16 @@ type Look = Record<string, OutfitOption>;
 
 export default function OutfitScreen() {
   const cardRef = useRef<View>(null);
+  const scrollRef = useRef<ScrollView>(null);
   const [gender, setGender] = useState<Gender>('female');
   const [look, setLook] = useState<Look | null>(null);
   const [comment, setComment] = useState('');
   const [mood, setMood] = useState<PaaUanMood>('happy');
   const [round, setRound] = useState(0);
+
+  useEffect(() => {
+    if (round > 0) scrollRef.current?.scrollToEnd({ animated: true });
+  }, [round]);
 
   function rollOutfit() {
     const set = OUTFITS[gender];
@@ -46,8 +51,8 @@ export default function OutfitScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.safe} edges={['bottom']}>
-      <ScrollView contentContainerStyle={styles.content}>
+    <ScreenSafe style={styles.safe}>
+      <ScrollView ref={scrollRef} contentContainerStyle={styles.content}>
         {look === null && (
           <PaaUanBubble
             text={t('วันนี้จะแต่งตัวยังไงดี? เลือกเพศแล้วให้ป้าจัดลุคให้เลย!', "What to wear today? Pick a style and let Auntie dress you!")}
@@ -108,7 +113,7 @@ export default function OutfitScreen() {
 
         {look !== null && <ShareButton targetRef={cardRef} />}
       </ScrollView>
-    </SafeAreaView>
+    </ScreenSafe>
   );
 }
 

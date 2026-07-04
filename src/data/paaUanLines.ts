@@ -94,7 +94,7 @@ export const foodResultLines: PaaUanLine[] = t<PaaUanLine[]>(
  * key = ชื่อเมนู (ต้องตรงกับใน foodMenu.ts เป๊ะ ๆ)
  * ถ้าเมนูไหนไม่มีในนี้ จะ fallback ไปใช้ foodResultLines แบบทั่วไป (ดู pickFoodLine)
  */
-export const foodDetailLines: Record<string, PaaUanLine[]> = {
+const foodDetailLines_TH: Record<string, PaaUanLine[]> = {
   ข้าวมันไก่: [
     { text: 'ข้าวมันไก่! ราดน้ำจิ้มเยอะ ๆ เผ็ดขิงนิด ๆ ถึงจะแซ่บ', mood: 'teasing' },
     { text: 'ข้าวมันไก่จ้า สั่งเพิ่มน่องด้วยสิลูก อร่อยกว่าเยอะ', mood: 'happy' },
@@ -260,9 +260,209 @@ export const foodDetailLines: Record<string, PaaUanLine[]> = {
 };
 
 /**
+ * 🍔 คำพูดเจาะจง "รายเมนู" ฉบับ global (คีย์ต้องตรงกับชื่ออังกฤษใน foodMenu.ts เป๊ะ ๆ)
+ * แอปไทยไม่ใช้ก้อนนี้เลย (เลือกด้วย t() ด้านล่าง)
+ */
+const foodDetailLines_EN: Record<string, PaaUanLine[]> = {
+  Pizza: [
+    { text: "Pizza! Get that cheese pull going and don't skimp on the pepperoni, sugar.", mood: 'happy' },
+    { text: 'Pizza again, hon? Fold the slice New York style — trust Auntie on this one.', mood: 'teasing' },
+  ],
+  'Burger & Fries': [
+    { text: 'Burger and fries! Extra pickles, cheese melting down the sides — that\'s the way.', mood: 'happy' },
+    { text: "Burger and fries, sweetie? Dip those fries in the shake if you're feeling wild.", mood: 'teasing' },
+  ],
+  'Spaghetti Bolognese': [
+    { text: 'Spaghetti Bolognese! Slow-simmered sauce, lots of parmesan on top — twirl it up, hon.', mood: 'happy' },
+    { text: "Bolognese again? Don't forget the garlic bread, sugar, it's non-negotiable.", mood: 'sassy' },
+  ],
+  Sushi: [
+    { text: "Sushi! Fresh fish, a little wasabi, dip it fish-side down so the rice doesn't fall apart.", mood: 'happy' },
+    { text: 'Sushi, hon? Go easy on the soy sauce — quality over drowning it, sugar.', mood: 'teasing' },
+  ],
+  Tacos: [
+    { text: "Tacos! Double up the tortillas, load on the salsa, don't be shy with the lime.", mood: 'happy' },
+    { text: "Tacos again, sugar? Auntie says three is the minimum, don't be modest.", mood: 'sassy' },
+  ],
+  'Fried Chicken': [
+    { text: 'Fried Chicken! That crispy skin better be crackling — hot sauce on the side, hon.', mood: 'happy' },
+    { text: "Fried chicken, sweetie? Lick your fingers, Auntie won't judge.", mood: 'teasing' },
+  ],
+  'Caesar Salad': [
+    { text: 'Caesar Salad! Extra croutons and a heavy hand on the dressing, that\'s how Auntie likes it.', mood: 'happy' },
+    { text: 'A salad, hon? Fine, but add grilled chicken on top — you still need protein.', mood: 'teasing' },
+  ],
+  'Grilled Cheese Sandwich': [
+    { text: 'Grilled Cheese! Butter both sides, low heat, patience — that\'s the secret, sugar.', mood: 'happy' },
+    { text: "Grilled cheese again? Dunk it in tomato soup, hon, don't even argue.", mood: 'sassy' },
+  ],
+  'Pad Thai': [
+    { text: 'Pad Thai! Squeeze that lime, crush the peanuts on top, extra chili if you\'re brave.', mood: 'happy' },
+    { text: "Pad Thai, sweetie? Ask for it not too sweet — Auntie's watching your sugar intake.", mood: 'teasing' },
+  ],
+  Ramen: [
+    { text: "Ramen! Soft-boiled egg, extra nori, slurp that broth loud — nobody's judging, hon.", mood: 'happy' },
+    { text: "Ramen again, sugar? Add the chili oil, don't be scared of a little heat.", mood: 'teasing' },
+  ],
+  Steak: [
+    { text: 'Steak! Medium-rare, a good sear, let it rest before you cut it — patience, hon.', mood: 'happy' },
+    { text: "Steak, sweetie? Butter on top while it rests, that's Auntie's little secret.", mood: 'teasing' },
+  ],
+  'BBQ Ribs': [
+    { text: "BBQ Ribs! Fall-off-the-bone tender, extra napkins, lick that sauce off your fingers.", mood: 'happy' },
+    { text: "Ribs again, sugar? Auntie packed extra napkins for you, you're gonna need them.", mood: 'teasing' },
+  ],
+  Burrito: [
+    { text: "Burrito! Wrap it tight, extra guac, don't let a single bean fall out, hon.", mood: 'happy' },
+    { text: "Burrito, sweetie? Get the hot salsa — Auntie knows you can handle it.", mood: 'sassy' },
+  ],
+  'Mac & Cheese': [
+    { text: 'Mac and Cheese! Extra cheddar, a crispy top if you can get it — comfort food done right.', mood: 'happy' },
+    { text: 'Mac and cheese again, hon? No shame, sometimes a girl just needs the cheesy stuff.', mood: 'teasing' },
+  ],
+  'Fish and Chips': [
+    { text: 'Fish and Chips! Malt vinegar on the chips, tartar sauce on the side, hon.', mood: 'happy' },
+    { text: "Fish and chips, sugar? Don't forget the mushy peas — Auntie insists.", mood: 'teasing' },
+  ],
+  Pancakes: [
+    { text: "Pancakes! Stack 'em high, drown them in syrup, a pat of butter melting on top.", mood: 'happy' },
+    { text: "Pancakes for this meal, hon? Auntie won't tell if you eat them for dinner too.", mood: 'teasing' },
+  ],
+  'Club Sandwich': [
+    { text: "Club Sandwich! Triple-decker, crispy bacon, don't forget the toothpicks holding it together.", mood: 'happy' },
+    { text: "Club sandwich, sweetie? Order it with the fries, you'll thank Auntie later.", mood: 'teasing' },
+  ],
+  'Fried Rice': [
+    { text: 'Fried Rice! Day-old rice fries up best, crack an egg right in, hon.', mood: 'happy' },
+    { text: "Fried rice again, sugar? Add a fried egg on top, non-negotiable in Auntie's kitchen.", mood: 'sassy' },
+  ],
+  'Tomato Soup': [
+    { text: "Tomato Soup! Warm and cozy — pair it with a grilled cheese, don't even think twice.", mood: 'happy' },
+    { text: "Tomato soup, hon? Feeling a little under the weather? Auntie's got you.", mood: 'thinking' },
+  ],
+  'Hot Dog': [
+    { text: 'Hot Dog! Mustard, relish, maybe some onions — keep it classic, sugar.', mood: 'happy' },
+    { text: "Hot dog again, hon? Grill it, don't boil it — Auntie has standards.", mood: 'teasing' },
+  ],
+  Lasagna: [
+    { text: 'Lasagna! Layers of cheese, rich meat sauce — let it rest before you cut in, hon.', mood: 'happy' },
+    { text: 'Lasagna again, sugar? Auntie says the leftovers taste even better tomorrow.', mood: 'teasing' },
+  ],
+  Pho: [
+    { text: "Pho! Extra basil, a squeeze of lime, don't skip the hoisin and sriracha, hon.", mood: 'happy' },
+    { text: "Pho, sweetie? Slurp that broth hot — Auntie says it clears the sinuses too.", mood: 'thinking' },
+  ],
+  Dumplings: [
+    { text: "Dumplings! Dip 'em in soy and vinegar, careful biting in, that broth is hot, hon.", mood: 'happy' },
+    { text: 'Dumplings again, sugar? Steamed or fried — Auntie says why not both?', mood: 'teasing' },
+  ],
+  'Korean BBQ': [
+    { text: "Korean BBQ! Wrap the meat in lettuce, extra garlic, don't skip the ssamjang, hon.", mood: 'happy' },
+    { text: "Korean BBQ, sweetie? Grill it yourself — Auntie says it tastes better when you work for it.", mood: 'teasing' },
+  ],
+  'Poke Bowl': [
+    { text: 'Poke Bowl! Fresh tuna, a drizzle of soy, crunchy seaweed on top — nice and light, hon.', mood: 'happy' },
+    { text: "Poke bowl again, sugar? Add extra avocado, Auntie insists it's basically free happiness.", mood: 'teasing' },
+  ],
+  Quesadilla: [
+    { text: 'Quesadilla! Extra cheese, crispy tortilla, dip it in salsa and sour cream, hon.', mood: 'happy' },
+    { text: "Quesadilla, sweetie? Add some jalapenos if you're feeling brave today.", mood: 'sassy' },
+  ],
+  'Chicken Wings': [
+    { text: "Chicken Wings! Extra saucy, blue cheese dip on the side, don't be shy with napkins.", mood: 'happy' },
+    { text: 'Wings again, hon? Auntie says get a mix of flavors, why commit to just one?', mood: 'teasing' },
+  ],
+  'Meatball Sub': [
+    { text: 'Meatball Sub! Melted cheese, marinara dripping everywhere — eat it over the plate, hon.', mood: 'happy' },
+    { text: "Meatball sub, sugar? Toast that bread first, Auntie doesn't do soggy sandwiches.", mood: 'sassy' },
+  ],
+  'Greek Salad': [
+    { text: "Greek Salad! Extra feta, good olive oil, don't skimp on the olives, hon.", mood: 'happy' },
+    { text: "Greek salad, sweetie? Fine, but add some pita bread on the side, salad alone won't cut it.", mood: 'teasing' },
+  ],
+  'Curry Rice': [
+    { text: 'Curry Rice! Let that sauce soak into the rice, extra pickles on the side, hon.', mood: 'happy' },
+    { text: "Curry rice again, sugar? Auntie says the spicier the better, don't hold back.", mood: 'teasing' },
+  ],
+  Bibimbap: [
+    { text: 'Bibimbap! Mix it all up good, extra gochujang, that crispy rice at the bottom is the best part, hon.', mood: 'happy' },
+    { text: "Bibimbap, sweetie? Add a fried egg on top, Auntie says it's basically the whole point.", mood: 'teasing' },
+  ],
+  'Falafel Wrap': [
+    { text: 'Falafel Wrap! Crispy outside, soft inside, load on the tahini sauce, hon.', mood: 'happy' },
+    { text: "Falafel wrap again, sugar? Auntie's proud of you eating your veggies today.", mood: 'happy' },
+  ],
+  'Clam Chowder': [
+    { text: 'Clam Chowder! Thick and creamy, extra oyster crackers crumbled on top, hon.', mood: 'happy' },
+    { text: "Clam chowder, sweetie? In a bread bowl if you can get it — Auntie says it's the only way.", mood: 'teasing' },
+  ],
+  'Chicken Pot Pie': [
+    { text: 'Chicken Pot Pie! Flaky crust, creamy filling — let it cool a minute, hon, patience now.', mood: 'happy' },
+    { text: 'Pot pie again, sugar? Comfort food like this, Auntie approves every time.', mood: 'happy' },
+  ],
+  'Shrimp Scampi': [
+    { text: 'Shrimp Scampi! Garlic butter sauce, a squeeze of lemon, sop it up with bread, hon.', mood: 'happy' },
+    { text: "Shrimp scampi, sweetie? Don't waste that sauce — Auntie says bread is mandatory.", mood: 'sassy' },
+  ],
+  Gyros: [
+    { text: "Gyros! Extra tzatziki, warm pita, let the juices drip a little — that's how you know it's good, hon.", mood: 'happy' },
+    { text: 'Gyros again, sugar? Add the fries right inside the wrap, Auntie says it\'s the only way to eat it.', mood: 'teasing' },
+  ],
+  Waffles: [
+    { text: 'Waffles! Crispy on the outside, whipped cream and syrup pooling in every square, hon.', mood: 'happy' },
+    { text: "Waffles for this meal, sweetie? Auntie says breakfast food has no curfew.", mood: 'teasing' },
+  ],
+  Omelette: [
+    { text: 'Omelette! Fluffy eggs, cheese melting inside, load up the fillings, hon.', mood: 'happy' },
+    { text: 'Omelette again, sugar? Auntie says add some veggies, balance it out a little.', mood: 'thinking' },
+  ],
+  'Instant Noodles': [
+    { text: "Instant Noodles! Crack an egg in, add some veggies, a little extra chili flakes never hurt, hon.", mood: 'happy' },
+    { text: "Instant noodles again, sweetie? Auntie won't judge, just add an egg for me, okay?", mood: 'teasing' },
+  ],
+  'Grilled Salmon': [
+    { text: "Grilled Salmon! Crispy skin, a squeeze of lemon, don't overcook it, hon — Auntie's watching.", mood: 'happy' },
+    { text: "Grilled salmon, sweetie? Good choice, get some greens on the side and Auntie's proud of you.", mood: 'happy' },
+  ],
+  Nachos: [
+    { text: "Nachos! Extra cheese melted all over, jalapenos, don't forget the guac, hon.", mood: 'happy' },
+    { text: 'Nachos again, sugar? Load every chip evenly — Auntie hates a naked corner chip.', mood: 'sassy' },
+  ],
+  'Chili Con Carne': [
+    { text: 'Chili Con Carne! Slow-cooked, a little cheese and sour cream on top, cornbread on the side, hon.', mood: 'happy' },
+    { text: 'Chili again, sweetie? Auntie says the leftovers are always better the next day.', mood: 'teasing' },
+  ],
+  'Tuna Melt': [
+    { text: 'Tuna Melt! Melted cheese, toasted bread, a little crunch from celery in the tuna, hon.', mood: 'happy' },
+    { text: "Tuna melt, sugar? Auntie says toast it 'til the cheese bubbles, don't rush it.", mood: 'teasing' },
+  ],
+  'Pulled Pork Sandwich': [
+    { text: 'Pulled Pork Sandwich! Smoky and tender, extra BBQ sauce, coleslaw right on top, hon.', mood: 'happy' },
+    { text: "Pulled pork again, sweetie? Auntie says get extra napkins, this one's messy business.", mood: 'teasing' },
+  ],
+  'Avocado Toast': [
+    { text: 'Avocado Toast! Smashed just right, a squeeze of lime, chili flakes on top, hon.', mood: 'happy' },
+    { text: 'Avocado toast, sweetie? Fancy today, huh? Auntie approves, add an egg on top too.', mood: 'teasing' },
+  ],
+  'Onion Rings': [
+    { text: "Onion Rings! Crispy batter, dip 'em in ranch or ketchup, don't burn your tongue, hon.", mood: 'happy' },
+    { text: 'Onion rings again, sugar? Auntie says share with no one, you earned these.', mood: 'sassy' },
+  ],
+  'Corn Dog': [
+    { text: "Corn Dog! Extra mustard, crispy cornmeal coating, careful it's hot in the middle, hon.", mood: 'happy' },
+    { text: 'Corn dog, sweetie? Auntie says a little ketchup swirl on top makes it perfect.', mood: 'teasing' },
+  ],
+};
+
+/**
  * เลือกคำพูดสำหรับผลเมนูอาหาร:
  * ถ้ามีคำพูดเจาะจงเมนูนั้น (foodDetailLines) ใช้อันนั้นก่อน ไม่งั้น fallback แบบทั่วไป
  */
+export const foodDetailLines: Record<string, PaaUanLine[]> = t(
+  foodDetailLines_TH,
+  foodDetailLines_EN
+);
+
 export function pickFoodLine(item: string): PaaUanLine {
   const specific = foodDetailLines[item];
   if (specific && specific.length) return pickLine(specific, item);

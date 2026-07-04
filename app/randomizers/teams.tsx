@@ -1,9 +1,9 @@
 /**
  * 👥 แบ่งทีม — ใส่รายชื่อ + จำนวนทีม แล้วแบ่งอัตโนมัติแบบสุ่มยุติธรรม
  */
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { ScreenSafe } from '@/components/ScreenSafe';
 import Animated, { BounceIn } from 'react-native-reanimated';
 import { useNamesStore } from '@/store/useNamesStore';
 import { groupLines, pickLine, PaaUanMood } from '@/data/paaUanLines';
@@ -25,11 +25,16 @@ export default function TeamsScreen() {
   const removeName = useNamesStore((s) => s.removeName);
 
   const cardRef = useRef<View>(null);
+  const scrollRef = useRef<ScrollView>(null);
   const [teamCount, setTeamCount] = useState(2);
   const [teams, setTeams] = useState<string[][] | null>(null);
   const [comment, setComment] = useState('');
   const [mood, setMood] = useState<PaaUanMood>('happy');
   const [round, setRound] = useState(0);
+
+  useEffect(() => {
+    if (round > 0) scrollRef.current?.scrollToEnd({ animated: true });
+  }, [round]);
 
   function split() {
     if (names.length < teamCount) return;
@@ -44,8 +49,8 @@ export default function TeamsScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.safe} edges={['bottom']}>
-      <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+    <ScreenSafe style={styles.safe}>
+      <ScrollView ref={scrollRef} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         {teams === null ? (
           <PaaUanBubble text={t('ใส่ชื่อ เลือกจำนวนทีม เดี๋ยวป้าแบ่งให้!', 'Add names, pick the number of teams, and Auntie will split them!')} mood="happy" />
         ) : (
@@ -92,7 +97,7 @@ export default function TeamsScreen() {
 
         <NameListEditor names={names} onAdd={addName} onRemove={removeName} label={t('รายชื่อสมาชิก', 'Member names')} />
       </ScrollView>
-    </SafeAreaView>
+    </ScreenSafe>
   );
 }
 

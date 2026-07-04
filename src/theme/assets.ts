@@ -10,6 +10,7 @@
  *   3) เพิ่ม require ในนี้ แล้วผูกกับอารมณ์ใน paaUanByMood
  */
 import type { PaaUanMood } from '@/data/paaUanLines';
+import { IS_GLOBAL } from '@/i18n';
 
 export const paaUanPoses = {
   happy: require('../../assets/images/paa-uan-happy.png'), // 👍 ยกนิ้วโป้ง ยิ้มหวาน
@@ -27,8 +28,14 @@ export const paaUanPoses = {
   fashion: require('../../assets/images/paa-uan-fashion.png'), // 😎 แฟชั่น แว่นดำ เครื่องเพชร
   coach: require('../../assets/images/paa-uan-coach.png'), // 🏃 โค้ช โบกมือ นกหวีด (หมวดสุขภาพ)
   coachPoint: require('../../assets/images/paa-uan-coach-point.png'), // 📋 โค้ช ถือกระดานแทคติก ชี้ (หมวดสุขภาพ)
-  studyRead: require('../../assets/images/paa-uan-study-read.png'), // 📖 คาดผ้า "เอาจริง!" อ่านหนังสือ (การเรียน)
-  studyWrite: require('../../assets/images/paa-uan-study-write.png'), // ✍️ คาดผ้า นั่งโต๊ะเขียน (การเรียน)
+  // 📖 อ่านหนังสือ (การเรียน) — TH: คาดผ้า "เอาจริง!" · Global: ผ้าคาดหัวเปล่า (ไม่มีข้อความไทย ให้คนต่างชาติใช้ได้)
+  studyRead: IS_GLOBAL
+    ? require('../../assets/images/paa-uan-study-write-en.png')
+    : require('../../assets/images/paa-uan-study-read.png'),
+  // ✍️ นั่งโต๊ะเขียน (การเรียน) — TH: คาดผ้า "เอาจริง!" · Global: ผ้าคาดหัวเปล่า
+  studyWrite: IS_GLOBAL
+    ? require('../../assets/images/paa-uan-study-write-en.png')
+    : require('../../assets/images/paa-uan-study-write.png'),
   tea: require('../../assets/images/paa-uan-tea.png'), // 🍵 จิบชา คาดผ้า พักชิล
   meditate: require('../../assets/images/paa-uan-meditate.png'), // 🧘 นั่งสมาธิ สงบ (พัก)
   ponder: require('../../assets/images/paa-uan-ponder.png'), // 🤔 อ่านหนังสือแว่น ครุ่นคิด
