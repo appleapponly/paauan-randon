@@ -2,9 +2,9 @@
  * 🤷 ใช่ / ไม่ใช่ — ตอบคำถามด่วน
  * กดถาม → ป้าสุ่มตอบ ใช่/ไม่ใช่ (50:50) พร้อมคำพูดกวน ๆ → แชร์ผลได้
  */
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { ScreenSafe } from '@/components/ScreenSafe';
 import Animated, { BounceIn } from 'react-native-reanimated';
 import { yesLines, noLines, pickLine, PaaUanMood } from '@/data/paaUanLines';
 import { PaaUanBubble } from '@/components/PaaUanBubble';
@@ -17,10 +17,15 @@ import { t } from '@/i18n';
 
 export default function YesNoScreen() {
   const cardRef = useRef<View>(null);
+  const scrollRef = useRef<ScrollView>(null);
   const [answer, setAnswer] = useState<'yes' | 'no' | null>(null);
   const [comment, setComment] = useState('');
   const [mood, setMood] = useState<PaaUanMood>('happy');
   const [round, setRound] = useState(0); // ใช้เป็น key ให้อนิเมชันเล่นใหม่ทุกครั้ง
+
+  useEffect(() => {
+    if (round > 0) scrollRef.current?.scrollToEnd({ animated: true });
+  }, [round]);
 
   function ask() {
     const isYes = Math.random() < 0.5;
@@ -32,8 +37,8 @@ export default function YesNoScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.safe} edges={['bottom']}>
-      <ScrollView contentContainerStyle={styles.content}>
+    <ScreenSafe style={styles.safe}>
+      <ScrollView ref={scrollRef} contentContainerStyle={styles.content}>
         {answer === null ? (
           <PaaUanBubble text={t('มีอะไรอยากถามป้า? กดปุ่มเลยจ้า', 'Got a question for Auntie? Tap the button!')} mood="happy" pose="ponder" />
         ) : (
@@ -63,7 +68,7 @@ export default function YesNoScreen() {
 
         {answer !== null && <ShareButton targetRef={cardRef} />}
       </ScrollView>
-    </SafeAreaView>
+    </ScreenSafe>
   );
 }
 

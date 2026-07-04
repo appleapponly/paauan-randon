@@ -3,9 +3,9 @@
  * คนใบ้กดดูคำ (กดอีกทีเพื่อปิดไม่ให้คนทายเห็น) แล้วกด "คำต่อไป"
  * (เกมเล่นสด ไม่มีปุ่มแชร์ เพราะคำเปลี่ยนเร็ว)
  */
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { ScreenSafe } from '@/components/ScreenSafe';
 import Animated, { BounceIn } from 'react-native-reanimated';
 import { CHARADES_WORDS } from '@/data/charadesWords';
 import { charadesLines, pickLine, PaaUanMood } from '@/data/paaUanLines';
@@ -18,11 +18,16 @@ import { cartoonBox } from '@/theme/styles';
 import { t } from '@/i18n';
 
 export default function CharadesScreen() {
+  const scrollRef = useRef<ScrollView>(null);
   const [word, setWord] = useState<string | null>(null);
   const [revealed, setRevealed] = useState(false);
   const [bubble, setBubble] = useState(t('พร้อมเล่นใบ้คำมั้ย? กดสุ่มคำเลย!', 'Ready for charades? Tap for a word!'));
   const [mood, setMood] = useState<PaaUanMood>('happy');
   const [round, setRound] = useState(0);
+
+  useEffect(() => {
+    if (round > 0) scrollRef.current?.scrollToEnd({ animated: true });
+  }, [round]);
 
   function nextWord() {
     const line = pickLine(charadesLines);
@@ -34,8 +39,8 @@ export default function CharadesScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.safe} edges={['bottom']}>
-      <ScrollView contentContainerStyle={styles.content}>
+    <ScreenSafe style={styles.safe}>
+      <ScrollView ref={scrollRef} contentContainerStyle={styles.content}>
         <PaaUanBubble text={bubble} mood={mood} />
 
         {word !== null && (
@@ -57,7 +62,7 @@ export default function CharadesScreen() {
 
         <BigButton label={word === null ? t('สุ่มคำ!', 'Random word!') : t('คำต่อไป', 'Next word')} onPress={nextWord} />
       </ScrollView>
-    </SafeAreaView>
+    </ScreenSafe>
   );
 }
 

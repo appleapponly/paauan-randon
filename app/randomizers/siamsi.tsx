@@ -5,7 +5,7 @@
  */
 import { useEffect, useRef, useState } from 'react';
 import { Animated, Easing, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { ScreenSafe } from '@/components/ScreenSafe';
 import RnAnimated, { BounceIn } from 'react-native-reanimated';
 import { SIAMSI, type SiamsiStick } from '@/data/siamsi';
 import { PaaUanBubble } from '@/components/PaaUanBubble';
@@ -23,6 +23,7 @@ const TUBE = 130;
 
 export default function SiamsiScreen() {
   const cardRef = useRef<View>(null);
+  const scrollRef = useRef<ScrollView>(null);
   const [phase, setPhase] = useState<Phase>('idle');
   const [stick, setStick] = useState<SiamsiStick | null>(null);
   const [pending, setPending] = useState<SiamsiStick | null>(null);
@@ -36,6 +37,10 @@ export default function SiamsiScreen() {
   useEffect(() => () => {
     if (timer.current) clearTimeout(timer.current);
   }, []);
+
+  useEffect(() => {
+    if (round > 0) scrollRef.current?.scrollToEnd({ animated: true });
+  }, [round]);
 
   const tubeSpin = rot.interpolate({
     inputRange: [-1, 1],
@@ -80,8 +85,8 @@ export default function SiamsiScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.safe} edges={['bottom']}>
-      <ScrollView contentContainerStyle={styles.content}>
+    <ScreenSafe style={styles.safe}>
+      <ScrollView ref={scrollRef} contentContainerStyle={styles.content}>
         {phase !== 'result' && (
           <PaaUanBubble
             text={
@@ -168,7 +173,7 @@ export default function SiamsiScreen() {
 
         {phase === 'result' && stick && <ShareButton targetRef={cardRef} />}
       </ScrollView>
-    </SafeAreaView>
+    </ScreenSafe>
   );
 }
 

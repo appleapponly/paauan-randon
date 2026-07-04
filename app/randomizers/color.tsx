@@ -1,9 +1,9 @@
 /**
  * 🎨 สุ่มสี — สุ่มสีพร้อมรหัส HEX + ปุ่มคัดลอก
  */
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { ScreenSafe } from '@/components/ScreenSafe';
 import Animated, { BounceIn } from 'react-native-reanimated';
 import * as Clipboard from 'expo-clipboard';
 import { colorLines, pickLine, PaaUanMood } from '@/data/paaUanLines';
@@ -24,10 +24,15 @@ function randomHex(): string {
 
 export default function ColorScreen() {
   const cardRef = useRef<View>(null);
+  const scrollRef = useRef<ScrollView>(null);
   const [hex, setHex] = useState<string | null>(null);
   const [comment, setComment] = useState('');
   const [mood, setMood] = useState<PaaUanMood>('happy');
   const [round, setRound] = useState(0);
+
+  useEffect(() => {
+    if (round > 0) scrollRef.current?.scrollToEnd({ animated: true });
+  }, [round]);
 
   function roll() {
     const h = randomHex();
@@ -45,8 +50,8 @@ export default function ColorScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.safe} edges={['bottom']}>
-      <ScrollView contentContainerStyle={styles.content}>
+    <ScreenSafe style={styles.safe}>
+      <ScrollView ref={scrollRef} contentContainerStyle={styles.content}>
         {hex === null ? (
           <PaaUanBubble text={t('กดสุ่มสี เดี๋ยวป้าจัดสีสวย ๆ ให้', "Tap for a random color — Auntie's got a pretty one!")} mood="happy" />
         ) : (
@@ -70,7 +75,7 @@ export default function ColorScreen() {
 
         {hex !== null && <ShareButton targetRef={cardRef} />}
       </ScrollView>
-    </SafeAreaView>
+    </ScreenSafe>
   );
 }
 

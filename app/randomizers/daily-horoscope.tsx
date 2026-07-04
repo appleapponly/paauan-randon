@@ -2,9 +2,9 @@
  * 🔮 ดวงประจำวัน — กดสุ่มทีเดียวได้ 3 อย่าง: โชคดีวันนี้ / สิ่งที่ต้องระวัง / อารมณ์วันนี้
  * ป้าหมอดูเปิดลูกแก้วทำนายให้ + แชร์ได้
  */
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { ScreenSafe } from '@/components/ScreenSafe';
 import Animated, { BounceIn } from 'react-native-reanimated';
 import { LUCK_LINES, CAUTION_LINES, MOOD_LINES } from '@/data/dailyHoroscope';
 import { horoscopeLines, pickLine, PaaUanMood } from '@/data/paaUanLines';
@@ -32,10 +32,15 @@ const SECTIONS: { key: keyof Reading; label: string; emoji: string; color: strin
 
 export default function DailyHoroscopeScreen() {
   const cardRef = useRef<View>(null);
+  const scrollRef = useRef<ScrollView>(null);
   const [reading, setReading] = useState<Reading | null>(null);
   const [comment, setComment] = useState('');
   const [mood, setMood] = useState<PaaUanMood>('happy');
   const [round, setRound] = useState(0);
+
+  useEffect(() => {
+    if (round > 0) scrollRef.current?.scrollToEnd({ animated: true });
+  }, [round]);
 
   function draw() {
     const line = pickLine(horoscopeLines);
@@ -50,8 +55,8 @@ export default function DailyHoroscopeScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.safe} edges={['bottom']}>
-      <ScrollView contentContainerStyle={styles.content}>
+    <ScreenSafe style={styles.safe}>
+      <ScrollView ref={scrollRef} contentContainerStyle={styles.content}>
         {reading === null ? (
           <PaaUanBubble
             text={t('อยากรู้ดวงวันนี้มั้ยลูก? กดให้ป้าหมอดูเปิดลูกแก้วเลยจ้า', "Curious about today? Tap and let Auntie read her crystal ball!")}
@@ -86,7 +91,7 @@ export default function DailyHoroscopeScreen() {
 
         {reading !== null && <ShareButton targetRef={cardRef} />}
       </ScrollView>
-    </SafeAreaView>
+    </ScreenSafe>
   );
 }
 

@@ -1,9 +1,9 @@
 /**
  * 🧳 สุ่มที่เที่ยว — กดสุ่ม → ป้าเลือกที่เที่ยวให้ 1 ที่ + คอมเมนต์ → แชร์ได้
  */
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { ScreenSafe } from '@/components/ScreenSafe';
 import Animated, { BounceIn } from 'react-native-reanimated';
 import { TRAVEL_SPOTS, type TravelSpot } from '@/data/travelSpots';
 import { travelLines, pickLine, PaaUanMood } from '@/data/paaUanLines';
@@ -18,10 +18,15 @@ import { t } from '@/i18n';
 
 export default function TravelScreen() {
   const cardRef = useRef<View>(null);
+  const scrollRef = useRef<ScrollView>(null);
   const [spot, setSpot] = useState<TravelSpot | null>(null);
   const [comment, setComment] = useState('');
   const [mood, setMood] = useState<PaaUanMood>('happy');
   const [round, setRound] = useState(0);
+
+  useEffect(() => {
+    if (round > 0) scrollRef.current?.scrollToEnd({ animated: true });
+  }, [round]);
 
   function draw() {
     const line = pickLine(travelLines);
@@ -32,8 +37,8 @@ export default function TravelScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.safe} edges={['bottom']}>
-      <ScrollView contentContainerStyle={styles.content}>
+    <ScreenSafe style={styles.safe}>
+      <ScrollView ref={scrollRef} contentContainerStyle={styles.content}>
         {spot === null ? (
           <PaaUanBubble
             text={t('ว่างใช่มั้ยลูก? อยากไปเที่ยวไหน กดให้ป้าเลือกให้เลย!', 'Free time, sweetie? Tap and let Auntie pick your next trip!')}
@@ -60,7 +65,7 @@ export default function TravelScreen() {
 
         {spot !== null && <ShareButton targetRef={cardRef} />}
       </ScrollView>
-    </SafeAreaView>
+    </ScreenSafe>
   );
 }
 

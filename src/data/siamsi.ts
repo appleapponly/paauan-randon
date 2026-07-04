@@ -520,10 +520,10 @@ const SIAMSI_EN: SiamsiStick[] = [
   },
   {
     id: 32,
-    title: 'The Inner Compass',
-    poem: "Number thirty-two says you're lost in a maze,\nYou ask everyone for advice nowadays.\nBut deep in your mind is the answer you seek,\nJust quiet the noise and let intuition speak!",
+    title: 'The Invisible Clock',
+    poem: "Number thirty-two shows a clock on the wall,\nYou think you are late and you're dropping the ball.\nBut life's not a schedule you have to obey,\nSo throw out the timeline and do it your way!",
     insight:
-      "Stop asking twenty different people for their opinions on your own life, my child! You already know what you need to do deep down in your gut. Trust your instincts and be confident in your choices. You are much wiser and stronger than you give yourself credit for!",
+      'Who told you that you need to have everything figured out by a certain age, my child? Society loves to give us invisible deadlines for when to succeed, but life doesn\'t work on a factory schedule. There is no such thing as being "too late" to start over or find happiness. Your journey is uniquely yours. Stop looking at the clock, let go of the pressure, and start living at your own beautiful pace!',
   },
   {
     id: 33,

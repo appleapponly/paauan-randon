@@ -1,9 +1,9 @@
 /**
  * 🔢 สุ่มตัวเลข — กำหนดช่วง min–max แล้วสุ่ม
  */
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { ScreenSafe } from '@/components/ScreenSafe';
 import Animated, { BounceIn } from 'react-native-reanimated';
 import { numberLines, pickLine, PaaUanMood } from '@/data/paaUanLines';
 import { randomInt } from '@/utils/random';
@@ -17,12 +17,17 @@ import { t } from '@/i18n';
 
 export default function NumberScreen() {
   const cardRef = useRef<View>(null);
+  const scrollRef = useRef<ScrollView>(null);
   const [min, setMin] = useState('1');
   const [max, setMax] = useState('100');
   const [result, setResult] = useState<number | null>(null);
   const [comment, setComment] = useState('');
   const [mood, setMood] = useState<PaaUanMood>('happy');
   const [round, setRound] = useState(0);
+
+  useEffect(() => {
+    if (round > 0) scrollRef.current?.scrollToEnd({ animated: true });
+  }, [round]);
 
   function roll() {
     const lo = parseInt(min, 10);
@@ -37,8 +42,8 @@ export default function NumberScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.safe} edges={['bottom']}>
-      <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+    <ScreenSafe style={styles.safe}>
+      <ScrollView ref={scrollRef} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         {result === null ? (
           <PaaUanBubble text={t('ใส่ช่วงตัวเลข แล้วให้ป้าสุ่มให้จ้า', 'Set a range and let Auntie roll a number!')} mood="happy" />
         ) : (
@@ -75,7 +80,7 @@ export default function NumberScreen() {
 
         {result !== null && <ShareButton targetRef={cardRef} />}
       </ScrollView>
-    </SafeAreaView>
+    </ScreenSafe>
   );
 }
 

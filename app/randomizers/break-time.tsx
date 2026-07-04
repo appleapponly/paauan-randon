@@ -2,9 +2,9 @@
  * ☕ สุ่มเวลาพัก — สุ่มเวลาพัก 5-15 นาที + กิจกรรมพัก แล้วเริ่มจับเวลาพักเต็มจอ
  * เหมาะเวลาทำอย่างอื่นมาแล้วอยากพักสั้น ๆ (ไม่ต้องมาจากหน้าเรียน)
  */
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { ScreenSafe } from '@/components/ScreenSafe';
 import { useRouter } from 'expo-router';
 import Animated, { BounceIn } from 'react-native-reanimated';
 import { useStudyStore } from '@/store/useStudyStore';
@@ -25,10 +25,15 @@ export default function BreakTimeScreen() {
   const setBreakMin = useStudyStore((s) => s.setBreakMin);
 
   const cardRef = useRef<View>(null);
+  const scrollRef = useRef<ScrollView>(null);
   const [bubble, setBubble] = useState(t('เหนื่อยแล้วเหรอลูก? กดสุ่มเวลาพัก เดี๋ยวป้าจัดให้!', 'Tired, sweetie? Tap for a random break and Auntie will sort it out!'));
   const [mood, setMood] = useState<PaaUanMood>('happy');
   const [activity, setActivity] = useState<string | null>(null);
   const [round, setRound] = useState(0);
+
+  useEffect(() => {
+    if (round > 0) scrollRef.current?.scrollToEnd({ animated: true });
+  }, [round]);
 
   function roll() {
     const act = pickOne(BREAK_ACTIVITIES);
@@ -54,8 +59,8 @@ export default function BreakTimeScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.safe} edges={['bottom']}>
-      <ScrollView contentContainerStyle={styles.content}>
+    <ScreenSafe style={styles.safe}>
+      <ScrollView ref={scrollRef} contentContainerStyle={styles.content}>
         <PaaUanBubble text={bubble} mood={mood} pose={activity ? 'fan' : 'tea'} />
 
         {activity && (
@@ -84,7 +89,7 @@ export default function BreakTimeScreen() {
           <BigButton label={t(`เริ่มพัก ${breakMin} นาที ☕`, `Start ${breakMin}-min break ☕`)} color={colors.ocean} onPress={startBreak} countAd={false} />
         )}
       </ScrollView>
-    </SafeAreaView>
+    </ScreenSafe>
   );
 }
 

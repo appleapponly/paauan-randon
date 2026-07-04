@@ -1,9 +1,9 @@
 /**
  * 🔢 สุ่มลำดับคิว — เรียงว่าใครก่อนใครหลัง
  */
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { ScreenSafe } from '@/components/ScreenSafe';
 import Animated, { BounceIn } from 'react-native-reanimated';
 import { useNamesStore } from '@/store/useNamesStore';
 import { groupLines, pickLine, PaaUanMood } from '@/data/paaUanLines';
@@ -23,10 +23,15 @@ export default function QueueScreen() {
   const removeName = useNamesStore((s) => s.removeName);
 
   const cardRef = useRef<View>(null);
+  const scrollRef = useRef<ScrollView>(null);
   const [order, setOrder] = useState<string[] | null>(null);
   const [comment, setComment] = useState('');
   const [mood, setMood] = useState<PaaUanMood>('happy');
   const [round, setRound] = useState(0);
+
+  useEffect(() => {
+    if (round > 0) scrollRef.current?.scrollToEnd({ animated: true });
+  }, [round]);
 
   function draw() {
     if (names.length < 2) return;
@@ -38,8 +43,8 @@ export default function QueueScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.safe} edges={['bottom']}>
-      <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+    <ScreenSafe style={styles.safe}>
+      <ScrollView ref={scrollRef} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         {order === null ? (
           <PaaUanBubble text={t('ใส่ชื่อ เดี๋ยวป้าจัดคิวให้ ใครก่อนใครหลัง!', 'Add names and Auntie will sort out who goes first!')} mood="happy" />
         ) : (
@@ -69,7 +74,7 @@ export default function QueueScreen() {
 
         <NameListEditor names={names} onAdd={addName} onRemove={removeName} label={t('รายชื่อในคิว', 'Names in the queue')} />
       </ScrollView>
-    </SafeAreaView>
+    </ScreenSafe>
   );
 }
 
