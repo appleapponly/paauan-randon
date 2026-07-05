@@ -66,6 +66,7 @@ export default function DailyFortuneScreen() {
         />
 
         <View
+          collapsable={false}
           onLayout={(e) => {
             if (fortune === null) return;
             const { y, height } = e.nativeEvent.layout;

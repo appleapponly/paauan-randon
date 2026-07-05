@@ -68,6 +68,7 @@ export default function YesNoScreen() {
         <BigButton label={answer === null ? t('ถามป้าเลย!', 'Ask Auntie!') : t('ถามใหม่', 'Ask again')} onPress={ask} />
 
         <View
+          collapsable={false}
           onLayout={(e) => {
             if (answer === null) return;
             const { y, height } = e.nativeEvent.layout;

@@ -118,6 +118,7 @@ export default function DecisionDiceScreen() {
         />
 
         <View
+          collapsable={false}
           onLayout={(e) => {
             if (!result) return;
             const { y, height } = e.nativeEvent.layout;

@@ -17,7 +17,7 @@ import { CaptureCard } from '@/components/CaptureCard';
 import { ShareButton } from '@/components/ShareButton';
 import { colors } from '@/theme/colors';
 import { fonts, fontSize } from '@/theme/typography';
-import { t } from '@/i18n';
+import { t, IS_GLOBAL } from '@/i18n';
 
 export default function BreakTimeScreen() {
   const router = useRouter();
@@ -62,7 +62,8 @@ export default function BreakTimeScreen() {
         contentContainerStyle={styles.content}
         onLayout={(e) => { viewportH.current = e.nativeEvent.layout.height; }}
       >
-        <PaaUanBubble text={bubble} mood={mood} pose={activity ? 'fan' : 'tea'} />
+        {/* ก่อนกดสุ่ม: ไทยใช้ 'tea' (คาดผ้า "เอาจริง!") · global ใช้ 'fan' แทน กันคนต่างชาติงงกับตัวอักษรไทย */}
+        <PaaUanBubble text={bubble} mood={mood} pose={activity || IS_GLOBAL ? 'fan' : 'tea'} />
 
         {activity && (
           <Animated.View key={round} entering={BounceIn.duration(600)}>
@@ -87,6 +88,7 @@ export default function BreakTimeScreen() {
         />
         {activity && <ShareButton targetRef={cardRef} />}
         <View
+          collapsable={false}
           onLayout={(e) => {
             if (!activity) return;
             const { y, height } = e.nativeEvent.layout;

@@ -47,8 +47,11 @@ export function ProProvider({ children }: { children: React.ReactNode }) {
       //    (อาการ: "purchase was cancelled because it was not acknowledged")
       try {
         await finishTransaction({ purchase, isConsumable: false });
-      } catch {
-        /* acknowledge ไม่ได้ก็ไม่ปิดสิทธิ์ผู้ใช้ ครั้งถัดไปที่เปิดแอปจะเช็คซ้ำ */
+      } catch (e) {
+        // ⚠️ ห้าม silent เฉย ๆ — เคยเจอบั๊กจริงที่ catch กลืน error จนไม่รู้ว่า ack ล้มเหลวทำไม
+        // (log ตรง ๆ ไม่ guard __DEV__ เพราะ release build ก็ต้องเห็น เผื่อดึงจาก crash log ได้)
+        console.error('[IAP] finishTransaction failed in onPurchaseSuccess', e);
+        // acknowledge ไม่ได้ก็ไม่ปิดสิทธิ์ผู้ใช้ ครั้งถัดไปที่เปิดแอปจะเช็คซ้ำ (ดู sweep ข้างล่าง)
       }
     },
     onPurchaseError: (e) => {
@@ -68,21 +71,21 @@ export function ProProvider({ children }: { children: React.ReactNode }) {
     (async () => {
       try {
         await fetchProducts({ skus: PRO_SKU_LIST, type: 'subs' });
-      } catch {
-        /* ดึงราคาไม่ได้ → ใช้ราคาสำรองในหน้าซื้อ */
+      } catch (e) {
+        console.error('[IAP] fetchProducts failed', e); // ดึงราคาไม่ได้ → ใช้ราคาสำรองในหน้าซื้อ
       }
       try {
         await getActiveSubscriptions(PRO_SKU_LIST);
         const active = await hasActiveSubscriptions(PRO_SKU_LIST);
         setPro(active); // มี = Pro, ไม่มี = Free
-      } catch {
-        /* เช็คไม่ได้ → คงสถานะเดิม (ไม่ปิดสิทธิ์คนจ่ายจริง) */
+      } catch (e) {
+        console.error('[IAP] getActiveSubscriptions/hasActiveSubscriptions failed', e); // เช็คไม่ได้ → คงสถานะเดิม (ไม่ปิดสิทธิ์คนจ่ายจริง)
       }
       try {
         // ดึงรายการซื้อค้าง มาเช็ค acknowledge ซ้ำ (ดู effect ข้างล่าง)
         await getAvailablePurchases();
-      } catch {
-        /* ดึงไม่ได้ก็ข้าม รอบหน้าเช็คใหม่ */
+      } catch (e) {
+        console.error('[IAP] getAvailablePurchases failed', e); // ดึงไม่ได้ก็ข้าม รอบหน้าเช็คใหม่
       }
     })();
   }, [
@@ -104,8 +107,8 @@ export function ProProvider({ children }: { children: React.ReactNode }) {
           if (p?.isAcknowledgedAndroid !== true) {
             await finishTransaction({ purchase: p, isConsumable: false });
           }
-        } catch {
-          /* ack ไม่ได้รอบนี้ → รอบเปิดแอปหน้าลองใหม่ */
+        } catch (e) {
+          console.error('[IAP] re-acknowledge sweep failed for purchase', p?.productId ?? p, e); // ack ไม่ได้รอบนี้ → รอบเปิดแอปหน้าลองใหม่
         }
       }
     })();

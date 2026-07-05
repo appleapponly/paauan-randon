@@ -65,6 +65,7 @@ export default function DareScreen() {
         <BigButton label={dare === null ? t('สุ่มภารกิจ!', 'Dare me!') : t('สุ่มใหม่', 'Another one')} onPress={roll} />
 
         <View
+          collapsable={false}
           onLayout={(e) => {
             if (dare === null) return;
             const { y, height } = e.nativeEvent.layout;

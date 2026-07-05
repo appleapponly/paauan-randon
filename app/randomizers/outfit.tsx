@@ -113,6 +113,7 @@ export default function OutfitScreen() {
         />
 
         <View
+          collapsable={false}
           onLayout={(e) => {
             if (look === null) return;
             const { y, height } = e.nativeEvent.layout;

@@ -73,6 +73,7 @@ export default function QueueScreen() {
         />
 
         <View
+          collapsable={false}
           onLayout={(e) => {
             if (order === null) return;
             const { y, height } = e.nativeEvent.layout;
