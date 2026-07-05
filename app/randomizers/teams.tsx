@@ -96,6 +96,7 @@ export default function TeamsScreen() {
         />
 
         <View
+          collapsable={false}
           onLayout={(e) => {
             if (teams === null) return;
             const { y, height } = e.nativeEvent.layout;

@@ -105,6 +105,7 @@ export default function CoinScreen() {
         />
 
         <View
+          collapsable={false}
           onLayout={(e) => {
             if (phase !== 'result') return;
             const { y, height } = e.nativeEvent.layout;

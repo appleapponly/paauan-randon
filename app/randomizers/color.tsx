@@ -75,6 +75,7 @@ export default function ColorScreen() {
         <BigButton label={hex === null ? t('สุ่มสีเลย!', 'Random color!') : t('สุ่มใหม่', 'Again')} onPress={roll} />
 
         <View
+          collapsable={false}
           onLayout={(e) => {
             if (hex === null) return;
             const { y, height } = e.nativeEvent.layout;

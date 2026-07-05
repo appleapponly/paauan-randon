@@ -81,6 +81,7 @@ export default function NumberScreen() {
         <BigButton label={result === null ? t('สุ่มเลย!', 'Roll it!') : t('สุ่มใหม่', 'Again')} onPress={roll} />
 
         <View
+          collapsable={false}
           onLayout={(e) => {
             if (result === null) return;
             const { y, height } = e.nativeEvent.layout;

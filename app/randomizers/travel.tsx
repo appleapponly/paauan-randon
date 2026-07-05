@@ -65,6 +65,7 @@ export default function TravelScreen() {
         />
 
         <View
+          collapsable={false}
           onLayout={(e) => {
             if (spot === null) return;
             const { y, height } = e.nativeEvent.layout;

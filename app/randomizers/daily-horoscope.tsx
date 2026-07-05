@@ -91,6 +91,7 @@ export default function DailyHoroscopeScreen() {
         />
 
         <View
+          collapsable={false}
           onLayout={(e) => {
             if (reading === null) return;
             const { y, height } = e.nativeEvent.layout;

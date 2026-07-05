@@ -62,6 +62,7 @@ export default function CharadesScreen() {
         <View style={{ flex: 1 }} />
 
         <View
+          collapsable={false}
           onLayout={(e) => {
             if (word === null) return;
             const { y, height } = e.nativeEvent.layout;
