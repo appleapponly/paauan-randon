@@ -13,6 +13,19 @@
  */
 const { variant } = require('./app.variant.json');
 
+// AdMob app id ของแอป global (com.paauan.auntie) — ของแอปไทยอยู่ใน app.json ตามเดิม
+// ⚠️ ต้องตรงกับชุด ad unit ใน src/ads/adConfig.ts (บล็อก IS_GLOBAL) ไม่งั้นโฆษณาไม่ขึ้น
+const GLOBAL_ADMOB_APP_ID = 'ca-app-pub-4108810718545537~7277628861';
+
+/** สลับ androidAppId ใน plugin react-native-google-mobile-ads เป็นของแอป global */
+function withGlobalAdMobId(plugins) {
+  return plugins.map((p) =>
+    Array.isArray(p) && p[0] === 'react-native-google-mobile-ads'
+      ? [p[0], { ...p[1], androidAppId: GLOBAL_ADMOB_APP_ID }]
+      : p
+  );
+}
+
 module.exports = ({ config }) => {
   if (variant === 'global') {
     return {
@@ -22,8 +35,7 @@ module.exports = ({ config }) => {
         ...config.android,
         package: 'com.paauan.auntie',
       },
-      // ⚠️ TODO: เมื่อสร้างแอปใหม่ใน AdMob (สำหรับ com.paauan.auntie) แล้ว
-      // ให้เปลี่ยน androidAppId ใน plugins ของแอป global โดยเฉพาะ
+      plugins: withGlobalAdMobId(config.plugins),
       extra: { ...config.extra, variant },
     };
   }

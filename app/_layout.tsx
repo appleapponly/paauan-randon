@@ -12,7 +12,7 @@ import { Stack, usePathname } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { StatusBar } from 'expo-status-bar';
-import mobileAds from 'react-native-google-mobile-ads';
+import { initMobileAds } from '@/ads/mobileAdsInit';
 import {
   useFonts,
   Mali_400Regular,
@@ -56,8 +56,7 @@ export default function RootLayout() {
 
   // เริ่มระบบโฆษณา + เช็คอัปเดต ครั้งเดียวตอนเปิดแอป
   useEffect(() => {
-    mobileAds()
-      .initialize()
+    initMobileAds()
       .then(() => initInterstitial())
       .catch(() => {});
     checkForUpdate();
