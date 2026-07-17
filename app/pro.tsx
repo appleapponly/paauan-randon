@@ -7,7 +7,7 @@ import { ScrollView, StyleSheet, Text, View, Pressable, Image } from 'react-nati
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { usePro } from '@/iap/ProProvider';
 import { useProStore } from '@/store/useProStore';
-import { PRO_SKUS, PRO_FALLBACK_PRICE } from '@/ads/adConfig';
+import { PRO_SKUS, PRO_LIFETIME_SKU, PRO_FALLBACK_PRICE } from '@/ads/adConfig';
 import { paaUanPoses } from '@/theme/assets';
 import { colors } from '@/theme/colors';
 import { t } from '@/i18n';
@@ -20,6 +20,7 @@ export default function ProScreen() {
 
   const yearly = prices[PRO_SKUS.yearly] || PRO_FALLBACK_PRICE.yearly;
   const monthly = prices[PRO_SKUS.monthly] || PRO_FALLBACK_PRICE.monthly;
+  const lifetime = prices[PRO_LIFETIME_SKU] || PRO_FALLBACK_PRICE.lifetime;
 
   return (
     <SafeAreaView style={styles.safe} edges={['bottom']}>
@@ -65,6 +66,24 @@ export default function ProScreen() {
               </Text>
             </Pressable>
 
+            {/* ซื้อขาด — ไม่ใช่ subscription ไม่มีตัดเงินซ้ำ */}
+            <View style={styles.orRow}>
+              <View style={styles.orLine} />
+              <Text style={styles.orText}>{t('หรือ', 'or')}</Text>
+              <View style={styles.orLine} />
+            </View>
+
+            <Pressable style={[styles.plan, styles.planLifetime]} onPress={() => buy(PRO_LIFETIME_SKU)}>
+              <Text style={styles.planName}>{t('ซื้อขาด 💎', 'Lifetime 💎')}</Text>
+              <Text style={[styles.planPrice, styles.planPriceLifetime]}>{lifetime}</Text>
+              <Text style={styles.planNote}>
+                {t(
+                  'จ่ายครั้งเดียว ใช้ได้ตลอดชีพ ไม่มีตัดเงินซ้ำ',
+                  'Pay once, yours forever — no recurring charges'
+                )}
+              </Text>
+            </Pressable>
+
             <Pressable style={styles.restore} onPress={restore}>
               <Text style={styles.restoreText}>
                 {t('เคยซื้อแล้ว? กดกู้คืนสิทธิ์', 'Already purchased? Restore it here')}
@@ -75,8 +94,8 @@ export default function ProScreen() {
 
         <Text style={styles.fine}>
           {t(
-            'เป็นการสมัครสมาชิกแบบต่ออายุอัตโนมัติผ่าน Google Play ยกเลิกได้ตลอดเวลาในแอป Play Store',
-            'Auto-renewing subscription via Google Play. Cancel anytime in the Play Store app.'
+            'รายปี/รายเดือน เป็นการสมัครสมาชิกแบบต่ออายุอัตโนมัติผ่าน Google Play ยกเลิกได้ตลอดเวลาในแอป Play Store · แบบซื้อขาดจ่ายครั้งเดียว ไม่มีการต่ออายุ',
+            'Yearly/Monthly are auto-renewing subscriptions via Google Play — cancel anytime in the Play Store app. Lifetime is a one-time purchase with no renewal.'
           )}
         </Text>
       </ScrollView>
@@ -112,6 +131,23 @@ const styles = StyleSheet.create({
   planBest: {
     borderColor: colors.wine,
     backgroundColor: '#FFF3F8',
+  },
+  planLifetime: {
+    borderColor: colors.gold,
+    backgroundColor: '#FFFBEF',
+  },
+  planPriceLifetime: { color: colors.ink },
+  orRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    marginTop: 2,
+  },
+  orLine: { flex: 1, height: 2, backgroundColor: colors.muted, opacity: 0.3 },
+  orText: {
+    fontFamily: fonts.semibold,
+    fontSize: fontSize.sm,
+    color: colors.muted,
   },
   bestTag: {
     position: 'absolute',

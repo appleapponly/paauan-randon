@@ -19,6 +19,10 @@ import { colors } from '@/theme/colors';
 import { fonts, fontSize } from '@/theme/typography';
 import { textOn } from '@/theme/styles';
 
+// 📺 แบนเนอร์คั่นหมวด — โชว์ "หลังหมวดเหล่านี้" เท่านั้น (ทั้งแอปไทยและ EN)
+// เว้นคั่น fortune→health, fun→group, study→basic เพื่อไม่ให้โฆษณาถี่จนรกหน้าหลัก
+const BANNER_AFTER = new Set(['decide', 'health', 'group']);
+
 // อิโมจิประจำหมวด (โชว์บนป้ายพิลล์)
 const CATEGORY_TAG: Record<string, string> = {
   decide: '🤔',
@@ -77,7 +81,7 @@ export default function HomeScreen() {
 
         {/* ===== หมวดต่าง ๆ ===== */}
         <View style={styles.body}>
-          {CATEGORIES.map((cat, ci) => (
+          {CATEGORIES.map((cat) => (
             <View key={cat.id}>
               <View style={styles.category}>
                 <View style={[styles.catPill, { backgroundColor: cat.color }]}>
@@ -100,8 +104,8 @@ export default function HomeScreen() {
                 </View>
               </View>
 
-              {/* แบนเนอร์โฆษณา คั่นระหว่างหมวด (ไม่ใส่ใต้หมวดสุดท้าย) */}
-              {ci < CATEGORIES.length - 1 && <AdBanner style={styles.homeBanner} />}
+              {/* แบนเนอร์โฆษณา คั่นระหว่างหมวด (ดู BANNER_AFTER ด้านบน) */}
+              {BANNER_AFTER.has(cat.id) && <AdBanner style={styles.homeBanner} />}
             </View>
           ))}
 

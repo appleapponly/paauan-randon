@@ -11,7 +11,7 @@
  *
  * ⚠️ fail-open: เน็ตล่ม / โหลดไม่ได้ → เงียบ ไม่รบกวนผู้ใช้
  */
-import { Alert, Linking } from 'react-native';
+import { Alert, Linking, Platform } from 'react-native';
 import Constants from 'expo-constants';
 import { t, IS_GLOBAL } from '@/i18n';
 
@@ -39,6 +39,7 @@ function cmp(a: string, b: string): number {
 }
 
 export async function checkForUpdate() {
+  if (Platform.OS === 'web') return; // ไม่มี Play Store ให้เช็คบน web (และ Alert บน web เป็น blocking confirm())
   try {
     const res = await fetch(`${VERSION_URL}?t=${Date.now()}`); // กัน cache
     if (!res.ok) return;
