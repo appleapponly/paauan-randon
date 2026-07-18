@@ -12,6 +12,7 @@ import { charadesLines, pickLine, PaaUanMood } from '@/data/paaUanLines';
 import { pickOne } from '@/utils/random';
 import { PaaUanBubble } from '@/components/PaaUanBubble';
 import { BigButton } from '@/components/BigButton';
+import { ConfettiBurst } from '@/components/ConfettiBurst';
 import { colors } from '@/theme/colors';
 import { fonts, fontSize } from '@/theme/typography';
 import { cartoonBox } from '@/theme/styles';
@@ -56,6 +57,7 @@ export default function CharadesScreen() {
                 <Text style={styles.hidden}>{t('👀 แตะเพื่อดูคำ', '👀 Tap to see the word')}</Text>
               )}
             </Pressable>
+            <ConfettiBurst />
           </Animated.View>
         )}
 

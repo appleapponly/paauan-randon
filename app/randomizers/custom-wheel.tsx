@@ -18,6 +18,7 @@ import { PaaUanBubble } from '@/components/PaaUanBubble';
 import { BigButton } from '@/components/BigButton';
 import { CaptureCard } from '@/components/CaptureCard';
 import { ShareButton } from '@/components/ShareButton';
+import { ConfettiBurst } from '@/components/ConfettiBurst';
 import { colors } from '@/theme/colors';
 import { fonts, fontSize } from '@/theme/typography';
 import { cartoonBox } from '@/theme/styles';
@@ -138,6 +139,7 @@ export default function CustomWheelScreen() {
             >
               <Text style={styles.resultName}>{result}</Text>
             </CaptureCard>
+            <ConfettiBurst />
           </Animated.View>
         )}
 

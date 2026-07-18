@@ -15,6 +15,7 @@ import { PaaUanBubble } from '@/components/PaaUanBubble';
 import { BigButton } from '@/components/BigButton';
 import { CaptureCard } from '@/components/CaptureCard';
 import { ShareButton } from '@/components/ShareButton';
+import { ConfettiBurst } from '@/components/ConfettiBurst';
 import { colors } from '@/theme/colors';
 import { fonts, fontSize } from '@/theme/typography';
 import { t, IS_GLOBAL } from '@/i18n';
@@ -78,6 +79,7 @@ export default function BreakTimeScreen() {
               <Text style={styles.mins}>{breakMin} {t('นาที', 'min')}</Text>
               <Text style={styles.activity}>{activity}</Text>
             </CaptureCard>
+            <ConfettiBurst />
           </Animated.View>
         )}
 

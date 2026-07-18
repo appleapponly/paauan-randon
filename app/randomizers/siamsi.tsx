@@ -12,6 +12,7 @@ import { PaaUanBubble } from '@/components/PaaUanBubble';
 import { BigButton } from '@/components/BigButton';
 import { CaptureCard } from '@/components/CaptureCard';
 import { ShareButton } from '@/components/ShareButton';
+import { ConfettiBurst } from '@/components/ConfettiBurst';
 import { SiamsiTube } from '@/components/SiamsiTube';
 import { pickOne } from '@/utils/random';
 import { colors } from '@/theme/colors';
@@ -147,6 +148,7 @@ export default function SiamsiScreen() {
                 </View>
               </View>
             </CaptureCard>
+            <ConfettiBurst />
           </RnAnimated.View>
         )}
 
