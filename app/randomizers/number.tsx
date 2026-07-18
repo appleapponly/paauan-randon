@@ -12,6 +12,8 @@ import { BigButton } from '@/components/BigButton';
 import { CaptureCard } from '@/components/CaptureCard';
 import { ShareButton } from '@/components/ShareButton';
 import { ConfettiBurst } from '@/components/ConfettiBurst';
+import { GachaMachine, GachaMachineHandle } from '@/components/GachaMachine';
+import { registerSpin } from '@/ads/interstitial';
 import { colors } from '@/theme/colors';
 import { fonts, fontSize } from '@/theme/typography';
 import { t } from '@/i18n';
@@ -26,6 +28,7 @@ export default function NumberScreen() {
   const [comment, setComment] = useState('');
   const [mood, setMood] = useState<PaaUanMood>('happy');
   const [round, setRound] = useState(0);
+  const machineRef = useRef<GachaMachineHandle>(null);
 
   function roll() {
     const lo = parseInt(min, 10);
@@ -39,6 +42,17 @@ export default function NumberScreen() {
     setRound((r) => r + 1);
   }
 
+  // กดลูกบิดตรง ๆ = เหมือนกดปุ่มสุ่ม (BigButton นับโฆษณาให้เอง แต่ทางนี้ต้องนับเอง)
+  function crankFromDial() {
+    handleCrank();
+    registerSpin();
+  }
+
+  // Task 8: ยังบิดแล้วออกผลทันที (สุ่มตรง ๆ) — Task 9 จะเปลี่ยนเป็นลำดับกาชาเต็ม
+  function handleCrank() {
+    roll();
+  }
+
   return (
     <ScreenSafe style={styles.safe}>
       <ScrollView
@@ -47,8 +61,10 @@ export default function NumberScreen() {
         keyboardShouldPersistTaps="handled"
         onLayout={(e) => { viewportH.current = e.nativeEvent.layout.height; }}
       >
+        <GachaMachine ref={machineRef} onCrank={crankFromDial} onBallOpened={roll} />
+
         {result === null ? (
-          <PaaUanBubble text={t('ใส่ช่วงตัวเลข แล้วให้ป้าสุ่มให้จ้า', 'Set a range and let Auntie roll a number!')} mood="happy" />
+          <PaaUanBubble text={t('ใส่ช่วงตัวเลข แล้วบิดกาชาเลยลูก!', 'Set a range and crank the gacha!')} mood="happy" />
         ) : (
           <Animated.View key={round} entering={BounceIn.duration(600)}>
             <CaptureCard ref={cardRef} comment={comment} mood={mood}>
@@ -80,7 +96,7 @@ export default function NumberScreen() {
           </View>
         </View>
 
-        <BigButton label={result === null ? t('สุ่มเลย!', 'Roll it!') : t('สุ่มใหม่', 'Again')} onPress={roll} />
+        <BigButton label={result === null ? t('บิดเลย!', 'Crank it!') : t('บิดใหม่', 'Again')} onPress={handleCrank} />
 
         <View
           collapsable={false}
