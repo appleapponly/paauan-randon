@@ -6,6 +6,7 @@ import { useRef, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { ScreenSafe } from '@/components/ScreenSafe';
 import Animated, {
+  BounceIn,
   Easing,
   runOnJS,
   useAnimatedStyle,
@@ -18,6 +19,7 @@ import { PaaUanBubble } from '@/components/PaaUanBubble';
 import { BigButton } from '@/components/BigButton';
 import { CaptureCard } from '@/components/CaptureCard';
 import { ShareButton } from '@/components/ShareButton';
+import { ConfettiBurst } from '@/components/ConfettiBurst';
 import { colors } from '@/theme/colors';
 import { fonts, fontSize } from '@/theme/typography';
 import { cartoonBox } from '@/theme/styles';
@@ -36,6 +38,7 @@ export default function CoinScreen() {
   const [result, setResult] = useState<string | null>(null);
   const [bubble, setBubble] = useState(t('กดโยนเหรียญให้ป้าเสี่ยงทายสิจ๊ะ', 'Tap to toss and let Auntie call it!'));
   const [mood, setMood] = useState<PaaUanMood>('happy');
+  const [round, setRound] = useState(0);
 
   const flip = useSharedValue(0);
   const coinStyle = useAnimatedStyle(() => ({
@@ -65,6 +68,7 @@ export default function CoinScreen() {
     setBubble(line.text);
     setMood(line.mood);
     setPhase('result');
+    setRound((r) => r + 1);
   }
 
   return (
@@ -84,13 +88,14 @@ export default function CoinScreen() {
             </View>
           </>
         ) : (
-          <CaptureCard ref={cardRef} comment={bubble} mood={mood}>
-            <Text style={styles.coinFaceBig}>🪙</Text>
-            <Text style={styles.result}>{result}</Text>
-          </CaptureCard>
+          <Animated.View key={round} entering={BounceIn.duration(600)}>
+            <CaptureCard ref={cardRef} comment={bubble} mood={mood}>
+              <Text style={styles.coinFaceBig}>🪙</Text>
+              <Text style={styles.result}>{result}</Text>
+            </CaptureCard>
+            <ConfettiBurst />
+          </Animated.View>
         )}
-
-        <View style={{ height: 16 }} />
 
         <BigButton
           label={
@@ -122,7 +127,7 @@ export default function CoinScreen() {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.cream },
-  content: { padding: 20, gap: 16, flexGrow: 1 },
+  content: { padding: 20, gap: 18, flexGrow: 1 },
   stage: {
     alignItems: 'center',
     justifyContent: 'center',

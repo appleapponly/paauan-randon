@@ -24,6 +24,7 @@ import { PaaUanBubble } from '@/components/PaaUanBubble';
 import { BigButton } from '@/components/BigButton';
 import { CaptureCard } from '@/components/CaptureCard';
 import { ShareButton } from '@/components/ShareButton';
+import { ConfettiBurst } from '@/components/ConfettiBurst';
 import { colors } from '@/theme/colors';
 import { fonts, fontSize } from '@/theme/typography';
 import { cartoonBox } from '@/theme/styles';
@@ -36,6 +37,7 @@ export default function DecisionDiceScreen() {
   const [result, setResult] = useState<DiceVerdict | null>(null);
   const [bubble, setBubble] = useState(t('กดปุ่มให้ป้าทอยเต๋าตัดสินใจให้สิจ๊ะ', 'Tap the button and let Auntie roll for you!'));
   const [mood, setMood] = useState<PaaUanMood>('happy');
+  const [round, setRound] = useState(0);
   const cardRef = useRef<View>(null);
   const scrollRef = useRef<ScrollView>(null);
   const viewportH = useRef(0);
@@ -75,6 +77,7 @@ export default function DecisionDiceScreen() {
     setBubble(picked.comment);
     setMood(picked.mood);
     setPhase('result');
+    setRound((r) => r + 1);
   }
 
   return (
@@ -102,11 +105,12 @@ export default function DecisionDiceScreen() {
 
         {/* การ์ดผลแบบแชร์ได้ */}
         {result && (
-          <Animated.View entering={BounceIn.duration(600)}>
+          <Animated.View key={round} entering={BounceIn.duration(600)}>
             <CaptureCard ref={cardRef} comment={bubble} mood={mood} pose="dice">
               <Text style={styles.cardEmoji}>{result.emoji}</Text>
               <Text style={styles.verdict}>{result.verdict}</Text>
             </CaptureCard>
+            <ConfettiBurst />
           </Animated.View>
         )}
 
@@ -140,7 +144,7 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: 20,
-    gap: 24,
+    gap: 18,
     flexGrow: 1,
   },
   stage: {

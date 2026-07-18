@@ -13,6 +13,7 @@ import { NameListEditor } from '@/components/NameListEditor';
 import { BigButton } from '@/components/BigButton';
 import { CaptureCard } from '@/components/CaptureCard';
 import { ShareButton } from '@/components/ShareButton';
+import { ConfettiBurst } from '@/components/ConfettiBurst';
 import { PinballDraw, PinballHandle } from '@/components/PinballDraw';
 import { colors } from '@/theme/colors';
 import { fonts, fontSize } from '@/theme/typography';
@@ -76,6 +77,7 @@ export default function WhoGetsItScreen() {
               <Text style={styles.label}>{t('ผู้โชคร้ายคือ', 'The unlucky one is')}</Text>
               <Text style={styles.name}>{victim}</Text>
             </CaptureCard>
+            <ConfettiBurst />
           </Animated.View>
         )}
 

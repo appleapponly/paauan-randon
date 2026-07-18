@@ -12,6 +12,7 @@ import { PaaUanBubble } from '@/components/PaaUanBubble';
 import { BigButton } from '@/components/BigButton';
 import { CaptureCard } from '@/components/CaptureCard';
 import { ShareButton } from '@/components/ShareButton';
+import { ConfettiBurst } from '@/components/ConfettiBurst';
 import { colors } from '@/theme/colors';
 import { fonts, fontSize } from '@/theme/typography';
 import { cartoonBox } from '@/theme/styles';
@@ -61,6 +62,7 @@ export default function ColorScreen() {
               <View style={[styles.swatch, { backgroundColor: hex }]} />
               <Text style={styles.hex}>{hex}</Text>
             </CaptureCard>
+            <ConfettiBurst />
           </Animated.View>
         )}
 
@@ -69,8 +71,6 @@ export default function ColorScreen() {
             <Text style={styles.copyText}>{t('📋 คัดลอก ', '📋 Copy ')}{hex}</Text>
           </Pressable>
         )}
-
-        <View style={{ height: 6 }} />
 
         <BigButton label={hex === null ? t('สุ่มสีเลย!', 'Random color!') : t('สุ่มใหม่', 'Again')} onPress={roll} />
 
@@ -92,7 +92,7 @@ export default function ColorScreen() {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.cream },
-  content: { padding: 20, gap: 14, flexGrow: 1 },
+  content: { padding: 20, gap: 18, flexGrow: 1 },
   swatch: {
     width: 160,
     height: 160,

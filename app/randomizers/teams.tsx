@@ -13,6 +13,7 @@ import { NameListEditor } from '@/components/NameListEditor';
 import { BigButton } from '@/components/BigButton';
 import { CaptureCard } from '@/components/CaptureCard';
 import { ShareButton } from '@/components/ShareButton';
+import { ConfettiBurst } from '@/components/ConfettiBurst';
 import { colors } from '@/theme/colors';
 import { fonts, fontSize } from '@/theme/typography';
 import { t } from '@/i18n';
@@ -72,6 +73,7 @@ export default function TeamsScreen() {
                 ))}
               </View>
             </CaptureCard>
+            <ConfettiBurst />
           </Animated.View>
         )}
 

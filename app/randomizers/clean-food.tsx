@@ -13,6 +13,7 @@ import { PaaUanBubble } from '@/components/PaaUanBubble';
 import { BigButton } from '@/components/BigButton';
 import { CaptureCard } from '@/components/CaptureCard';
 import { ShareButton } from '@/components/ShareButton';
+import { ConfettiBurst } from '@/components/ConfettiBurst';
 import { colors } from '@/theme/colors';
 import { fonts, fontSize } from '@/theme/typography';
 import { cartoonBox } from '@/theme/styles';
@@ -106,6 +107,7 @@ export default function CleanFoodScreen() {
               <Text style={styles.resultEmoji}>{getCleanEmoji(result)}</Text>
               <Text style={styles.resultName}>{result}</Text>
             </CaptureCard>
+            <ConfettiBurst />
           </Animated.View>
         )}
 
@@ -162,7 +164,7 @@ export default function CleanFoodScreen() {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.cream },
-  content: { padding: 20, gap: 22 },
+  content: { padding: 20, gap: 18 },
   wheelWrap: { alignItems: 'center' },
   resultEmoji: { fontSize: 48 },
   resultName: { fontFamily: fonts.bold, fontSize: fontSize.xxl, color: colors.jade, textAlign: 'center' },

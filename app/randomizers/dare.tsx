@@ -11,6 +11,7 @@ import { PaaUanBubble } from '@/components/PaaUanBubble';
 import { BigButton } from '@/components/BigButton';
 import { CaptureCard } from '@/components/CaptureCard';
 import { ShareButton } from '@/components/ShareButton';
+import { ConfettiBurst } from '@/components/ConfettiBurst';
 import { colors } from '@/theme/colors';
 import { fonts, fontSize } from '@/theme/typography';
 import { t } from '@/i18n';
@@ -57,10 +58,9 @@ export default function DareScreen() {
               <Text style={styles.emoji}>🌶️</Text>
               <Text style={styles.dare}>{dare}</Text>
             </CaptureCard>
+            <ConfettiBurst />
           </Animated.View>
         )}
-
-        <View style={{ height: 18 }} />
 
         <BigButton label={dare === null ? t('สุ่มภารกิจ!', 'Dare me!') : t('สุ่มใหม่', 'Another one')} onPress={roll} />
 
@@ -82,7 +82,7 @@ export default function DareScreen() {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.cream },
-  content: { padding: 20, gap: 8, flexGrow: 1 },
+  content: { padding: 20, gap: 18, flexGrow: 1 },
   emoji: { fontSize: 52 },
   dare: {
     fontFamily: fonts.bold,

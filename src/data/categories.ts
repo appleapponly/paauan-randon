@@ -91,7 +91,7 @@ export const CATEGORIES: Category[] = [
     title: t('พื้นฐาน', 'Basics'),
     color: colors.blue,
     items: [
-      { id: 'number', title: t('สุ่มตัวเลข', 'Random Number'), emoji: '🔢', route: '/randomizers/number', ready: true },
+      { id: 'number', title: t('สุ่มตัวเลข', 'Random Number'), emoji: '🎰', route: '/randomizers/number', ready: true },
       { id: 'color', title: t('สุ่มสี', 'Random Color'), emoji: '🎨', route: '/randomizers/color', ready: true },
       { id: 'customwheel', title: t('วงล้อของฉัน', 'My Wheel'), emoji: '🎡', route: '/randomizers/custom-wheel', ready: true },
     ],

@@ -7,6 +7,7 @@ import { useMemo, useRef } from 'react';
 import { Alert, Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
+import Animated, { SlideInRight, ZoomIn } from 'react-native-reanimated';
 import { CATEGORIES } from '@/data/categories';
 import { openingLines, pickLine } from '@/data/paaUanLines';
 import { RandomizerCard } from '@/components/RandomizerCard';
@@ -70,13 +71,22 @@ export default function HomeScreen() {
         <SafeAreaView edges={['top']} style={styles.hero}>
           <Text style={styles.appName}>{t('ป้าอ้วน\nสุ่มให้!', "Auntie's\nRandom!")}</Text>
 
-          <View style={styles.heroBubble}>
+          <Animated.View entering={ZoomIn.delay(250).duration(250)} style={styles.heroBubble}>
             <Text style={styles.heroBubbleText}>{greeting.text}</Text>
             <View style={styles.bubbleTailBorder} />
             <View style={styles.bubbleTailFill} />
-          </View>
+          </Animated.View>
 
-          <Image source={paaUanPoses.point} style={styles.heroMascot} resizeMode="contain" />
+          <Animated.View
+            entering={SlideInRight.springify().damping(15)}
+            style={styles.heroMascot}
+          >
+            <Image
+              source={paaUanPoses.point}
+              style={{ width: '100%', height: '100%' }}
+              resizeMode="contain"
+            />
+          </Animated.View>
         </SafeAreaView>
 
         {/* ===== หมวดต่าง ๆ ===== */}

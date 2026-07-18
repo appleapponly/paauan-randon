@@ -22,6 +22,7 @@ import { PaaUanBubble } from '@/components/PaaUanBubble';
 import { BigButton } from '@/components/BigButton';
 import { CaptureCard } from '@/components/CaptureCard';
 import { ShareButton } from '@/components/ShareButton';
+import { ConfettiBurst } from '@/components/ConfettiBurst';
 import { colors } from '@/theme/colors';
 import { fonts, fontSize } from '@/theme/typography';
 import { cartoonBox } from '@/theme/styles';
@@ -150,6 +151,7 @@ export default function ExerciseScreen() {
                 ))}
               </View>
             </CaptureCard>
+            <ConfettiBurst />
           </Animated.View>
         )}
 
@@ -214,7 +216,7 @@ export default function ExerciseScreen() {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.cream },
-  content: { padding: 20, gap: 20 },
+  content: { padding: 20, gap: 18 },
   emptyBox: { ...cartoonBox(colors.white, 4), padding: 20 },
   emptyText: {
     fontFamily: fonts.medium,

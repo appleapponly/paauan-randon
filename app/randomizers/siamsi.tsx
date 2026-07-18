@@ -12,6 +12,7 @@ import { PaaUanBubble } from '@/components/PaaUanBubble';
 import { BigButton } from '@/components/BigButton';
 import { CaptureCard } from '@/components/CaptureCard';
 import { ShareButton } from '@/components/ShareButton';
+import { ConfettiBurst } from '@/components/ConfettiBurst';
 import { SiamsiTube } from '@/components/SiamsiTube';
 import { pickOne } from '@/utils/random';
 import { colors } from '@/theme/colors';
@@ -147,10 +148,9 @@ export default function SiamsiScreen() {
                 </View>
               </View>
             </CaptureCard>
+            <ConfettiBurst />
           </RnAnimated.View>
         )}
-
-        <View style={{ height: 12 }} />
 
         <BigButton
           label={
@@ -174,7 +174,7 @@ export default function SiamsiScreen() {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.cream },
-  content: { padding: 20, gap: 16, flexGrow: 1 },
+  content: { padding: 20, gap: 18, flexGrow: 1 },
 
   stage: {
     height: 230,

@@ -11,6 +11,9 @@ import { PaaUanBubble } from '@/components/PaaUanBubble';
 import { BigButton } from '@/components/BigButton';
 import { CaptureCard } from '@/components/CaptureCard';
 import { ShareButton } from '@/components/ShareButton';
+import { ConfettiBurst } from '@/components/ConfettiBurst';
+import { GachaMachine, GachaMachineHandle } from '@/components/GachaMachine';
+import { registerSpin } from '@/ads/interstitial';
 import { colors } from '@/theme/colors';
 import { fonts, fontSize } from '@/theme/typography';
 import { t } from '@/i18n';
@@ -25,6 +28,7 @@ export default function NumberScreen() {
   const [comment, setComment] = useState('');
   const [mood, setMood] = useState<PaaUanMood>('happy');
   const [round, setRound] = useState(0);
+  const machineRef = useRef<GachaMachineHandle>(null);
 
   function roll() {
     const lo = parseInt(min, 10);
@@ -38,6 +42,20 @@ export default function NumberScreen() {
     setRound((r) => r + 1);
   }
 
+  // กดลูกบิดตรง ๆ = เหมือนกดปุ่มสุ่ม (BigButton นับโฆษณาให้เอง แต่ทางนี้ต้องนับเอง)
+  function crankFromDial() {
+    handleCrank();
+    registerSpin();
+  }
+
+  // สั่งตู้กาชาให้เริ่มบิด (validate ช่วงก่อน) — ผลจริงมาตอนลูกบอลแตกผ่าน onBallOpened={roll}
+  function handleCrank() {
+    const lo = parseInt(min, 10);
+    const hi = parseInt(max, 10);
+    if (Number.isNaN(lo) || Number.isNaN(hi)) return; // ช่วงไม่ครบ ไม่บิด
+    machineRef.current?.crank();
+  }
+
   return (
     <ScreenSafe style={styles.safe}>
       <ScrollView
@@ -46,14 +64,17 @@ export default function NumberScreen() {
         keyboardShouldPersistTaps="handled"
         onLayout={(e) => { viewportH.current = e.nativeEvent.layout.height; }}
       >
+        <GachaMachine ref={machineRef} onCrank={crankFromDial} onBallOpened={roll} />
+
         {result === null ? (
-          <PaaUanBubble text={t('ใส่ช่วงตัวเลข แล้วให้ป้าสุ่มให้จ้า', 'Set a range and let Auntie roll a number!')} mood="happy" />
+          <PaaUanBubble text={t('ใส่ช่วงตัวเลข แล้วบิดกาชาเลยลูก!', 'Set a range and crank the gacha!')} mood="happy" />
         ) : (
           <Animated.View key={round} entering={BounceIn.duration(600)}>
             <CaptureCard ref={cardRef} comment={comment} mood={mood}>
               <Text style={styles.number}>{result}</Text>
               <Text style={styles.range}>{t('จากช่วง ', 'from ')}{min} – {max}</Text>
             </CaptureCard>
+            <ConfettiBurst />
           </Animated.View>
         )}
 
@@ -78,7 +99,7 @@ export default function NumberScreen() {
           </View>
         </View>
 
-        <BigButton label={result === null ? t('สุ่มเลย!', 'Roll it!') : t('สุ่มใหม่', 'Again')} onPress={roll} />
+        <BigButton label={result === null ? t('บิดเลย!', 'Crank it!') : t('บิดใหม่', 'Again')} onPress={handleCrank} />
 
         <View
           collapsable={false}

@@ -10,6 +10,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { registerSpin } from '@/ads/interstitial';
+import { tapLight } from '@/utils/haptics';
 import { colors } from '@/theme/colors';
 import { fonts, fontSize } from '@/theme/typography';
 
@@ -40,8 +41,9 @@ export function BigButton({
 }: Props) {
   const pressed = useSharedValue(0); // 0 = ปกติ, 1 = กำลังกด
 
-  // กดปุ่มสุ่ม → ทำงานปกติก่อน แล้วค่อยนับเพื่อเด้งโฆษณาเต็มจอ (ครบ 2-4 ครั้ง)
+  // กดปุ่มสุ่ม → สั่นรับนิ้ว → ทำงานปกติ → นับเพื่อเด้งโฆษณาเต็มจอ (ครบ 2-4 ครั้ง)
   function handlePress() {
+    tapLight();
     onPress();
     if (countAd) registerSpin();
   }

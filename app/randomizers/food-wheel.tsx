@@ -27,6 +27,7 @@ import { PaaUanBubble } from '@/components/PaaUanBubble';
 import { BigButton } from '@/components/BigButton';
 import { CaptureCard } from '@/components/CaptureCard';
 import { ShareButton } from '@/components/ShareButton';
+import { ConfettiBurst } from '@/components/ConfettiBurst';
 import Animated, { BounceIn } from 'react-native-reanimated';
 import { type PaaUanPose } from '@/theme/assets';
 import { pickOne } from '@/utils/random';
@@ -134,6 +135,7 @@ export default function FoodWheelScreen() {
               <Text style={styles.resultEmoji}>{getFoodEmoji(result)}</Text>
               <Text style={styles.resultName}>{result}</Text>
             </CaptureCard>
+            <ConfettiBurst />
           </Animated.View>
         )}
 
@@ -207,7 +209,7 @@ export default function FoodWheelScreen() {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.cream },
-  content: { padding: 20, gap: 22 },
+  content: { padding: 20, gap: 18 },
   wheelWrap: { alignItems: 'center' },
   resultEmoji: { fontSize: 48 },
   resultName: { fontFamily: fonts.bold, fontSize: fontSize.xxl, color: colors.pink, textAlign: 'center' },

@@ -18,6 +18,7 @@ import { PaaUanBubble } from '@/components/PaaUanBubble';
 import { BigButton } from '@/components/BigButton';
 import { CaptureCard } from '@/components/CaptureCard';
 import { ShareButton } from '@/components/ShareButton';
+import { ConfettiBurst } from '@/components/ConfettiBurst';
 import { colors } from '@/theme/colors';
 import { fonts, fontSize } from '@/theme/typography';
 import { t } from '@/i18n';
@@ -101,10 +102,9 @@ export default function OutfitScreen() {
                 ))}
               </View>
             </CaptureCard>
+            <ConfettiBurst />
           </Animated.View>
         )}
-
-        <View style={{ height: 8 }} />
 
         <BigButton
           label={look === null ? t('สุ่มแต่งตัว!', 'Style me!') : t('สุ่มลุคใหม่', 'New look')}
@@ -130,7 +130,7 @@ export default function OutfitScreen() {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.cream },
-  content: { padding: 20, gap: 16, flexGrow: 1 },
+  content: { padding: 20, gap: 18, flexGrow: 1 },
 
   genderRow: { flexDirection: 'row', gap: 12 },
   genderBtn: {
