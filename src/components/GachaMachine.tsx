@@ -3,11 +3,25 @@
  * โครง: โดมแก้วมีลูกบอลสี ๆ → ตัวตู้แดง + ป้ายชื่อ → ลูกบิด + ช่องลูกบอลออก
  * Task 8 = โครงนิ่ง (idle) · Task 9 = state machine + animation + ปฏิสัมพันธ์
  */
-import { forwardRef, useImperativeHandle } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
+import Animated, {
+  Easing,
+  runOnJS,
+  useAnimatedStyle,
+  useSharedValue,
+  withRepeat,
+  withSequence,
+  withTiming,
+} from 'react-native-reanimated';
 import { colors } from '@/theme/colors';
 import { fonts, fontSize } from '@/theme/typography';
 import { t } from '@/i18n';
+import { tick } from '@/utils/haptics';
+import { PaaUanBubble } from '@/components/PaaUanBubble';
+
+type GachaState = 'idle' | 'spinning' | 'ballOut';
+const INSTANT = Platform.OS === 'web'; // web: ข้าม animation (withTiming ไม่ขยับบนเว็บ)
 
 export interface GachaMachineHandle {
   /** เริ่มบิด (เรียกจากปุ่ม BigButton ของ parent) */
@@ -41,23 +55,112 @@ export function GachaBall({ size, color }: { size: number; color: string }) {
 }
 
 export const GachaMachine = forwardRef<GachaMachineHandle, GachaMachineProps>(
-  ({ onCrank, onBallOpened: _onBallOpened }, ref) => {
-    useImperativeHandle(ref, () => ({
-      crank: () => {
-        // Task 9: เริ่ม animation จริง — เวอร์ชันโครงนิ่งยังไม่ทำอะไร
-      },
+  ({ onCrank, onBallOpened }, ref) => {
+    const [state, setState] = useState<GachaState>('idle');
+    const [ballColor, setBallColor] = useState(GACHA_BALL_COLORS[0]);
+    const dialDeg = useSharedValue(0);      // ลูกบิดหมุนสะสม
+    const shake = useSharedValue(0);        // เขย่าโดม -1..1
+    const dropY = useSharedValue(0);        // ลูกบอลตก 0→1 (แปลงเป็น translateY)
+    const crackP = useSharedValue(0);       // เปลือกแตก 0→1
+    const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
+
+    useEffect(() => {
+      return () => {
+        timers.current.forEach(clearTimeout);
+        timers.current = [];
+      };
+    }, []);
+
+    function later(fn: () => void, ms: number) {
+      timers.current.push(setTimeout(fn, ms));
+    }
+
+    function crank() {
+      timers.current.forEach(clearTimeout);
+      timers.current = [];
+      crackP.value = 0;
+      dropY.value = 0;
+      setBallColor(GACHA_BALL_COLORS[Math.floor(Math.random() * GACHA_BALL_COLORS.length)]);
+
+      if (INSTANT) {
+        setState('ballOut');
+        return;
+      }
+      setState('spinning');
+      // ลูกบิดหมุน 180° + ติ๊ก 3 จังหวะ
+      dialDeg.value = withTiming(dialDeg.value + 180, { duration: 600, easing: Easing.out(Easing.quad) });
+      later(tick, 0); later(tick, 220); later(tick, 450);
+      // โดมเขย่า ~1 วิ
+      shake.value = withSequence(
+        withRepeat(withTiming(1, { duration: 70 }), 12, true),
+        withTiming(0, { duration: 80 })
+      );
+      // ลูกบอลหล่นลงถาด (หลังเขย่าจบ) แล้วเข้าสถานะรอเปิด
+      later(() => {
+        setState('ballOut');
+        dropY.value = 0;
+        dropY.value = withSequence(
+          withTiming(1, { duration: 420, easing: Easing.in(Easing.quad) }),
+          withTiming(0.92, { duration: 110 }),
+          withTiming(1, { duration: 110 })
+        );
+      }, 1000);
+    }
+
+    useImperativeHandle(ref, () => ({ crank }));
+
+    function openBall() {
+      if (state !== 'ballOut') return;
+      if (INSTANT) {
+        setState('idle');
+        onBallOpened();
+        return;
+      }
+      crackP.value = withTiming(1, { duration: 350, easing: Easing.out(Easing.quad) }, (done) => {
+        if (done) runOnJS(finishOpen)();
+      });
+    }
+    function finishOpen() {
+      setState('idle');
+      onBallOpened();
+    }
+
+    const domeStyle = useAnimatedStyle(() => ({
+      transform: [{ translateX: shake.value * 5 }],
+    }));
+    const dialStyle = useAnimatedStyle(() => ({
+      transform: [{ rotate: `${dialDeg.value}deg` }],
+    }));
+    // ลูกบอลที่ออก: โผล่จากช่อง outlet แล้วตกลงถาดหน้าตู้
+    const droppedStyle = useAnimatedStyle(() => ({
+      transform: [{ translateY: dropY.value * 74 }],
+      opacity: state === 'ballOut' || crackP.value > 0 ? 1 : 0,
+    }));
+    const halfL = useAnimatedStyle(() => ({
+      transform: [
+        { translateX: -crackP.value * 46 },
+        { rotate: `${-crackP.value * 70}deg` },
+      ],
+      opacity: 1 - crackP.value,
+    }));
+    const halfR = useAnimatedStyle(() => ({
+      transform: [
+        { translateX: crackP.value * 46 },
+        { rotate: `${crackP.value * 70}deg` },
+      ],
+      opacity: 1 - crackP.value,
     }));
 
     return (
       <View style={styles.wrap}>
         {/* โดมแก้ว */}
-        <View style={styles.dome}>
+        <Animated.View style={[styles.dome, domeStyle]}>
           {DOME_BALLS.map((b, i) => (
             <View key={i} style={{ position: 'absolute', left: b.x, top: b.y }}>
               <GachaBall size={40} color={GACHA_BALL_COLORS[b.c]} />
             </View>
           ))}
-        </View>
+        </Animated.View>
 
         {/* ตัวตู้ */}
         <View style={styles.cabinet}>
@@ -67,14 +170,37 @@ export const GachaMachine = forwardRef<GachaMachineHandle, GachaMachineProps>(
 
           <View style={styles.row}>
             {/* ลูกบิด — กดได้เหมือนปุ่มสุ่ม */}
-            <Pressable onPress={onCrank} style={styles.dial}>
-              <View style={styles.dialSlot} />
+            <Pressable onPress={onCrank}>
+              <Animated.View style={[styles.dial, dialStyle]}>
+                <View style={styles.dialSlot} />
+              </Animated.View>
             </Pressable>
 
             {/* ช่องลูกบอลออก */}
             <View style={styles.outlet} />
           </View>
         </View>
+
+        {state === 'ballOut' && (
+          <View style={styles.trayArea}>
+            <Pressable onPress={openBall}>
+              <Animated.View style={droppedStyle}>
+                {/* เปลือก 2 ซีก (ตอนแตกกระเด็นคนละทาง) ทับด้วยลูกบอลเต็มตอนยังไม่แตก */}
+                <Animated.View style={[StyleSheet.absoluteFill, halfL]}>
+                  <GachaBall size={64} color={ballColor} />
+                </Animated.View>
+                <Animated.View style={halfR}>
+                  <GachaBall size={64} color={ballColor} />
+                </Animated.View>
+              </Animated.View>
+            </Pressable>
+            <PaaUanBubble
+              text={t('แตะลูกบอลเปิดเลยลูก!', 'Tap the ball to open it!')}
+              mood="happy"
+              imageWidth={64}
+            />
+          </View>
+        )}
       </View>
     );
   }
@@ -157,4 +283,5 @@ const styles = StyleSheet.create({
     borderColor: colors.ink,
     backgroundColor: '#7A0E24', // แดงเข้มกว่าตัวตู้ = ช่องลึก
   },
+  trayArea: { marginTop: 10, alignItems: 'center', gap: 10, width: '100%' },
 });

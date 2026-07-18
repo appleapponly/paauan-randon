@@ -48,9 +48,12 @@ export default function NumberScreen() {
     registerSpin();
   }
 
-  // Task 8: ยังบิดแล้วออกผลทันที (สุ่มตรง ๆ) — Task 9 จะเปลี่ยนเป็นลำดับกาชาเต็ม
+  // สั่งตู้กาชาให้เริ่มบิด (validate ช่วงก่อน) — ผลจริงมาตอนลูกบอลแตกผ่าน onBallOpened={roll}
   function handleCrank() {
-    roll();
+    const lo = parseInt(min, 10);
+    const hi = parseInt(max, 10);
+    if (Number.isNaN(lo) || Number.isNaN(hi)) return; // ช่วงไม่ครบ ไม่บิด
+    machineRef.current?.crank();
   }
 
   return (
