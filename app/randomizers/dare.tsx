@@ -62,8 +62,6 @@ export default function DareScreen() {
           </Animated.View>
         )}
 
-        <View style={{ height: 18 }} />
-
         <BigButton label={dare === null ? t('สุ่มภารกิจ!', 'Dare me!') : t('สุ่มใหม่', 'Another one')} onPress={roll} />
 
         <View
@@ -84,7 +82,7 @@ export default function DareScreen() {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.cream },
-  content: { padding: 20, gap: 8, flexGrow: 1 },
+  content: { padding: 20, gap: 18, flexGrow: 1 },
   emoji: { fontSize: 52 },
   dare: {
     fontFamily: fonts.bold,

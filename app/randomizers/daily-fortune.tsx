@@ -59,8 +59,6 @@ export default function DailyFortuneScreen() {
           </Animated.View>
         )}
 
-        <View style={{ height: 20 }} />
-
         <BigButton
           label={fortune === null ? t('ขอข้อคิดวันนี้!', "Today's wisdom!") : t('ขอข้อคิดใหม่', 'Another one')}
           onPress={draw}
@@ -85,7 +83,7 @@ export default function DailyFortuneScreen() {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.cream },
-  content: { padding: 20, gap: 8, flexGrow: 1 },
+  content: { padding: 20, gap: 18, flexGrow: 1 },
   emoji: { fontSize: 56 },
   label: { fontFamily: fonts.medium, fontSize: fontSize.md, color: colors.muted },
   fortune: {

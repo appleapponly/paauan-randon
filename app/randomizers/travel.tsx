@@ -58,8 +58,6 @@ export default function TravelScreen() {
           </Animated.View>
         )}
 
-        <View style={{ height: 20 }} />
-
         <BigButton
           label={spot === null ? t('สุ่มที่เที่ยว!', 'Pick a spot!') : t('สุ่มใหม่', 'Again')}
           onPress={draw}
@@ -84,7 +82,7 @@ export default function TravelScreen() {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.cream },
-  content: { padding: 20, gap: 8, flexGrow: 1 },
+  content: { padding: 20, gap: 18, flexGrow: 1 },
   emoji: { fontSize: 56 },
   label: { fontFamily: fonts.medium, fontSize: fontSize.md, color: colors.muted },
   name: {

@@ -84,8 +84,6 @@ export default function DailyHoroscopeScreen() {
           </Animated.View>
         )}
 
-        <View style={{ height: 8 }} />
-
         <BigButton
           label={reading === null ? t('ดูดวงวันนี้!', 'Read my day!') : t('ดูดวงอีกครั้ง', 'Read again')}
           onPress={draw}
@@ -110,7 +108,7 @@ export default function DailyHoroscopeScreen() {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.cream },
-  content: { padding: 20, gap: 16, flexGrow: 1 },
+  content: { padding: 20, gap: 18, flexGrow: 1 },
   title: {
     fontFamily: fonts.bold,
     fontSize: fontSize.lg,

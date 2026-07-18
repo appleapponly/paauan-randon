@@ -152,8 +152,6 @@ export default function SiamsiScreen() {
           </RnAnimated.View>
         )}
 
-        <View style={{ height: 12 }} />
-
         <BigButton
           label={
             phase === 'shaking'
@@ -176,7 +174,7 @@ export default function SiamsiScreen() {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.cream },
-  content: { padding: 20, gap: 16, flexGrow: 1 },
+  content: { padding: 20, gap: 18, flexGrow: 1 },
 
   stage: {
     height: 230,

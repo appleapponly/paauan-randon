@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: 20,
-    gap: 24,
+    gap: 18,
     flexGrow: 1,
   },
   stage: {

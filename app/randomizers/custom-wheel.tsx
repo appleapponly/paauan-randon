@@ -205,7 +205,7 @@ export default function CustomWheelScreen() {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.cream },
-  content: { padding: 20, gap: 22 },
+  content: { padding: 20, gap: 18 },
   wheelWrap: { alignItems: 'center' },
   resultName: {
     fontFamily: fonts.bold,

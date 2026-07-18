@@ -110,7 +110,7 @@ export default function BreakTimeScreen() {
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.cream },
   // paddingBottom เยอะ กันปุ่ม "เริ่มพัก" ตกไปโดนแถบ navigation ของเครื่องบัง
-  content: { padding: 20, gap: 16, paddingBottom: 48, flexGrow: 1 },
+  content: { padding: 20, gap: 18, paddingBottom: 48, flexGrow: 1 },
   badge: { fontFamily: fonts.bold, fontSize: fontSize.sm, color: colors.jade },
   mins: { fontFamily: fonts.bold, fontSize: 56, color: colors.jade, textAlign: 'center' },
   activity: {

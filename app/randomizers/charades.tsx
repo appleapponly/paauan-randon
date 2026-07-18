@@ -81,7 +81,7 @@ export default function CharadesScreen() {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.cream },
-  content: { padding: 20, gap: 20, flexGrow: 1 },
+  content: { padding: 20, gap: 18, flexGrow: 1 },
   wordCard: {
     ...cartoonBox(colors.gold, 6),
     minHeight: 200,

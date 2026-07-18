@@ -97,8 +97,6 @@ export default function CoinScreen() {
           </Animated.View>
         )}
 
-        <View style={{ height: 16 }} />
-
         <BigButton
           label={
             phase === 'flipping'
@@ -129,7 +127,7 @@ export default function CoinScreen() {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.cream },
-  content: { padding: 20, gap: 16, flexGrow: 1 },
+  content: { padding: 20, gap: 18, flexGrow: 1 },
   stage: {
     alignItems: 'center',
     justifyContent: 'center',

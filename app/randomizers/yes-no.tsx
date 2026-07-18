@@ -65,8 +65,6 @@ export default function YesNoScreen() {
           </Animated.View>
         )}
 
-        <View style={{ height: 20 }} />
-
         <BigButton label={answer === null ? t('ถามป้าเลย!', 'Ask Auntie!') : t('ถามใหม่', 'Ask again')} onPress={ask} />
 
         <View
@@ -87,7 +85,7 @@ export default function YesNoScreen() {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.cream },
-  content: { padding: 20, gap: 8, flexGrow: 1 },
+  content: { padding: 20, gap: 18, flexGrow: 1 },
   emoji: { fontSize: 64 },
   answer: { fontFamily: fonts.bold, fontSize: fontSize.xxl },
 });

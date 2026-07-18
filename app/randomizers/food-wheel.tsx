@@ -209,7 +209,7 @@ export default function FoodWheelScreen() {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.cream },
-  content: { padding: 20, gap: 22 },
+  content: { padding: 20, gap: 18 },
   wheelWrap: { alignItems: 'center' },
   resultEmoji: { fontSize: 48 },
   resultName: { fontFamily: fonts.bold, fontSize: fontSize.xxl, color: colors.pink, textAlign: 'center' },

@@ -106,8 +106,6 @@ export default function OutfitScreen() {
           </Animated.View>
         )}
 
-        <View style={{ height: 8 }} />
-
         <BigButton
           label={look === null ? t('สุ่มแต่งตัว!', 'Style me!') : t('สุ่มลุคใหม่', 'New look')}
           onPress={rollOutfit}
@@ -132,7 +130,7 @@ export default function OutfitScreen() {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.cream },
-  content: { padding: 20, gap: 16, flexGrow: 1 },
+  content: { padding: 20, gap: 18, flexGrow: 1 },
 
   genderRow: { flexDirection: 'row', gap: 12 },
   genderBtn: {

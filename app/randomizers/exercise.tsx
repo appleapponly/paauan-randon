@@ -216,7 +216,7 @@ export default function ExerciseScreen() {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.cream },
-  content: { padding: 20, gap: 20 },
+  content: { padding: 20, gap: 18 },
   emptyBox: { ...cartoonBox(colors.white, 4), padding: 20 },
   emptyText: {
     fontFamily: fonts.medium,

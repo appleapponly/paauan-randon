@@ -72,8 +72,6 @@ export default function ColorScreen() {
           </Pressable>
         )}
 
-        <View style={{ height: 6 }} />
-
         <BigButton label={hex === null ? t('สุ่มสีเลย!', 'Random color!') : t('สุ่มใหม่', 'Again')} onPress={roll} />
 
         <View
@@ -94,7 +92,7 @@ export default function ColorScreen() {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.cream },
-  content: { padding: 20, gap: 14, flexGrow: 1 },
+  content: { padding: 20, gap: 18, flexGrow: 1 },
   swatch: {
     width: 160,
     height: 160,
