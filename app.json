@@ -27,7 +27,14 @@
     "plugins": [
       "expo-router",
       "expo-font",
-      "expo-splash-screen",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#FFF3DD",
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 200
+        }
+      ],
       "expo-sharing",
       [
         "react-native-google-mobile-ads",
