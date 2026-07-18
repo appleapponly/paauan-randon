@@ -14,6 +14,7 @@ import Svg, { G, Path, Text as SvgText } from 'react-native-svg';
 import { colors } from '@/theme/colors';
 import { fonts } from '@/theme/typography';
 import { pickIndex } from '@/utils/random';
+import { tick, success } from '@/utils/haptics';
 
 export interface SpinWheelHandle {
   spin: () => void;
@@ -62,6 +63,13 @@ export const SpinWheel = forwardRef<SpinWheelHandle, Props>(
     const rotation = useRef(new Animated.Value(0)).current;
     const rotRef = useRef(0); // องศาที่วงล้อหยุดอยู่ตอนนี้ (ไว้เริ่มหมุนครั้งถัดไปต่อเนื่อง)
     const settleTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const tickTimers = useRef<ReturnType<typeof setTimeout>[]>([]);
+
+    function clearTicks() {
+      tickTimers.current.forEach(clearTimeout);
+      tickTimers.current = [];
+    }
+
     const r = size / 2;
     const sliceAngle = items.length > 0 ? 360 / items.length : 360;
 
@@ -74,6 +82,7 @@ export const SpinWheel = forwardRef<SpinWheelHandle, Props>(
     // เคลียร์ timer ถ้า component ถูกถอดออกระหว่างหมุน
     useEffect(() => () => {
       if (settleTimer.current) clearTimeout(settleTimer.current);
+      clearTicks();
     }, []);
 
     // เปิดให้ parent สั่ง spin() ได้
@@ -82,6 +91,16 @@ export const SpinWheel = forwardRef<SpinWheelHandle, Props>(
         if (items.length === 0) return;
         if (settleTimer.current) clearTimeout(settleTimer.current);
         onStart?.();
+
+        // สั่นติ๊กตามจังหวะวงล้อ: แบ่งระยะหมุนเท่า ๆ กัน 16 ช่วง แล้วแปลงกลับเป็น "เวลา"
+        // ด้วยผกผันของ Easing.out(cubic) → ติ๊กถี่ตอนออกตัว ค่อย ๆ ห่างตอนใกล้หยุด
+        clearTicks();
+        const TICKS = 16;
+        for (let k = 1; k <= TICKS; k++) {
+          const p = k / TICKS;
+          const tAt = 1 - Math.cbrt(1 - p);
+          tickTimers.current.push(setTimeout(tick, tAt * SPIN_DURATION));
+        }
 
         const index = pickIndex(items);
         // มุมที่ต้องหมุนเพื่อให้ "กลางชิ้นที่เลือก" มาอยู่ตรงหัวลูกศร (ด้านซ้าย 270°)
@@ -105,6 +124,7 @@ export const SpinWheel = forwardRef<SpinWheelHandle, Props>(
         // ส่งผลด้วย JS timer ให้ตรงกับตอนวงล้อหยุดพอดี (เชื่อถือได้ทุกแพลตฟอร์ม)
         settleTimer.current = setTimeout(() => {
           settleTimer.current = null;
+          success();
           onResult(items[index], index);
         }, SPIN_DURATION + 60);
       },
