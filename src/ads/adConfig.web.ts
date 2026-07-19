@@ -18,7 +18,7 @@ export const PRO_LIFETIME_SKU = 'paauan_pro_lifetime';
 export const PRO_FALLBACK_PRICE = {
   yearly: t('฿49 / ปี', '$4.99 / yr'),
   monthly: t('฿7 / เดือน', '$0.99 / mo'),
-  lifetime: t('฿199 ครั้งเดียว', '$19.99 one-time'),
+  lifetime: t('฿99 ครั้งเดียว', '$9.99 one-time'),
 };
 
 export const INTERSTITIAL_MIN = 2;

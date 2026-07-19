@@ -28,6 +28,7 @@ export default function NumberScreen() {
   const [comment, setComment] = useState('');
   const [mood, setMood] = useState<PaaUanMood>('happy');
   const [round, setRound] = useState(0);
+  const [started, setStarted] = useState(false); // เริ่มบิดแล้วหรือยัง — ซ่อนบับเบิลใบ้ก่อนเล่น
   const machineRef = useRef<GachaMachineHandle>(null);
 
   function roll() {
@@ -53,6 +54,7 @@ export default function NumberScreen() {
     const lo = parseInt(min, 10);
     const hi = parseInt(max, 10);
     if (Number.isNaN(lo) || Number.isNaN(hi)) return; // ช่วงไม่ครบ ไม่บิด
+    setStarted(true); // เริ่มบิด → ซ่อนบับเบิลใบ้ (กันซ้อนกับบับเบิล "แตะลูกบอล" ตอนลูกออก)
     machineRef.current?.crank();
   }
 
@@ -66,9 +68,7 @@ export default function NumberScreen() {
       >
         <GachaMachine ref={machineRef} onCrank={crankFromDial} onBallOpened={roll} />
 
-        {result === null ? (
-          <PaaUanBubble text={t('ใส่ช่วงตัวเลข แล้วบิดกาชาเลยลูก!', 'Set a range and crank the gacha!')} mood="happy" />
-        ) : (
+        {result !== null ? (
           <Animated.View key={round} entering={BounceIn.duration(600)}>
             <CaptureCard ref={cardRef} comment={comment} mood={mood}>
               <Text style={styles.number}>{result}</Text>
@@ -76,6 +76,9 @@ export default function NumberScreen() {
             </CaptureCard>
             <ConfettiBurst />
           </Animated.View>
+        ) : started ? null : (
+          // โชว์บับเบิลใบ้เฉพาะ "ก่อนบิดครั้งแรก" — ระหว่างบิด/ลูกออก ตู้มีบับเบิลของตัวเอง
+          <PaaUanBubble text={t('ใส่ช่วงตัวเลข แล้วบิดกาชาเลยลูก!', 'Set a range and crank the gacha!')} mood="happy" />
         )}
 
         <View style={styles.rangeRow}>
