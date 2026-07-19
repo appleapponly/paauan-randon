@@ -43,8 +43,8 @@
         "expo-splash-screen",
         {
           "backgroundColor": "#FFF3DD",
-          "image": "./assets/images/paa-uan-happy.png",
-          "imageWidth": 220
+          "image": "./assets/splash-auntie.png",
+          "imageWidth": 288
         }
       ],
       "expo-sharing",
