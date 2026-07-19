@@ -8,7 +8,13 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.paauan.randon",
+      "buildNumber": "1",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSUserTrackingUsageDescription": "ใช้เพื่อแสดงโฆษณาที่เกี่ยวข้องและช่วยให้แอปฟรีต่อไป ปฏิเสธได้ แอปยังใช้ได้ครบเหมือนเดิม"
+      }
     },
     "android": {
       "package": "com.paauan.randon",
@@ -27,6 +33,12 @@
     "plugins": [
       "expo-router",
       "expo-font",
+      [
+        "expo-build-properties",
+        {
+          "ios": { "deploymentTarget": "16.4" }
+        }
+      ],
       [
         "expo-splash-screen",
         {

@@ -35,6 +35,10 @@ module.exports = ({ config }) => {
         ...config.android,
         package: 'com.paauan.auntie',
       },
+      ios: {
+        ...config.ios,
+        bundleIdentifier: 'com.paauan.auntie',
+      },
       plugins: withGlobalAdMobId(config.plugins),
       extra: { ...config.extra, variant },
     };
