@@ -234,7 +234,7 @@ const styles = StyleSheet.create({
     fontSize: fontSize.md,
     color: colors.ink,
     textAlign: 'center',
-    lineHeight: 28,
+    lineHeight: 32, // เผื่อสระ+วรรณยุกต์ซ้อนไม่ถูกตัดหัวบน Android
   },
   unlockBtn: {
     backgroundColor: colors.wine,
@@ -259,7 +259,7 @@ const styles = StyleSheet.create({
     fontSize: fontSize.md,
     color: colors.ink,
     textAlign: 'center',
-    lineHeight: 24,
+    lineHeight: 28,
   },
   manageBox: { ...cartoonBox(colors.white, 4), padding: 16, gap: 14 },
   manageTitle: { fontFamily: fonts.bold, fontSize: fontSize.lg, color: colors.ink },

@@ -237,7 +237,7 @@ const styles = StyleSheet.create({
     color: colors.white,
     textAlign: 'center',
     opacity: 0.95,
-    lineHeight: 26,
+    lineHeight: 32, // เผื่อสระ+วรรณยุกต์ซ้อนไม่ถูกตัดหัวบน Android
   },
   center: { alignItems: 'center', gap: 14 },
   clock: { fontFamily: fonts.bold, fontSize: 84, color: colors.white, letterSpacing: 2 },
@@ -257,7 +257,7 @@ const styles = StyleSheet.create({
     fontSize: fontSize.md,
     color: colors.ink,
     textAlign: 'center',
-    lineHeight: 28,
+    lineHeight: 32, // เผื่อสระ+วรรณยุกต์ซ้อนไม่ถูกตัดหัวบน Android
   },
   controls: { gap: 12 },
   ctrlBtn: {

@@ -114,6 +114,8 @@ const styles = StyleSheet.create({
     fontSize: fontSize.lg,
     color: colors.wine,
     textAlign: 'center',
+    lineHeight: 32, // เผื่อ "นี้" (สระ+วรรณยุกต์ซ้อน) ไม่ถูกตัดหัวบน Android
+    includeFontPadding: true,
   },
   sections: { gap: 10, alignSelf: 'stretch' },
   section: {
@@ -132,6 +134,7 @@ const styles = StyleSheet.create({
     fontFamily: fonts.medium,
     fontSize: fontSize.sm,
     color: colors.ink,
-    lineHeight: 26, // เผื่อสระบน/ล่างไม่ถูกตัด
+    lineHeight: 30, // เผื่อ "นี้"/"มั้ย" (สระ+วรรณยุกต์ซ้อน) ไม่ถูกตัดหัวบน Android
+    includeFontPadding: true,
   },
 });

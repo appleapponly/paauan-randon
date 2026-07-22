@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
     fontSize: fontSize.md,
     color: colors.ink,
     textAlign: 'center',
-    lineHeight: 28,
+    lineHeight: 32, // เผื่อสระ+วรรณยุกต์ซ้อนไม่ถูกตัดหัวบน Android
   },
   bold: { fontFamily: fonts.bold, color: colors.wine },
   plan: {
@@ -202,14 +202,14 @@ const styles = StyleSheet.create({
     fontSize: fontSize.md,
     color: colors.wine,
     textAlign: 'center',
-    lineHeight: 30,
+    lineHeight: 34,
   },
   fine: {
     fontFamily: fonts.regular,
     fontSize: fontSize.xs,
     color: colors.muted,
     textAlign: 'center',
-    lineHeight: 18,
+    lineHeight: 22,
     marginTop: 8,
   },
 });
