@@ -262,7 +262,7 @@ const styles = StyleSheet.create({
     fontSize: fontSize.md,
     color: colors.ink,
     textAlign: 'center',
-    lineHeight: 24,
+    lineHeight: 28,
   },
   missionBadge: {
     fontFamily: fonts.bold,
@@ -273,7 +273,7 @@ const styles = StyleSheet.create({
   missionList: { alignSelf: 'stretch', gap: 10, marginTop: 4 },
   missionRow: { flexDirection: 'row', gap: 10, alignItems: 'center' },
   missionEmoji: { fontSize: 30 },
-  missionName: { flex: 1, fontFamily: fonts.bold, fontSize: fontSize.md, color: colors.ink, lineHeight: 26 },
+  missionName: { flex: 1, fontFamily: fonts.bold, fontSize: fontSize.md, color: colors.ink, lineHeight: 30 },
   timeBox: { ...cartoonBox(colors.white, 4), padding: 16, gap: 12 },
   timeRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 10 },
   timeLabel: { flex: 1, fontFamily: fonts.semibold, fontSize: fontSize.sm, color: colors.ink },

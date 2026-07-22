@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
     fontFamily: fonts.medium,
     fontSize: fontSize.md,
     color: colors.ink,
-    lineHeight: 30, // เผื่อสระบน/ล่าง + วรรณยุกต์ภาษาไทยไม่ถูกตัด
+    lineHeight: 36, // เผื่อสระ+วรรณยุกต์ซ้อน 2 ชั้น (เช่น "เดี๋ยว" ◌ี+◌๋) ไม่ถูกตัดหัวบน Android
     includeFontPadding: true, // Android: กันตัดหัวอักษร (สระ/วรรณยุกต์บน)
   },
   tailBorder: {

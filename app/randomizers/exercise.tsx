@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
     fontSize: fontSize.md,
     color: colors.ink,
     textAlign: 'center',
-    lineHeight: 24,
+    lineHeight: 28,
   },
   missionBadge: {
     fontFamily: fonts.bold,
@@ -239,7 +239,7 @@ const styles = StyleSheet.create({
     fontFamily: fonts.bold,
     fontSize: fontSize.md,
     color: colors.ink,
-    lineHeight: 30, // เผื่อสระบน/วรรณยุกต์ไม่ถูกตัด
+    lineHeight: 34, // เผื่อสระ+วรรณยุกต์ซ้อนไม่ถูกตัดหัวบน Android
     includeFontPadding: true,
   },
   missionAmount: { color: colors.orange },

@@ -239,7 +239,8 @@ const styles = StyleSheet.create({
     fontSize: fontSize.xl,
     color: colors.gold,
     textAlign: 'center',
-    lineHeight: 38,
+    lineHeight: 42, // เผื่อสระ+วรรณยุกต์ซ้อนไม่ถูกตัดหัวบน Android
+    includeFontPadding: true,
   },
   slipDivider: {
     width: 70,
@@ -256,6 +257,7 @@ const styles = StyleSheet.create({
     fontSize: fontSize.md,
     color: colors.white,
     textAlign: 'center',
-    lineHeight: 32, // กลอน 1 บรรทัด เผื่อสระบน/ล่างไม่ขาด
+    lineHeight: 36, // กลอน เผื่อสระ+วรรณยุกต์ซ้อนไม่ถูกตัดหัวบน Android
+    includeFontPadding: true,
   },
 });

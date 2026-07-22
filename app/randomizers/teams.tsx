@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
     fontSize: fontSize.md,
     color: colors.ink,
     padding: 12,
-    lineHeight: 24,
+    lineHeight: 30, // เผื่อชื่อที่มีสระ+วรรณยุกต์ซ้อนไม่ถูกตัดหัวบน Android
   },
   counterRow: {
     flexDirection: 'row',

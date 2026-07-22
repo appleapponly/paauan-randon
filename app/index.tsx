@@ -188,7 +188,8 @@ const styles = StyleSheet.create({
     fontFamily: fonts.semibold,
     fontSize: fontSize.sm,
     color: colors.ink,
-    lineHeight: 26, // เผื่อสระ/วรรณยุกต์บน (เช่น "นี่") ไม่ถูกตัด
+    lineHeight: 30, // เผื่อสระ+วรรณยุกต์ซ้อน 2 ชั้นไม่ถูกตัดหัวบน Android
+    includeFontPadding: true,
   },
   // หางบับเบิลชี้ไป "ทางขวา" หาตัวป้า (มุมขวาล่าง) เหมือนป้าพูด
   bubbleTailBorder: {
@@ -289,7 +290,7 @@ const styles = StyleSheet.create({
     fontSize: fontSize.md,
     color: colors.white,
     textAlign: 'center',
-    lineHeight: 26,
+    lineHeight: 30,
   },
   proThanks: {
     backgroundColor: colors.white,
@@ -307,6 +308,6 @@ const styles = StyleSheet.create({
     fontSize: fontSize.md,
     color: colors.wine,
     textAlign: 'center',
-    lineHeight: 26,
+    lineHeight: 30,
   },
 });
